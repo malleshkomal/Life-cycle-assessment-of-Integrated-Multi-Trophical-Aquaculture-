@@ -63,7 +63,7 @@ baseline for E1–E7, so it is shown as "baseline" there rather than pass/fail.
 python make_data.py      # report tables -> data/report, data/lci
 python run.py            # KPIs, impacts, nutrient balance, data checks -> results/*.csv
 python make_excel.py     # offline Excel tool (then open it in Excel, or recalc with LibreOffice)
-python make_charts.py    # figures 1-5 (PNG)
+python make_charts.py    # all figures (PNG)
 python make_flow.py      # flow diagrams (SVG) + docs/flow.html
 python build_site.py     # docs/index.html
 pytest
