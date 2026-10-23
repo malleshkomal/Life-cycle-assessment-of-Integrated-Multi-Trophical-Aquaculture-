@@ -129,10 +129,7 @@ sources/               REFERENCES.md, references.bib
 - Hala, A. F., **Chougule, K.**, Cunha, M. E., Caria Mendes, M., Oliveira, I., Bradley, T., Forbes, J., & Galileu Speranza, L. (2024).
   Life cycle assessment of integrated multi-trophic aquaculture: A review on methodology and challenges for its sustainability evaluation.
   *Aquaculture*, 590, 741035. This paper is the basis for the functional unit and allocation choices.
-- Nair, R. R., **Chougule, K. M.**, Gomez, J. C., & Brand-Daniels, U. (2025). A generalized schema to publish and share life cycle inventories (LCI):
-  Exemplary case of an aviation fuel supply chain. *Journal of Cleaner Production*, 520, 146120.
-  https://doi.org/10.1016/j.jclepro.2025.146120. This paper defines the LCI format used here. See also the related repository
-  [ptl-lci-explorer](https://github.com/malleshkomal/ptl-lci-explorer).
+
 
 All other sources, and a note on which values come from the literature and which are assumptions, are in [`sources/REFERENCES.md`](sources/REFERENCES.md).
 
