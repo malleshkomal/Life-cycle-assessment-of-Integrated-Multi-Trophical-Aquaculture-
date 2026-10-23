@@ -110,8 +110,6 @@ The framework turns the LCA results into **13 KPIs** in two dimensions – **7 e
 The same framework in the **Excel tool** (tab *KPI framework*) – change a target or an input and every KPI updates.
 [Preview in the browser](https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmalleshkomal%2FLife-cycle-assessment-of-Integrated-Multi-Trophical-Aquaculture-%2Fmain%2Fexcel%2FIMTA_KPI_decision_tool.xlsx) · [download](excel/IMTA_KPI_decision_tool.xlsx)
 
-[![Excel KPI framework tab](excel/excel_kpi_framework.png)](excel/IMTA_KPI_decision_tool.xlsx)
-
 Every step is explained in [`docs/methodology.md`](docs/methodology.md).
 
 ## Quick start
