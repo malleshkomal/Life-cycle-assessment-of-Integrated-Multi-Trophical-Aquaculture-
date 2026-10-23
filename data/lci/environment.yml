@@ -1,0 +1,10 @@
+name: imta-cirkpi
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas
+  - openpyxl
+  - networkx
+  - matplotlib
+# Modelling software: openLCA 2.x | Background: ecoinvent 3.7 cut-off | Method: EF 3.1 (adapted)

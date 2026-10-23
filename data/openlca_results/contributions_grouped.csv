@@ -1,0 +1,52 @@
+run,impact_category,contributor_group,result,share
+run1,Climate change,Land use change (feed crops),21685.66,0.297
+run1,Climate change,Fuels and heat,12626.52,0.1729
+run1,Climate change,Transport,8935.07,0.1224
+run1,Climate change,Electricity generation,8593.54,0.1177
+run1,Climate change,Crop farming (feed),8191.12,0.1122
+run1,Climate change,Farm (direct emissions),7122.4,0.0975
+run1,Climate change,Other background,3599.73,0.0493
+run1,Climate change,Fishing and fishmeal,1359.28,0.0186
+run1,Climate change,Plastics and chemicals,912.29,0.0125
+run1,Eutrophication marine,Crop farming (feed),317.25,0.8342
+run1,Eutrophication marine,Transport,20.35,0.0535
+run1,Eutrophication marine,Fuels and heat,14.41,0.0379
+run1,Eutrophication marine,Fishing and fishmeal,13.09,0.0344
+run1,Eutrophication marine,Electricity generation,6.67,0.0175
+run1,Eutrophication marine,Other background,5.81,0.0153
+run1,Eutrophication marine,Land use change (feed crops),2.1,0.0055
+run1,Eutrophication marine,Plastics and chemicals,0.63,0.0017
+run2,Climate change,Electricity generation,59232.35,0.376
+run2,Climate change,Land use change (feed crops),32334.71,0.2053
+run2,Climate change,Fuels and heat,19699.52,0.125
+run2,Climate change,Transport,14440.1,0.0917
+run2,Climate change,Crop farming (feed),12213.98,0.0775
+run2,Climate change,Farm (direct emissions),10617.6,0.0674
+run2,Climate change,Other background,5609.7,0.0356
+run2,Climate change,Fishing and fishmeal,2026.78,0.0129
+run2,Climate change,Plastics and chemicals,1362.08,0.0086
+run2,Eutrophication marine,Crop farming (feed),473.04,0.7619
+run2,Eutrophication marine,Fuels and heat,44.33,0.0714
+run2,Eutrophication marine,Electricity generation,42.26,0.0681
+run2,Eutrophication marine,Transport,28.54,0.046
+run2,Eutrophication marine,Fishing and fishmeal,19.52,0.0314
+run2,Eutrophication marine,Other background,9.12,0.0147
+run2,Eutrophication marine,Land use change (feed crops),3.14,0.0051
+run2,Eutrophication marine,Plastics and chemicals,0.95,0.0015
+run3,Climate change,Electricity generation,129765.72,0.6555
+run3,Climate change,Land use change (feed crops),21695.99,0.1096
+run3,Climate change,Fuels and heat,14801.64,0.0748
+run3,Climate change,Transport,9984.4,0.0504
+run3,Climate change,Crop farming (feed),8196.0,0.0414
+run3,Climate change,Farm (direct emissions),7124.41,0.036
+run3,Climate change,Other background,4133.68,0.0209
+run3,Climate change,Fishing and fishmeal,1359.97,0.0069
+run3,Climate change,Plastics and chemicals,914.89,0.0046
+run3,Eutrophication marine,Crop farming (feed),317.41,0.604
+run3,Eutrophication marine,Electricity generation,91.09,0.1733
+run3,Eutrophication marine,Fuels and heat,73.92,0.1407
+run3,Eutrophication marine,Transport,20.34,0.0387
+run3,Eutrophication marine,Fishing and fishmeal,13.1,0.0249
+run3,Eutrophication marine,Other background,6.93,0.0132
+run3,Eutrophication marine,Land use change (feed crops),2.1,0.004
+run3,Eutrophication marine,Plastics and chemicals,0.64,0.0012

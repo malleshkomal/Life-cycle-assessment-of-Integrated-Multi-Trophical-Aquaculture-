@@ -1,0 +1,32 @@
+ap_name,ap_code,ap_location,ap_unit,fp_name,fp_type,fp_amount,fp_unit,fp_provider,fp_location,fp_comment
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"Sea bream, fresh, at farm gate",production,40000,kg,,PT,reference product
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"fishmeal, 63-65% protein",technosphere,15000,kg,fishmeal and fish oil production,PE,feed 25%
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"fish oil, from anchovy",technosphere,6000,kg,market for fish oil,GLO,feed 10%
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,soybean meal,technosphere,18000,kg,market for soybean meal,GLO,feed 30%
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"wheat grain, feed",technosphere,15000,kg,"market for wheat grain, feed",GLO,feed 25%
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"rape oil, crude",technosphere,6000,kg,"market for rape oil, crude",RoW,feed 10%
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"electricity, low voltage",technosphere,100000,kWh,"market for electricity, low voltage",PT,"pumps, aeration (+200 kWh shell crushing in C)"
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,diesel,technosphere,2520,kg,market for diesel,Europe without Switzerland,boats; 0.84 kg/L
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"polypropylene, granulate",technosphere,300,kg,"market for polypropylene, granulate",GLO,ropes and nets
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"transport, freight, lorry 16-32 metric ton, EURO6",technosphere,12000,t*km,"market for transport, freight, lorry 16-32 metric ton, EURO6",RER,harvest x 300 km (+1000 t*km shells/residues in C)
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,"Carbon dioxide, fossil",biosphere,7963.2,kg,Emission to air/unspecified,,diesel combustion 3.16 kg/kg
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,Nitrogen,biosphere,3000,kg,Emission to water,,nutrient mass balance (+5 kg from compost use in C)
+"IMTA farm, 1 year - scenario A: fish monoculture",imta-A,PT,kg,Phosphorus,biosphere,520,kg,Emission to water,,nutrient mass balance
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"Sea bream, fresh, at farm gate",production,40000,kg,,PT,reference product
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"Seaweed, fresh, at farm gate",production,50000,kg,,PT,co-product
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"Mussels, fresh, at farm gate",production,25000,kg,,PT,co-product
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"fishmeal, 63-65% protein",technosphere,15000,kg,fishmeal and fish oil production,PE,feed 25%
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"fish oil, from anchovy",technosphere,6000,kg,market for fish oil,GLO,feed 10%
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,soybean meal,technosphere,18000,kg,market for soybean meal,GLO,feed 30%
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"wheat grain, feed",technosphere,15000,kg,"market for wheat grain, feed",GLO,feed 25%
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"rape oil, crude",technosphere,6000,kg,"market for rape oil, crude",RoW,feed 10%
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"electricity, low voltage",technosphere,120200,kWh,"market for electricity, low voltage",PT,"pumps, aeration (+200 kWh shell crushing in C)"
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,diesel,technosphere,3360,kg,market for diesel,Europe without Switzerland,boats; 0.84 kg/L
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"polypropylene, granulate",technosphere,800,kg,"market for polypropylene, granulate",GLO,ropes and nets
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"transport, freight, lorry 16-32 metric ton, EURO6",technosphere,35500,t*km,"market for transport, freight, lorry 16-32 metric ton, EURO6",RER,harvest x 300 km (+1000 t*km shells/residues in C)
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"composting, seaweed residues",technosphere,10000,kg,(treatment process),PT,scenario C only
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,ground limestone (avoided),avoided product,10000,kg,(lime substitute),PT,"mussel shells crushed, 1:1"
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,mineral N fertiliser (avoided),avoided product,25,kg N,(N fertiliser),PT,"compost N, 50% plant-available"
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,"Carbon dioxide, fossil",biosphere,10617.6,kg,Emission to air/unspecified,,diesel combustion 3.16 kg/kg
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,Nitrogen,biosphere,2455,kg,Emission to water,,nutrient mass balance (+5 kg from compost use in C)
+"IMTA farm, 1 year - scenario C: IMTA (fish + seaweed + mussels) + waste valorisation",imta-C,PT,kg,Phosphorus,biosphere,465,kg,Emission to water,,nutrient mass balance

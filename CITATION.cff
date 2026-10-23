@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below. The LCI format follows the LCIS2024 schema (see references)."
+title: "IMTA circular KPI decision tool (demonstration)"
+version: 0.1.0
+date-released: 2026-10-23
+authors:
+  - family-names: Chougule
+    given-names: Komal Mallesh
+license: MIT
+keywords:
+  - life cycle assessment
+  - circular economy
+  - KPI
+  - aquaculture
+  - IMTA
+references:
+  - type: article
+    title: "A generalized schema to publish and share life cycle inventories (LCI): Exemplary case of an aviation fuel supply chain"
+    authors:
+      - family-names: Nair
+        given-names: Rahul Ramesh
+      - family-names: Chougule
+        given-names: Komal Mallesh
+      - family-names: Gomez
+        given-names: Juan Camilo
+      - family-names: Brand-Daniels
+        given-names: Urte
+    journal: "Journal of Cleaner Production"
+    volume: 520
+    start: 146120
+    year: 2025
+    doi: 10.1016/j.jclepro.2025.146120

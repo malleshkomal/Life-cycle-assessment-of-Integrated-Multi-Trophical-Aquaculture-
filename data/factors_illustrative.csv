@@ -1,0 +1,16 @@
+flow,unit,climate_kgCO2eq_per_unit,marine_eutrophication_kgNeq_per_unit,status
+"fishmeal, 63-65% protein",kg,1.5,0.02,illustrative - not ecoinvent
+"fish oil, from anchovy",kg,1.8,0.02,illustrative - not ecoinvent
+soybean meal,kg,1.5,0.04,illustrative - not ecoinvent (excludes land use change)
+"wheat grain, feed",kg,0.6,0.03,illustrative - not ecoinvent
+"rape oil, crude",kg,2.5,0.04,illustrative - not ecoinvent
+"electricity, low voltage",kWh,0.2,0.0002,illustrative - not ecoinvent
+diesel,kg,0.6,0.001,illustrative - production only
+"polypropylene, granulate",kg,2.0,0.0005,illustrative - not ecoinvent
+"transport, freight, lorry 16-32 metric ton, EURO6",t*km,0.12,0.0003,illustrative (openLCA run3 gives ~0.12)
+"composting, seaweed residues",kg,0.03,0,illustrative
+ground limestone (avoided),kg,0.02,0.00001,illustrative - credit
+mineral N fertiliser (avoided),kg N,8.0,0.01,illustrative - credit
+"Carbon dioxide, fossil",kg,1,0,by definition
+Nitrogen,kg,0,1,characterisation 1 kg N-eq per kg N
+Phosphorus,kg,0,0,not counted in marine eutrophication

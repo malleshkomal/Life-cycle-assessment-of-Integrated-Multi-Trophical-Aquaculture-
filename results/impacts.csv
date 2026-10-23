@@ -1,0 +1,30 @@
+scenario,flow,climate_kgCO2eq_per_year,marine_eutrophication_kgNeq_per_year
+imta-A,"fishmeal, 63-65% protein",22500.0,300.0
+imta-A,"fish oil, from anchovy",10800.0,120.0
+imta-A,soybean meal,27000.0,720.0
+imta-A,"wheat grain, feed",9000.0,450.0
+imta-A,"rape oil, crude",15000.0,240.0
+imta-A,"electricity, low voltage",20000.0,20.0
+imta-A,diesel,1512.0,2.52
+imta-A,"polypropylene, granulate",600.0,0.15
+imta-A,"transport, freight, lorry 16-32 metric ton, EURO6",1440.0,3.6
+imta-A,"Carbon dioxide, fossil",7963.2,0.0
+imta-A,Nitrogen,0.0,3000.0
+imta-A,Phosphorus,0.0,0.0
+imta-A,TOTAL (farm),115815.2,4856.27
+imta-C,"fishmeal, 63-65% protein",22500.0,300.0
+imta-C,"fish oil, from anchovy",10800.0,120.0
+imta-C,soybean meal,27000.0,720.0
+imta-C,"wheat grain, feed",9000.0,450.0
+imta-C,"rape oil, crude",15000.0,240.0
+imta-C,"electricity, low voltage",24040.0,24.04
+imta-C,diesel,2016.0,3.36
+imta-C,"polypropylene, granulate",1600.0,0.4
+imta-C,"transport, freight, lorry 16-32 metric ton, EURO6",4260.0,10.65
+imta-C,"composting, seaweed residues",300.0,0.0
+imta-C,ground limestone (avoided),-200.0,-0.1
+imta-C,mineral N fertiliser (avoided),-200.0,-0.25
+imta-C,"Carbon dioxide, fossil",10617.6,0.0
+imta-C,Nitrogen,0.0,2455.0
+imta-C,Phosphorus,0.0,0.0
+imta-C,TOTAL (farm),126733.6,4323.1

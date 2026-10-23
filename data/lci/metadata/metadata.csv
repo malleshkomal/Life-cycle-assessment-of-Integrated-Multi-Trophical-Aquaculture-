@@ -1,0 +1,34 @@
+Element,Label,Value
+Dataset,Name,imta-cirkpi-lci
+Dataset,Description,Foreground LCI of a gilthead sea bream farm in Portugal: fish monoculture (A) vs IMTA with seaweed and mussels including valorisation of seaweed residues and mussel shells (C). Teaching / demonstration dataset.
+Dataset,Year,2026
+Dataset,Language,en
+Dataset,Keywords,IMTA; aquaculture; sea bream; circular economy; KPI; LCA
+Dataset,Type of Data,secondary and assumed (illustrative)
+Dataset,LCI Model,attributional
+Dataset,System boundary,cradle-to-gate incl. transport to market
+Dataset,Functional Units,1 kg fresh sea bream at farm gate
+Dataset,Region,Portugal (PT)
+Dataset,Time Period,1 year of operation
+Dataset,LCI Assumptions,5-ingredient proxy feed; diesel production + combustion CO2; juveniles and mussel seed cut off; N/P from nutrient mass balance; economic allocation; C uses system expansion (avoided limestone and N fertiliser)
+Dataset,LCI Schema,"LCIS2024 (Nair, Chougule, Gomez, Brand-Daniels 2025)"
+Background,Name,ecoinvent
+Background,Version,3.7
+Background,Type,cutoff (unit processes)
+Background,URL,https://ecoinvent.org
+Background,Comments,Only dataset names are listed; ecoinvent data are licensed and not redistributed
+License,Name,Creative Commons Attribution 4.0 International
+License,SPDX Identifier,CC-BY-4.0
+License,Attribution,Chougule (2026)
+License,Obligations,ecoinvent licence applies to any recalculation
+License,Comments,Code under MIT
+Acknowledgements,Contributors,-
+Acknowledgements,Funding,none
+Primary data,Type,none
+Primary data,Comments,No measured farm data
+Secondary data,Source,peer-reviewed literature (ranges for plausibility checks)
+Secondary data,Year,2016-2025
+Secondary data,Language,en
+Secondary data,Availability,see sources/REFERENCES.md
+Secondary data,DOIs,10.3390/su8121228; 10.1016/j.aquaculture.2024.741035; 10.1016/j.jclepro.2025.146120
+Glossary,List of Abbreviations,IMTA integrated multi-trophic aquaculture; FCR feed conversion ratio; EF Environmental Footprint; LCI life cycle inventory; KPI key performance indicator

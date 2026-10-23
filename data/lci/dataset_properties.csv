@@ -1,0 +1,12 @@
+property,value
+name,imta-cirkpi-lci
+version,0.1.0
+schema_version,LCIS2024
+creation_time,20261023-200000
+udi_name,imta-cirkpi-lci-LCIS2024-0.1.0-20261023-200000
+udi,52c79175-1608-57fa-a944-64736063b67c
+software,openLCA 2.x; Python 3.11; Excel
+external_datasets,ecoinvent 3.7 cut-off (names only - no ecoinvent data redistributed)
+count_activities,2
+count_flows,31
+count_parameters,24

@@ -1,0 +1,23 @@
+scenario,id,kpi,unit,value,better_if,target,met
+imta-A,E1,Carbon footprint of fish,kg CO2-eq/kg,2.8954,lower,2.0,False
+imta-A,E2,Marine eutrophication of fish,kg N-eq/kg,0.1214,lower,0.08,False
+imta-A,E4,Feed share of climate impact,-,0.7279,lower,0.75,True
+imta-A,C1,Nitrogen recovery rate,-,0.0,higher,0.15,False
+imta-A,C2,Phosphorus recovery rate,-,0.0,higher,0.1,False
+imta-A,C3,Nitrogen use efficiency,-,0.2857,higher,0.35,False
+imta-A,C4,Feed conversion ratio,kg/kg,1.5,lower,1.7,True
+imta-A,C5,Share of non-fed biomass,-,0.0,higher,0.5,False
+imta-A,C6,By-product valorisation rate,-,0.0,higher,0.5,False
+imta-A,B1,Eco-efficiency,EUR/t CO2-eq,2417.6447,higher,3000,False
+imta-A,B2,Revenue share of extractive species,-,0.0,higher,0.25,False
+imta-C,E1,Carbon footprint of fish,kg CO2-eq/kg,2.1249,lower,2.0,False
+imta-C,E2,Marine eutrophication of fish,kg N-eq/kg,0.0725,lower,0.08,True
+imta-C,E4,Feed share of climate impact,-,0.6652,lower,0.75,True
+imta-C,C1,Nitrogen recovery rate,-,0.1833,higher,0.15,True
+imta-C,C2,Phosphorus recovery rate,-,0.1058,higher,0.1,True
+imta-C,C3,Nitrogen use efficiency,-,0.4167,higher,0.35,True
+imta-C,C4,Feed conversion ratio,kg/kg,1.5,lower,1.7,True
+imta-C,C5,Share of non-fed biomass,-,0.6522,higher,0.5,True
+imta-C,C6,By-product valorisation rate,-,1.0,higher,0.5,True
+imta-C,B1,Eco-efficiency,EUR/t CO2-eq,3294.3118,higher,3000,True
+imta-C,B2,Revenue share of extractive species,-,0.3293,higher,0.25,True
