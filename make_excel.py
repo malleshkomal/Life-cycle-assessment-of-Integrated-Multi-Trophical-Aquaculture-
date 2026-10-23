@@ -1,0 +1,516 @@
+"""Build the offline Excel KPI tool excel/IMTA_KPI_decision_tool.xlsx from data/report/*.csv.
+
+Every result cell is a live formula; the yellow cells hold the report's numbers and can be changed.
+Recalculate with LibreOffice (or just open the file in Excel) to see the values.
+"""
+import csv
+import sys
+from pathlib import Path
+
+from openpyxl import Workbook
+from openpyxl.chart import BarChart, Reference, Series
+from openpyxl.chart.series import SeriesLabel
+from openpyxl.formatting.rule import CellIsRule, FormulaRule
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT / "src"))
+from imtakpi import KPI_DEF, SYSTEMS, NAMES, CATEGORIES  # noqa: E402
+from imtakpi.model import IMPROVEMENT  # noqa: E402
+
+D = ROOT / "data" / "report"
+F = "Arial"
+TITLE, BOLD, NORM = Font(name=F, size=14, bold=True), Font(name=F, bold=True), Font(name=F)
+BLUE, ITAL = Font(name=F, color="0000FF"), Font(name=F, italic=True, color="595959")
+HFILL, HFONT = PatternFill("solid", fgColor="0F6E56"), Font(name=F, bold=True, color="FFFFFF")
+SFILL, YFILL = PatternFill("solid", fgColor="E1F5EE"), PatternFill("solid", fgColor="FFF2CC")
+GOOD, BAD = PatternFill("solid", fgColor="C6EFCE"), PatternFill("solid", fgColor="FFC7CE")
+th = Side(style="thin", color="BFBFBF")
+BOX = Border(top=th, bottom=th, left=th, right=th)
+COLS = ["C", "D", "E"]                      # SI-IMTA, SE-IMTA, SI-POLY
+SRC = "Source: INTEGRATE deliverable PI05#3 (IPMA & CTAQUA, 2020)"
+CAT_NAMES = {"GW": "Global warming", "TCED": "Cumulative energy demand", "NPPU": "Net primary production use",
+             "AP": "Acidification", "EP": "Eutrophication", "LC": "Land competition", "WD": "Water dependence"}
+
+wb = Workbook()
+
+
+def sheet(name, title, note=SRC):
+    ws = wb.create_sheet(name)
+    ws["A1"], ws["A1"].font = title, TITLE
+    ws["A2"], ws["A2"].font = note, ITAL
+    return ws
+
+
+def header(ws, r, labels):
+    for i, lab in enumerate(labels):
+        c = ws.cell(row=r, column=i + 1, value=lab)
+        c.font, c.fill, c.border = HFONT, HFILL, BOX
+        c.alignment = Alignment(wrap_text=True, vertical="center")
+
+
+def section(ws, r, text, n=6):
+    for i in range(n):
+        ws.cell(row=r, column=i + 1).fill = SFILL
+    ws.cell(row=r, column=1, value=text).font = BOLD
+
+
+def put(ws, ref, v, fmt="#,##0.00", inp=False, bold=False):
+    c = ws[ref]
+    c.value, c.number_format, c.border = v, fmt, BOX
+    c.font = BLUE if inp else (BOLD if bold else NORM)
+    if inp:
+        c.fill = YFILL
+    return c
+
+
+def widths(ws, d):
+    for k, v in d.items():
+        ws.column_dimensions[k].width = v
+
+
+def rows(name):
+    with open(D / name, encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+SYSHEAD = [NAMES[s] for s in SYSTEMS]
+
+# ------------------------------------------------------------------ README
+rd = wb.active
+rd.title = "README"
+rd["A1"], rd["A1"].font = "Pond IMTA vs fish polyculture: LCA results and circular KPI tool", TITLE
+rd["A2"], rd["A2"].font = SRC + ". Numbers transcribed from Tables 4-5 and Annex 1; KPI layer added by K. M. Chougule.", ITAL
+lines = [
+    ("What this workbook does", True),
+    ("It takes the inventory and the life cycle impact results of the INTEGRATE pond study and turns them into a KPI decision tool.", False),
+    ("Three systems are compared per functional unit of 1 tonne of aquatic product (fish + oyster flesh):", False),
+    ("   - Semi-intensive pond IMTA (IPMA, Olhao, Portugal): meagre, white seabream, mullet + oysters + macroalgae (Ulva)", False),
+    ("   - Semi-extensive pond IMTA (Estero Natural, Cadiz, Spain): gilthead seabream + oysters, macroalgae pond fed by the fishpond outflow", False),
+    ("   - Semi-intensive fish polyculture (IPMA): meagre + gilthead seabream, fish only = conventional baseline", False),
+    ("", False),
+    ("Tabs, left to right", True),
+    ("Goal & scope - functional unit, boundary, software, impact categories, allocation.", False),
+    ("Metadata - dataset description in the LCIS2024 structure.", False),
+    ("Inventory - Table 4 of the report per pond and cycle (yellow), scaled to 1 t aquatic product (formulas).", False),
+    ("LCI per tonne - the foreground inventory for one functional unit (all formulas).", False),
+    ("Nutrient balance - N and P from feed to fish + oysters, macroalgae and water (Table 5); feed N/P recomputed from the recipe.", False),
+    ("LCIA (Annex 1) - impacts per tonne by 11 processes and 7 categories (yellow = report values), with shares.", False),
+    ("Comparison - totals side by side, change against the polyculture baseline, implied impact per kg of feed.", False),
+    ("KPI framework - 13 KPIs (7 environmental, 6 circularity) with targets, pass/fail and colours.", False),
+    ("Dashboard - score per system and charts.", False),
+    ("Data checks - cross-checks between the report tables (two findings are flagged on purpose).", False),
+    ("Sources - report, method references and the author's publications.", False),
+    ("", False),
+    ("Colour code", True),
+    ("Blue text on yellow = input from the report, you can change it. Black = formula. Green / red = KPI target met / not met.", False),
+    ("", False),
+    ("Things to try", True),
+    ("- KPI framework: change the improvement target (cell F5) from 10 % to 0 % -> more environmental KPIs pass for the semi-intensive IMTA.", False),
+    ("- Inventory: lower the semi-intensive IMTA feed (C6) -> feed N, N released, FCR and N use efficiency update.", False),
+    ("- Inventory: set the oyster gain of the semi-intensive IMTA to 0 -> the functional unit shrinks and per-tonne values rise.", False),
+    ("", False),
+    ("Works offline. No macros, no external links.", True),
+]
+for i, (t, b) in enumerate(lines):
+    rd.cell(row=4 + i, column=1, value=t).font = BOLD if b else NORM
+rd.column_dimensions["A"].width = 130
+
+# ------------------------------------------------------------------ Goal & scope
+gs = sheet("Goal & scope", "Life cycle assessment of pond IMTA and fish polyculture - goal and scope (ISO 14040/44)")
+header(gs, 4, ["Item", "Choice in the study", "Note"])
+gsrows = [
+    ("Goal", "Compare the potential environmental impacts of semi-intensive and semi-extensive pond IMTA with a conventional semi-intensive fishpond polyculture.", "INTEGRATE project (Interreg Atlantic Area, EAPA_232/2016), WP5 Action 2"),
+    ("Functional unit", "1 tonne of aquatic product (fish + oyster flesh weight gain) at the farm gate, one production cycle", "Macroalgae are an associated downstream product and are not part of the functional unit"),
+    ("System boundary", "Farm operation plus production of inputs: fry and oyster spat, feeds, energy, equipment, buildings, vehicles, chemicals, transport; emissions from uneaten feed and excretion", "Packaging and transport to the retailer excluded (not full cradle-to-gate)"),
+    ("Allocation", "None between fish and oysters (mass sum); infrastructure, vehicles and electricity allocated by production-pond area / total pond area", "See Hala, Chougule et al. (2024) for why allocation is a key IMTA challenge"),
+    ("Nutrient emissions", "Nutrient balance: N and P in feed minus N and P retained in harvested biomass (Cho & Kaushik 1990)", "Table 5"),
+    ("Software", "Piscentool (Excel interface, project Piscenlit; Wilfart et al. 2012), SimaPro background", "Fry: carp-fry LCA profile used as default"),
+    ("Impact categories", "GW kg CO2-eq; TCED MJ-eq; NPPU kg C; Acidification kg SO2-eq; Eutrophication kg PO4-eq; Land competition m2a; Water dependence m3", "CML-type midpoints with the aquaculture-specific NPPU and WD"),
+    ("Data", "Primary data from daily farm records (water renewal, aeration, feed, mortality), feed supplier data, facility records", "Experimental-scale ponds (665-1,700 m2)"),
+    ("Baseline", "Semi-intensive fishpond polyculture (fish only)", "Annex 1 labels it 'Semi-intensive MONO'"),
+]
+for i, (a, b, c) in enumerate(gsrows):
+    for j, v in enumerate((a, b, c)):
+        cell = gs.cell(row=5 + i, column=1 + j, value=v)
+        cell.font, cell.border = (BOLD if j == 0 else NORM), BOX
+        cell.alignment = Alignment(wrap_text=True, vertical="top")
+widths(gs, {"A": 20, "B": 80, "C": 55})
+
+# ------------------------------------------------------------------ Metadata
+md = sheet("Metadata", "Metadata (LCIS2024 structure, Nair, Chougule et al. 2025)")
+header(md, 4, ["Element", "Label", "Value"])
+props = {r["property"]: r["value"] for r in rows("../lci/dataset_properties.csv")}
+mrows = [("Dataset", "Name", props["name"]), ("Dataset", "Version", props["version"]), ("Dataset", "UDI", props["udi"]),
+         ("Dataset", "Description", "Foreground LCI and LCIA results of three earthen-pond aquaculture systems from INTEGRATE deliverable PI05#3"),
+         ("Dataset", "Functional unit", "1 t aquatic product (fish + oyster flesh) at farm gate"),
+         ("Dataset", "Region", "Portugal (Olhao, Ria Formosa) and Spain (Cadiz)"),
+         ("Dataset", "Time period", "2017-2019 (one production cycle per system)"),
+         ("Source", "Report", "LCA of aquaculture systems: comparison between semi-intensive/extensive pond IMTA and semi-intensive traditional fishpond production. Deliverable PI05#3, submitted 23/07/2020"),
+         ("Source", "Lead / contributing partners", "IPMA; IPMA and CTAQUA"),
+         ("Source", "Software", "Piscentool"),
+         ("Licence", "Data", "Report data belong to the INTEGRATE partners; KPI layer CC BY 4.0"),
+         ("Licence", "Code", "MIT"),
+         ("Glossary", "Abbreviations", "IMTA integrated multi-trophic aquaculture; POLY polyculture; SI semi-intensive; SE semi-extensive; FCR feed conversion ratio; NPPU net primary production use; TCED total cumulative energy demand; WD water dependence; LC land competition")]
+for i, r in enumerate(mrows):
+    for j, v in enumerate(r):
+        c = md.cell(row=5 + i, column=1 + j, value=v)
+        c.font, c.border = NORM, BOX
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+widths(md, {"A": 14, "B": 26, "C": 110})
+
+# ------------------------------------------------------------------ Inventory
+inv = sheet("Inventory", "Inventory - Table 4 of the report (per production pond and cycle) and scaling to the functional unit")
+header(inv, 4, ["Parameter", "Unit", *SYSHEAD, "Source / note"])
+R = {}  # key -> row
+r = 5
+for row in rows("inventory_table4.csv"):
+    R[row["parameter"]] = r
+    inv.cell(row=r, column=1, value=row["parameter"].replace("_", " ")).font = NORM
+    inv.cell(row=r, column=2, value=row["unit"]).font = NORM
+    for col, s in zip(COLS, SYSTEMS):
+        put(inv, f"{col}{r}", float(row[s]), "#,##0.0#", inp=True)
+    inv.cell(row=r, column=6, value=row["source"]).font = ITAL
+    r += 1
+r += 1
+section(inv, r, "Scaling to the functional unit (formulas)")
+r += 1
+derived = [
+    ("product", "fish + oyster flesh gain", "kg", "={c}%d+{c}%d" % (R["fish_gain"], R["oyster_gain"]), "functional unit basis"),
+    ("scale", "scaling factor to 1 t", "-", "=1000/{c}%d", "1,000 kg / product"),
+    ("fcr_fish", "FCR, feed / fish gain", "kg/kg", "={c}%d/{c}%d" % (R["feed"], R["fish_gain"]), "compare with reported FCR"),
+    ("fcr_all", "feed / (fish + oyster gain)", "kg/kg", "={c}%d/{c}%%d" % R["feed"], "explains the reported 0.56 of the semi-extensive IMTA"),
+    ("land", "farm area allocated to the pond x cycle", "m2a", "={c}%d*{c}%d/{c}%d*{c}%d/12" % (R["farm_area"], R["production_pond_area"], R["farm_pond_area"], R["cycle_length"]), "report rule: pond area / total pond area"),
+]
+for key, lab, unit, f, note in derived:
+    R[key] = r
+    if key == "scale":
+        f = f % R["product"]
+    if key == "fcr_all":
+        f = f % R["product"]
+    inv.cell(row=r, column=1, value=lab).font = NORM
+    inv.cell(row=r, column=2, value=unit).font = NORM
+    for col in COLS:
+        put(inv, f"{col}{r}", f.format(c=col), "#,##0.00##")
+    inv.cell(row=r, column=6, value=note).font = ITAL
+    r += 1
+widths(inv, {"A": 38, "B": 10, "C": 22, "D": 22, "E": 22, "F": 60})
+inv.freeze_panes = "C5"
+
+# ------------------------------------------------------------------ Nutrient balance
+nb = sheet("Nutrient balance", "Nutrient balance - where the N and P in the feed go (per pond and cycle, Table 5)")
+header(nb, 4, ["Item", "Unit", *SYSHEAD, "Source / note"])
+t5 = {(x["item"], x["element"]): x for x in rows("nutrients_table5.csv")}
+NB = {}
+r = 5
+put(nb, f"A{r}", "protein to N factor", "@")
+put(nb, f"C{r}", 6.25, "0.00", inp=True)
+nb[f"F{r}"], nb[f"F{r}"].font = "N = protein / 6.25", ITAL
+NB["k"] = r
+r += 2
+for el in ("N", "P"):
+    section(nb, r, f"{'Nitrogen' if el == 'N' else 'Phosphorus'} (kg {el})")
+    r += 1
+    NB[(el, "feed")] = r
+    nb.cell(row=r, column=1, value=f"{el} in feed")
+    nb.cell(row=r, column=2, value="kg")
+    for col in COLS:
+        f = (f"=Inventory!{col}{R['feed']}*Inventory!{col}{R['diet_protein']}/100/$C${NB['k']}" if el == "N"
+             else f"=Inventory!{col}{R['feed']}*Inventory!{col}{R['diet_phosphorus']}/100")
+        put(nb, f"{col}{r}", f)
+    nb[f"F{r}"], nb[f"F{r}"].font = "formula from feed and recipe", ITAL
+    r += 1
+    for item, lab in (("produced_biomass", f"{el} in fish + oysters"), ("downstream_macroalgae", f"{el} in macroalgae")):
+        NB[(el, item)] = r
+        nb.cell(row=r, column=1, value=lab)
+        nb.cell(row=r, column=2, value="kg")
+        for col, s in zip(COLS, SYSTEMS):
+            put(nb, f"{col}{r}", float(t5[(item, el)][s]), "#,##0.0", inp=True)
+        nb[f"F{r}"], nb[f"F{r}"].font = "Table 5", ITAL
+        r += 1
+    calc = [("released", f"{el} released to water (net)", "={c}%d-{c}%d-{c}%d" % (NB[(el, "feed")], NB[(el, "produced_biomass")], NB[(el, "downstream_macroalgae")]), "#,##0.0", "negative = net uptake from the environment"),
+            ("reported", f"{el} rejection reported", None, "#,##0.0", "Table 5, for comparison"),
+            ("eff", f"{el} use efficiency", "=({c}%d+{c}%d)/{c}%d" % (NB[(el, "produced_biomass")], NB[(el, "downstream_macroalgae")], NB[(el, "feed")]), "0.0%", "N or P in all products / N or P in feed"),
+            ("per_t", f"{el} released per t product", "={c}%d*Inventory!{c}%d", "#,##0.00", "kg per tonne fish + oyster")]
+    for key, lab, f, fmt, note in calc:
+        NB[(el, key)] = r
+        nb.cell(row=r, column=1, value=lab)
+        nb.cell(row=r, column=2, value="kg" if key != "eff" else "%")
+        for col, s in zip(COLS, SYSTEMS):
+            if key == "reported":
+                put(nb, f"{col}{r}", float(t5[("total_rejection", el)][s]), fmt, inp=True)
+            elif key == "per_t":
+                put(nb, f"{col}{r}", f.format(c=col) % (NB[(el, "released")], R["scale"]), fmt, bold=True)
+            else:
+                put(nb, f"{col}{r}", f.format(c=col), fmt, bold=(key == "eff"))
+        nb[f"F{r}"], nb[f"F{r}"].font = note, ITAL
+        r += 1
+    r += 1
+widths(nb, {"A": 34, "B": 8, "C": 22, "D": 22, "E": 22, "F": 48})
+
+# ------------------------------------------------------------------ LCI per tonne
+lci = sheet("LCI per tonne", "Foreground LCI per functional unit (1 t fish + oyster flesh) - all formulas")
+header(lci, 4, ["Flow (fp_name)", "Type", *SYSHEAD, "Unit", "Comment"])
+flows = [("aquatic product, fish + oyster flesh, at farm gate", "reference product", "=1", "t", "functional unit"),
+         ("fish, live weight gain", "product", "=Inventory!{c}%d*Inventory!{c}%d" % (R["fish_gain"], R["scale"]), "kg", ""),
+         ("oyster flesh, weight gain", "product", "=Inventory!{c}%d*Inventory!{c}%d" % (R["oyster_gain"], R["scale"]), "kg", ""),
+         ("macroalgae, biomass gain", "co-product, outside FU", "=Inventory!{c}%d*Inventory!{c}%d" % (R["macroalgae_gain"], R["scale"]), "kg", "not allocated any burden"),
+         ("compound fish feed", "technosphere input", "=Inventory!{c}%d*Inventory!{c}%d" % (R["feed"], R["scale"]), "kg", "40-42 % protein"),
+         ("fish fry / fingerlings", "technosphere input", "=Inventory!{c}%d*Inventory!{c}%d" % (R["fish_stocked"], R["scale"]), "kg", "carp-fry proxy in Piscentool"),
+         ("oyster spat (flesh)", "technosphere input", "=Inventory!{c}%d*Inventory!{c}%d" % (R["oyster_stocked"], R["scale"]), "kg", ""),
+         ("seawater, pumped or tidal", "resource", "=Inventory!{c}%d*Inventory!{c}%d" % (R["seawater_used"], R["scale"]), "m3", "equals Water consumption in Annex 1"),
+         ("land, farm area allocated to the pond", "resource", "=Inventory!{c}%d*Inventory!{c}%d" % (R["land"], R["scale"]), "m2a", "compare Direct activity, Land competition"),
+         ("nitrogen, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "kg N", "negative = uptake"),
+         ("phosphorus, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("P", "per_t")], "kg P", "negative = uptake")]
+LCI = {}
+for i, (name, typ, f, unit, note) in enumerate(flows):
+    rr = 5 + i
+    LCI[name] = rr
+    lci.cell(row=rr, column=1, value=name).font = NORM
+    lci.cell(row=rr, column=2, value=typ).font = NORM
+    for col in COLS:
+        put(lci, f"{col}{rr}", f.format(c=col), "#,##0.0")
+    lci.cell(row=rr, column=6, value=unit).font = NORM
+    lci.cell(row=rr, column=7, value=note).font = ITAL
+widths(lci, {"A": 44, "B": 22, "C": 22, "D": 22, "E": 22, "F": 8, "G": 40})
+
+# ------------------------------------------------------------------ LCIA (Annex 1)
+la = sheet("LCIA (Annex 1)", "Life cycle impact assessment per tonne of fish + oyster - Annex 1 of the report (Piscentool)")
+la["A3"], la["A3"].font = "Amounts are as printed (rounded to whole units); shares are calculated from the reported total.", ITAL
+header(la, 4, ["Process", "Unit", *SYSHEAD, "", "Share SI-IMTA", "Share SE-IMTA", "Share POLY"])
+ann = rows("lcia_annex1.csv")
+PROCS = [p for p in dict.fromkeys(x["process"] for x in ann) if p != "Total"]
+LA = {}
+r = 5
+for cat in CATEGORIES:
+    sub = [x for x in ann if x["category"] == cat]
+    unit = sub[0]["unit"]
+    section(la, r, f"{cat} - {sub[0]['category_name']} ({unit})", 9)
+    r += 1
+    first = r
+    for p in PROCS:
+        la.cell(row=r, column=1, value=p).font = NORM
+        la.cell(row=r, column=2, value=unit).font = NORM
+        for col, s in zip(COLS, SYSTEMS):
+            v = next(float(x["amount"]) for x in sub if x["system"] == s and x["process"] == p)
+            put(la, f"{col}{r}", v, "#,##0", inp=True)
+        LA[(cat, p)] = r
+        r += 1
+    la.cell(row=r, column=1, value="Sum of processes").font = ITAL
+    for col in COLS:
+        put(la, f"{col}{r}", f"=SUM({col}{first}:{col}{r - 1})", "#,##0")
+    LA[(cat, "sum")] = r
+    r += 1
+    la.cell(row=r, column=1, value="Total (reported)").font = BOLD
+    la.cell(row=r, column=2, value=unit).font = NORM
+    for col, s in zip(COLS, SYSTEMS):
+        v = next(float(x["amount"]) for x in sub if x["system"] == s and x["process"] == "Total")
+        put(la, f"{col}{r}", v, "#,##0", inp=True, bold=True)
+    LA[(cat, "Total")] = r
+    for rr in range(first, r):
+        if rr == LA[(cat, "sum")]:
+            continue
+        for col, pc in zip(COLS, ("G", "H", "I")):
+            put(la, f"{pc}{rr}", f"=IF({col}${r}=0,0,{col}{rr}/{col}${r})", "0.0%")
+    r += 2
+widths(la, {"A": 24, "B": 11, "C": 18, "D": 18, "E": 18, "F": 2, "G": 13, "H": 13, "I": 13})
+la.freeze_panes = "C5"
+
+# ------------------------------------------------------------------ Comparison
+cp = sheet("Comparison", "Comparison per tonne of fish + oyster, and change against the polyculture baseline")
+header(cp, 4, ["Impact category", "Unit", *SYSHEAD, "SI-IMTA vs POLY", "SE-IMTA vs POLY", "Lowest"])
+CP = {}
+for i, cat in enumerate(CATEGORIES):
+    rr = 5 + i
+    CP[cat] = rr
+    cp.cell(row=rr, column=1, value=f"{cat} - {CAT_NAMES[cat]}").font = NORM
+    cp.cell(row=rr, column=2, value=next(x["unit"] for x in ann if x["category"] == cat)).font = NORM
+    for col in COLS:
+        put(cp, f"{col}{rr}", f"='LCIA (Annex 1)'!{col}{LA[(cat, 'Total')]}", "#,##0")
+    put(cp, f"F{rr}", f"=C{rr}/E{rr}-1", "+0%;-0%;0%")
+    put(cp, f"G{rr}", f"=D{rr}/E{rr}-1", "+0%;-0%;0%")
+    put(cp, f"H{rr}", f'=INDEX($C$4:$E$4,MATCH(MIN(C{rr}:E{rr}),C{rr}:E{rr},0))', "@")
+for col in ("F", "G"):
+    cp.conditional_formatting.add(f"{col}5:{col}11", CellIsRule(operator="lessThan", formula=["0"], fill=GOOD))
+    cp.conditional_formatting.add(f"{col}5:{col}11", CellIsRule(operator="greaterThan", formula=["0"], fill=BAD))
+r = 14
+section(cp, r, "Implied impact per kg of feed (Feeds process / feed per tonne) - a check that the feed model is consistent", 8)
+r += 1
+header(cp, r, ["Indicator", "Unit", *SYSHEAD])
+for j, (cat, unit) in enumerate((("GW", "kg CO2-eq/kg feed"), ("TCED", "MJ-eq/kg feed"), ("NPPU", "kg C/kg feed"))):
+    rr = r + 1 + j
+    cp.cell(row=rr, column=1, value=f"{CAT_NAMES[cat]} of feed").font = NORM
+    cp.cell(row=rr, column=2, value=unit).font = NORM
+    for col in COLS:
+        put(cp, f"{col}{rr}", f"='LCIA (Annex 1)'!{col}{LA[(cat, 'Feeds')]}/'LCI per tonne'!{col}{LCI['compound fish feed']}", "0.00")
+widths(cp, {"A": 34, "B": 13, "C": 22, "D": 22, "E": 22, "F": 15, "G": 15, "H": 30})
+ch = BarChart()
+ch.type, ch.grouping, ch.overlap = "bar", "clustered", 0
+ch.title, ch.y_axis.title = "Change against fish polyculture (negative = better)", "change"
+ch.add_data(Reference(cp, min_col=6, max_col=7, min_row=4, max_row=11), titles_from_data=True)
+ch.set_categories(Reference(cp, min_col=1, min_row=5, max_row=11))
+ch.height, ch.width, ch.y_axis.number_format = 9, 18, "0%"
+cp.add_chart(ch, "A21")
+
+# ------------------------------------------------------------------ KPI framework
+kp = sheet("KPI framework", "KPI framework - 13 KPIs per tonne of fish + oyster")
+kp["A5"], kp["A5"].font = "Improvement target for environmental KPIs (better than polyculture by at least):", BOLD
+put(kp, "F5", IMPROVEMENT, "0%", inp=True)
+kp["G5"], kp["G5"].font = "E-targets = polyculture value x (1 - this). Circularity targets are set per KPI (yellow).", ITAL
+header(kp, 7, ["ID", "Dimension", "KPI", "Unit", "Better if", "Target",
+               *[f"Value {s}" for s in SYSTEMS], *[f"Met {s}" for s in SYSTEMS], "Formula"])
+formula_txt = {
+    "C1": "(N in fish + oysters + macroalgae) / N in feed", "C2": "(P in fish + oysters + macroalgae) / P in feed",
+    "C3": "net N released per pond x scaling factor", "C4": "feed / fish weight gain",
+    "C5": "(oyster + macroalgae gain) / total harvest", "C6": "Feeds process / total global warming"}
+KP = {}
+for i, (kid, dim, name, unit, better, target, cat) in enumerate(KPI_DEF):
+    rr = 8 + i
+    KP[kid] = rr
+    for j, v in enumerate((kid, dim, name, unit, better)):
+        c = kp.cell(row=rr, column=1 + j, value=v)
+        c.font, c.border = (BOLD if j == 0 else NORM), BOX
+    pct = unit == "%"
+    fmt = "0.0%" if pct else ("#,##0.00" if kid in ("C3", "C4", "E4", "E5") else "#,##0")
+    if cat:
+        put(kp, f"F{rr}", f"='LCIA (Annex 1)'!E{LA[(cat, 'Total')]}*(1-$F$5)", fmt)
+        for col, vc in zip(COLS, ("G", "H", "I")):
+            put(kp, f"{vc}{rr}", f"='LCIA (Annex 1)'!{col}{LA[(cat, 'Total')]}", fmt, bold=True)
+        ftxt = f"Annex 1 total; target = polyculture x (1 - improvement)"
+    else:
+        put(kp, f"F{rr}", target, fmt, inp=True)
+        src = {
+            "C1": "='Nutrient balance'!{c}%d" % NB[("N", "eff")],
+            "C2": "='Nutrient balance'!{c}%d" % NB[("P", "eff")],
+            "C3": "='Nutrient balance'!{c}%d" % NB[("N", "per_t")],
+            "C4": "=Inventory!{c}%d" % R["fcr_fish"],
+            "C5": "=(Inventory!{c}%d+Inventory!{c}%d)/(Inventory!{c}%d+Inventory!{c}%d+Inventory!{c}%d)" % (
+                R["oyster_gain"], R["macroalgae_gain"], R["fish_gain"], R["oyster_gain"], R["macroalgae_gain"]),
+            "C6": "='LCIA (Annex 1)'!{c}%d/'LCIA (Annex 1)'!{c}%d" % (LA[("GW", "Feeds")], LA[("GW", "Total")]),
+        }[kid]
+        for col, vc in zip(COLS, ("G", "H", "I")):
+            put(kp, f"{vc}{rr}", src.format(c=col), fmt, bold=True)
+        ftxt = formula_txt[kid]
+    op = "<=" if better == "lower" else ">="
+    for vc, mc, s in zip(("G", "H", "I"), ("J", "K", "L"), SYSTEMS):
+        if cat and s == "SI-POLY":
+            put(kp, f"{mc}{rr}", "baseline", "@")
+        else:
+            put(kp, f"{mc}{rr}", f'=IF({vc}{rr}{op}$F{rr},"✓","✗")', "@")
+        kp[f"{mc}{rr}"].alignment = Alignment(horizontal="center")
+    kp.cell(row=rr, column=13, value=ftxt).font = ITAL
+last = 8 + len(KPI_DEF) - 1
+for mc, vc in zip(("J", "K", "L"), ("G", "H", "I")):
+    kp.conditional_formatting.add(f"{mc}8:{mc}{last}", FormulaRule(formula=[f'{mc}8="✓"'], fill=GOOD))
+    kp.conditional_formatting.add(f"{mc}8:{mc}{last}", FormulaRule(formula=[f'{mc}8="✗"'], fill=BAD))
+    kp.conditional_formatting.add(f"{vc}8:{vc}{last}", FormulaRule(formula=[f'{mc}8="✓"'], fill=GOOD))
+    kp.conditional_formatting.add(f"{vc}8:{vc}{last}", FormulaRule(formula=[f'{mc}8="✗"'], fill=BAD))
+r = last + 2
+put(kp, f"A{r}", "Targets met", "@", bold=True)
+for mc in ("J", "K", "L"):
+    put(kp, f"{mc}{r}", f'=COUNTIF({mc}8:{mc}{last},"✓")&" / "&COUNTA({mc}8:{mc}{last})', "@", bold=True)
+KP["score"] = r
+kp[f"A{r + 2}"], kp[f"A{r + 2}"].font = ("Targets are placeholders for a stakeholder workshop. Polyculture environmental KPIs show 'baseline' "
+                                         "because the target is defined relative to it."), ITAL
+widths(kp, {"A": 6, "B": 12, "C": 36, "D": 13, "E": 9, "F": 12, "G": 14, "H": 14, "I": 14, "J": 10, "K": 10, "L": 10, "M": 52})
+kp.freeze_panes = "G8"
+
+# ------------------------------------------------------------------ Dashboard
+db = sheet("Dashboard", "Dashboard - pond IMTA vs fish polyculture")
+header(db, 4, ["", "", *SYSHEAD])
+dash = [("KPI targets met", "='KPI framework'!{m}%d" % KP["score"], "@"),
+        ("Global warming, kg CO2-eq/t", "=Comparison!{c}%d" % CP["GW"], "#,##0"),
+        ("Eutrophication, kg PO4-eq/t", "=Comparison!{c}%d" % CP["EP"], "#,##0"),
+        ("Water dependence, m3/t", "=Comparison!{c}%d" % CP["WD"], "#,##0"),
+        ("Land competition, m2a/t", "=Comparison!{c}%d" % CP["LC"], "#,##0"),
+        ("Nitrogen use efficiency", "='Nutrient balance'!{c}%d" % NB[("N", "eff")], "0%"),
+        ("Net N released, kg N/t", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "0.0")]
+for i, (lab, f, fmt) in enumerate(dash):
+    rr = 5 + i
+    db.cell(row=rr, column=1, value=lab).font = BOLD
+    for col, m in zip(COLS, ("J", "K", "L")):
+        put(db, f"{col}{rr}", f.format(c=col, m=m), fmt, bold=(i == 0))
+widths(db, {"A": 32, "B": 2, "C": 26, "D": 26, "E": 26})
+# stacked GW chart from a helper table
+hr = 15
+section(db, hr, "Global warming by process (kg CO2-eq per t) - chart data", 5)
+header(db, hr + 1, ["Process", "", *SYSHEAD])
+gw_procs = [p for p in PROCS if p not in ("Water consumption", "Rejects fish", "Direct activity")]
+for i, p in enumerate(gw_procs):
+    rr = hr + 2 + i
+    db.cell(row=rr, column=1, value=p).font = NORM
+    for col in COLS:
+        put(db, f"{col}{rr}", f"='LCIA (Annex 1)'!{col}{LA[('GW', p)]}", "#,##0")
+end = hr + 1 + len(gw_procs)
+bc = BarChart()
+bc.type, bc.grouping, bc.overlap = "col", "stacked", 100
+bc.title, bc.y_axis.title = "Global warming by process", "kg CO2-eq per t fish + oyster"
+for i, p in enumerate(gw_procs):
+    bc.series.append(Series(Reference(db, min_col=3, max_col=5, min_row=hr + 2 + i), title=p))
+bc.set_categories(Reference(db, min_col=3, max_col=5, min_row=hr + 1))
+bc.height, bc.width = 10, 20
+db.add_chart(bc, "G4")
+ec = BarChart()
+ec.type = "col"
+ec.title, ec.y_axis.title = "Eutrophication per tonne", "kg PO4-eq/t"
+ec.add_data(Reference(db, min_col=3, max_col=5, min_row=7), from_rows=True, titles_from_data=False)
+ec.series[0].tx = SeriesLabel(v="Eutrophication")
+ec.set_categories(Reference(db, min_col=3, max_col=5, min_row=4))
+ec.legend, ec.height, ec.width = None, 8, 20
+db.add_chart(ec, "G26")
+
+# ------------------------------------------------------------------ Data checks
+dc = sheet("Data checks", "Data checks - do the report's tables agree with each other?")
+header(dc, 4, ["Check", "System", "Reported", "Recalculated", "Difference", "OK?", "Explanation"])
+checks_def = []
+for col, s in zip(COLS, SYSTEMS):
+    checks_def += [
+        ("Feed N = feed x protein / 6.25", s, f"='Nutrient balance'!{col}{NB[('N', 'feed')]}", float(t5[("feed", "N")][s]), 0.1, "Table 5 feed N is reproduced from Table 4"),
+        ("N rejection = feed - extracted", s, f"='Nutrient balance'!{col}{NB[('N', 'released')]}", f"='Nutrient balance'!{col}{NB[('N', 'reported')]}", 0.2, "rounding only"),
+        ("Water per t = Annex 1 water consumption", s, f"='LCI per tonne'!{col}{LCI['seawater, pumped or tidal']}", f"='LCIA (Annex 1)'!{col}{LA[('WD', 'Water consumption')]}", 0.01, "confirms the functional unit = fish + oyster gain"),
+        ("FCR = feed / fish gain", s, f"=Inventory!{col}{R['fcr_fish']}", f"=Inventory!{col}{R['fcr_reported']}", 0.02,
+         "semi-extensive: reported 0.56 = feed / (fish + oyster gain), a different definition" if s == "SE-IMTA" else "matches"),
+        ("Land: allocated farm area vs Direct activity (LC)", s, f"='LCI per tonne'!{col}{LCI['land, farm area allocated to the pond']}", f"='LCIA (Annex 1)'!{col}{LA[('LC', 'Direct activity')]}", 0.05,
+         "polyculture does not match the pond-area rule x 26 months; to clarify with the authors" if s == "SI-POLY" else "pond-area allocation rule reproduced within 5 %"),
+    ]
+for i, (name, s, calc, rep, tol, expl) in enumerate(checks_def):
+    rr = 5 + i
+    dc.cell(row=rr, column=1, value=name).font = NORM
+    dc.cell(row=rr, column=2, value=s).font = NORM
+    put(dc, f"C{rr}", rep, "#,##0.00", inp=not str(rep).startswith("="))
+    put(dc, f"D{rr}", calc, "#,##0.00")
+    put(dc, f"E{rr}", f"=D{rr}-C{rr}", "#,##0.00")
+    rel = tol < 0.1 and "Water" in name or "Land" in name
+    test = f"ABS(E{rr})<={tol}*ABS(C{rr})" if rel else f"ABS(E{rr})<={tol}"
+    put(dc, f"F{rr}", f'=IF({test},"✓","check")', "@")
+    dc[f"F{rr}"].alignment = Alignment(horizontal="center")
+    dc.cell(row=rr, column=7, value=expl).font = ITAL
+lastc = 4 + len(checks_def)
+dc.conditional_formatting.add(f"F5:F{lastc}", FormulaRule(formula=['F5="✓"'], fill=GOOD))
+dc.conditional_formatting.add(f"F5:F{lastc}", FormulaRule(formula=['F5="check"'], fill=PatternFill("solid", fgColor="FFEB9C")))
+widths(dc, {"A": 44, "B": 10, "C": 14, "D": 14, "E": 12, "F": 8, "G": 80})
+
+# ------------------------------------------------------------------ Sources
+so = sheet("Sources", "Sources")
+srcs = [
+    ("Primary source", "INTEGRATE project (2020). LCA of aquaculture systems: comparison between semi-intensive/extensive pond IMTA and semi-intensive traditional fishpond production. Deliverable PI05#3, Interreg Atlantic Area EAPA_232/2016. Lead partner IPMA; contributing partners IPMA and CTAQUA."),
+    ("Related conference paper", "Cunha, M. E., Malta, E., Partida, B., Agraso, M. M., Ribeiro, L. Comparative life cycle assessment of semi-intensive and extensive pond IMTA and semi-intensive conventional fishpond production. Aquaculture Europe 2021. https://aquaeas.org/Program/PaperDetail/38885"),
+    ("Software", "Wilfart, A., Aubin, J. et al. (2012). Piscentool: a tool to assess sustainability in aquaculture systems. 8th LCA Food conference, Saint-Malo."),
+    ("Nutrient balance", "Cho, C. Y., Kaushik, S. J. (1990). Nutritional energetics in fish: energy and protein utilization in rainbow trout. World Review of Nutrition and Dietetics 61: 132-172."),
+    ("Impact categories", "Aubin, J., Papatryphon, E., van der Werf, H. M. G., Chatzifotis, S. (2009). Assessment of the environmental impact of carnivorous finfish production systems using LCA. J. Cleaner Production 17: 354-361."),
+    ("IMTA LCA review", "Hala, A. F., Chougule, K., Cunha, M. E., Caria Mendes, M., Oliveira, I., Bradley, T., Forbes, J., Galileu Speranza, L. (2024). Life cycle assessment of integrated multi-trophic aquaculture: a review on methodology and challenges for its sustainability evaluation. Aquaculture 590, 741035."),
+    ("LCI schema", "Nair, R. R., Chougule, K. M., Gomez Trillos, J. C., Brand-Daniels, U. (2025). A generalized schema to publish and share life cycle inventories (LCI). J. Cleaner Production 520, 146120."),
+]
+for i, (a, b) in enumerate(srcs):
+    dc_ = so.cell(row=4 + i, column=1, value=a)
+    dc_.font = BOLD
+    c = so.cell(row=4 + i, column=2, value=b)
+    c.font, c.alignment = NORM, Alignment(wrap_text=True, vertical="top")
+widths(so, {"A": 22, "B": 130})
+
+for ws in wb.worksheets:
+    ws.sheet_view.showGridLines = ws.title in ("LCIA (Annex 1)",)
+out = ROOT / "excel" / "IMTA_KPI_decision_tool.xlsx"
+out.parent.mkdir(exist_ok=True)
+wb.save(out)
+print("written", out.relative_to(ROOT))

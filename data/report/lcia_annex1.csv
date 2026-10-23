@@ -1,0 +1,253 @@
+category,category_name,unit,system,process,amount,percent,source
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Building impact,137,4.9,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Energy consumption,330,11.8,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Water consumption,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Vehicle,32,1.1,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Rejects fish,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Chemical products,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Equipment,386,13.8,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Fry,43,1.5,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Feeds,1549,55.3,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Transports,325,11.6,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Direct activity,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-IMTA,Total,2801,100,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Building impact,12,1.0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Energy consumption,6,0.5,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Water consumption,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Vehicle,8,0.6,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Rejects fish,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Chemical products,30,2.4,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Equipment,228,18.2,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Fry,29,2.3,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Feeds,733,58.4,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Transports,208,16.6,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Direct activity,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SE-IMTA,Total,1255,100,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Building impact,13,0.5,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Energy consumption,474,16.7,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Water consumption,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Vehicle,80,2.8,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Rejects fish,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Chemical products,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Equipment,15,0.5,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Fry,1,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Feeds,1873,66.0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Transports,379,13.4,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Direct activity,0,0,Annex 1
+GW,Global warming (GWP100),kg CO2-eq,SI-POLY,Total,2836,100,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Building impact,2701,3.0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Energy consumption,45724,50.7,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Water consumption,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Vehicle,700,0.8,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Rejects fish,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Chemical products,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Equipment,14023,15.6,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Fry,469,0.5,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Feeds,21028,23.3,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Transports,5483,6.1,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Direct activity,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-IMTA,Total,90127,100,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Building impact,240,1.3,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Energy consumption,82,0.4,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Water consumption,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Vehicle,150,0.8,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Rejects fish,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Chemical products,664,3.5,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Equipment,6248,32.7,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Fry,316,1.7,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Feeds,7900,41.4,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Transports,3497,18.3,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Direct activity,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SE-IMTA,Total,19097,100,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Building impact,263,0.3,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Energy consumption,65724,65.8,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Water consumption,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Vehicle,1749,1.8,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Rejects fish,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Chemical products,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Equipment,555,0.6,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Fry,12,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Feeds,25185,25.2,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Transports,6409,6.4,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Direct activity,0,0,Annex 1
+TCED,Total cumulative energy demand,MJ-eq,SI-POLY,Total,99897,100,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Building impact,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Energy consumption,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Water consumption,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Vehicle,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Rejects fish,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Chemical products,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Equipment,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Fry,55,0.5,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Feeds,10423,99.5,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Transports,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Direct activity,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-IMTA,Total,10478,100,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Building impact,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Energy consumption,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Water consumption,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Vehicle,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Rejects fish,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Chemical products,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Equipment,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Fry,37,0.8,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Feeds,4365,99.2,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Transports,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Direct activity,0,0,Annex 1
+NPPU,Net primary production use,kg C,SE-IMTA,Total,4402,100,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Building impact,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Energy consumption,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Water consumption,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Vehicle,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Rejects fish,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Chemical products,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Equipment,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Fry,1,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Feeds,12357,,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Transports,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Direct activity,0,0,Annex 1
+NPPU,Net primary production use,kg C,SI-POLY,Total,12358,100,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Building impact,1,3.0,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Energy consumption,2,4.6,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Water consumption,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Vehicle,1,1.7,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Rejects fish,25,59.1,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Chemical products,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Equipment,3,7.3,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Fry,0,0.8,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Feeds,8,19.2,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Transports,2,4.4,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Direct activity,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SI-IMTA,Total,42,100,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Building impact,0,1.8,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Energy consumption,0,1.1,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Water consumption,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Vehicle,0,0.8,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Rejects fish,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Chemical products,0,2.4,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Equipment,1,16.5,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Fry,0,3.7,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Feeds,3,53.3,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Transports,1,20.4,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Direct activity,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SE-IMTA,Total,6,100,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Building impact,0,0.3,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Energy consumption,3,6.2,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Water consumption,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Vehicle,0,0.2,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Rejects fish,29,65.5,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Chemical products,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Equipment,0,0.3,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Fry,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Feeds,10,23.0,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Transports,2,4.6,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Direct activity,0,0,Annex 1
+AP,Acidification,kg SO2-eq,SI-POLY,Total,45,100,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Building impact,0,0.5,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Energy consumption,1,2.3,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Water consumption,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Vehicle,0,0.2,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Rejects fish,16,61.0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Chemical products,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Equipment,1,4.1,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Fry,0,1.2,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Feeds,8,29.2,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Transports,0,1.5,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Direct activity,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-IMTA,Total,26,100,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Building impact,0,0.6,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Energy consumption,0,0.7,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Water consumption,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Vehicle,0,0.2,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Rejects fish,-1,,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Chemical products,0,4.8,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Equipment,0,4.0,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Fry,0,10.1,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Feeds,3,,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Transports,0,12.1,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Direct activity,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SE-IMTA,Total,2,100,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Building impact,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Energy consumption,1,1.4,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Water consumption,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Vehicle,0,0.3,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Rejects fish,51,83.8,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Chemical products,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Equipment,0,0.1,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Fry,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Feeds,8,13.7,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Transports,0,0.7,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Direct activity,0,0,Annex 1
+EP,Eutrophication,kg PO4-eq,SI-POLY,Total,61,100,Annex 1
+LC,Land competition,m2a,SI-IMTA,Building impact,4,0.1,Annex 1
+LC,Land competition,m2a,SI-IMTA,Energy consumption,8,0.3,Annex 1
+LC,Land competition,m2a,SI-IMTA,Water consumption,0,0,Annex 1
+LC,Land competition,m2a,SI-IMTA,Vehicle,1,0,Annex 1
+LC,Land competition,m2a,SI-IMTA,Rejects fish,0,0,Annex 1
+LC,Land competition,m2a,SI-IMTA,Chemical products,0,0,Annex 1
+LC,Land competition,m2a,SI-IMTA,Equipment,6,0.2,Annex 1
+LC,Land competition,m2a,SI-IMTA,Fry,40,1.3,Annex 1
+LC,Land competition,m2a,SI-IMTA,Feeds,1942,65.9,Annex 1
+LC,Land competition,m2a,SI-IMTA,Transports,4,0.1,Annex 1
+LC,Land competition,m2a,SI-IMTA,Direct activity,941,31.9,Annex 1
+LC,Land competition,m2a,SI-IMTA,Total,2946,100,Annex 1
+LC,Land competition,m2a,SE-IMTA,Building impact,0,0,Annex 1
+LC,Land competition,m2a,SE-IMTA,Energy consumption,0,0,Annex 1
+LC,Land competition,m2a,SE-IMTA,Water consumption,0,0,Annex 1
+LC,Land competition,m2a,SE-IMTA,Vehicle,0,0,Annex 1
+LC,Land competition,m2a,SE-IMTA,Rejects fish,0,0,Annex 1
+LC,Land competition,m2a,SE-IMTA,Chemical products,0,0,Annex 1
+LC,Land competition,m2a,SE-IMTA,Equipment,0,0,Annex 1
+LC,Land competition,m2a,SE-IMTA,Fry,27,0.5,Annex 1
+LC,Land competition,m2a,SE-IMTA,Feeds,660,13.5,Annex 1
+LC,Land competition,m2a,SE-IMTA,Transports,3,0.1,Annex 1
+LC,Land competition,m2a,SE-IMTA,Direct activity,4194,85.9,Annex 1
+LC,Land competition,m2a,SE-IMTA,Total,4885,100,Annex 1
+LC,Land competition,m2a,SI-POLY,Building impact,0,0,Annex 1
+LC,Land competition,m2a,SI-POLY,Energy consumption,12,0.5,Annex 1
+LC,Land competition,m2a,SI-POLY,Water consumption,0,0,Annex 1
+LC,Land competition,m2a,SI-POLY,Vehicle,2,0.1,Annex 1
+LC,Land competition,m2a,SI-POLY,Rejects fish,0,0,Annex 1
+LC,Land competition,m2a,SI-POLY,Chemical products,0,0,Annex 1
+LC,Land competition,m2a,SI-POLY,Equipment,0,0,Annex 1
+LC,Land competition,m2a,SI-POLY,Fry,1,0,Annex 1
+LC,Land competition,m2a,SI-POLY,Feeds,1897,79.8,Annex 1
+LC,Land competition,m2a,SI-POLY,Transports,5,0.2,Annex 1
+LC,Land competition,m2a,SI-POLY,Direct activity,460,19.3,Annex 1
+LC,Land competition,m2a,SI-POLY,Total,2379,100,Annex 1
+WD,Water dependence,m3,SI-IMTA,Building impact,1,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Energy consumption,38,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Water consumption,82261,50.2,Annex 1
+WD,Water dependence,m3,SI-IMTA,Vehicle,1,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Rejects fish,0,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Chemical products,0,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Equipment,6,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Fry,148,0.1,Annex 1
+WD,Water dependence,m3,SI-IMTA,Feeds,47,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Transports,3,0,Annex 1
+WD,Water dependence,m3,SI-IMTA,Direct activity,81336,49.6,Annex 1
+WD,Water dependence,m3,SI-IMTA,Total,163840,100,Annex 1
+WD,Water dependence,m3,SE-IMTA,Building impact,0,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Energy consumption,0,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Water consumption,45273,39.1,Annex 1
+WD,Water dependence,m3,SE-IMTA,Vehicle,0,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Rejects fish,0,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Chemical products,1,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Equipment,5,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Fry,100,0.1,Annex 1
+WD,Water dependence,m3,SE-IMTA,Feeds,14,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Transports,2,0,Annex 1
+WD,Water dependence,m3,SE-IMTA,Direct activity,70297,60.8,Annex 1
+WD,Water dependence,m3,SE-IMTA,Total,115691,100,Annex 1
+WD,Water dependence,m3,SI-POLY,Building impact,0,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Energy consumption,54,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Water consumption,195829,49.8,Annex 1
+WD,Water dependence,m3,SI-POLY,Vehicle,1,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Rejects fish,0,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Chemical products,0,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Equipment,0,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Fry,4,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Feeds,44,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Transports,3,0,Annex 1
+WD,Water dependence,m3,SI-POLY,Direct activity,197067,50.1,Annex 1
+WD,Water dependence,m3,SI-POLY,Total,393002,100,Annex 1

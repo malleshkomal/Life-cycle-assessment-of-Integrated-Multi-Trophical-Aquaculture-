@@ -1,4 +1,4 @@
-name: imta-cirkpi
+name: imta-integrate
 channels:
   - conda-forge
 dependencies:
@@ -7,4 +7,5 @@ dependencies:
   - openpyxl
   - networkx
   - matplotlib
-# Modelling software: openLCA 2.x | Background: ecoinvent 3.7 cut-off | Method: EF 3.1 (adapted)
+  - pytest
+# Original LCA software: Piscentool (Excel interface, project Piscenlit) with SimaPro background data

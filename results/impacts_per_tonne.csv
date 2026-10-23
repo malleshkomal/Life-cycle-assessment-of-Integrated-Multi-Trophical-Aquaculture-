@@ -1,0 +1,8 @@
+category,name,unit,SI-IMTA,SE-IMTA,SI-POLY,SI-IMTA vs POLY,SE-IMTA vs POLY
+GW,Global warming (GWP100),kg CO2-eq,2801.0,1255.0,2836.0,-1%,-56%
+TCED,Total cumulative energy demand,MJ-eq,90127.0,19097.0,99897.0,-10%,-81%
+NPPU,Net primary production use,kg C,10478.0,4402.0,12358.0,-15%,-64%
+AP,Acidification,kg SO2-eq,42.0,6.0,45.0,-7%,-87%
+EP,Eutrophication,kg PO4-eq,26.0,2.0,61.0,-57%,-97%
+LC,Land competition,m2a,2946.0,4885.0,2379.0,+24%,+105%
+WD,Water dependence,m3,163840.0,115691.0,393002.0,-58%,-71%

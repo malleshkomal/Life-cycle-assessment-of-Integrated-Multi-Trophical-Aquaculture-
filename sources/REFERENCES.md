@@ -1,39 +1,40 @@
 # References
 
-## LCI schema used in this repository
-- Nair, R. R., Chougule, K. M., Gomez, J. C., & Brand-Daniels, U. (2025). A generalized schema to publish and share
-  life cycle inventories (LCI): Exemplary case of an aviation fuel supply chain. *Journal of Cleaner Production*, 520, 146120.
-  https://doi.org/10.1016/j.jclepro.2025.146120 (open access, CC BY 4.0)
-- Nair, R. R. (2024). DLR Tool for Life Cycle Inventory Schema (LCIS). Zenodo. https://doi.org/10.5281/zenodo.12200857
+## Primary data source
+- INTEGRATE project (2020). *LCA of aquaculture systems: comparison between semi-intensive/extensive pond IMTA and
+  semi-intensive traditional fishpond production.* Deliverable PI05#3, Interreg Atlantic Area 2014–2020, project EAPA_232/2016.
+  Lead partner IPMA; contributing partners IPMA and CTAQUA. Submitted 23/07/2020. https://www.integrate-imta.eu
+  – used for: all inventory data (Table 4), nutrient balance (Table 5) and impact results (Annex 1).
+- Cunha, M. E., Malta, E., Partida, B., Agraso, M. M., & Ribeiro, L. (2021). Comparative life cycle assessment of semi-intensive
+  and extensive pond IMTA and semi-intensive conventional fishpond production. *Aquaculture Europe 2021*, Funchal.
+  https://aquaeas.org/Program/PaperDetail/38885 – conference version of the same comparison.
 
-## IMTA and aquaculture LCA
+## Methods used in the report
+- Cho, C. Y., & Kaushik, S. J. (1990). Nutritional energetics in fish: energy and protein utilization in rainbow trout (*Salmo gairdneri*).
+  *World Review of Nutrition and Dietetics*, 61, 132–172. – nutrient-balance model for N, P and solids emissions.
+- Wilfart, A., Aubin, J., et al. (2012). Piscentool: a tool to assess sustainability in aquaculture systems.
+  8th International Conference on LCA in the Agri-Food Sector, Saint-Malo. – LCA software used.
+- Aubin, J., Papatryphon, E., van der Werf, H. M. G., & Chatzifotis, S. (2009). Assessment of the environmental impact of carnivorous
+  finfish production systems using life cycle assessment. *Journal of Cleaner Production*, 17, 354–361.
+  https://doi.org/10.1016/j.jclepro.2008.08.008 – impact categories incl. NPPU and water dependence.
+- Papatryphon, E., Petit, J., Kaushik, S. J., & van der Werf, H. M. G. (2004). Environmental impact assessment of salmonid feeds using
+  life cycle assessment. *Ambio*, 33(6), 316–323. – net primary production use.
+- European Commission JRC (2010). ILCD Handbook – General guide for life cycle assessment – Detailed guidance. EUR 24708 EN.
+
+## IMTA LCA background and LCI schema
 - Hala, A. F., Chougule, K., Cunha, M. E., Caria Mendes, M., Oliveira, I., Bradley, T., Forbes, J., & Galileu Speranza, L. (2024).
-  Life cycle assessment of integrated multi-trophic aquaculture: A review on methodology and challenges for its
-  sustainability evaluation. *Aquaculture*, 590, 741035. https://doi.org/10.1016/j.aquaculture.2024.741035
-  – used for: multi-product functional unit and methodological challenges of IMTA LCA.
-- García García, B., Rosique Jiménez, C., Aguado-Giménez, F., & García García, J. (2016). Life Cycle Assessment of
-  Gilthead Seabream (*Sparus aurata*) Production in Offshore Fish Farms. *Sustainability*, 8(12), 1228.
-  https://doi.org/10.3390/su8121228 – used for: FCR about 2 (1.7 tested); feed and vessel fuel as hotspots.
-- Kallitsis, E., & Avramidis, P. (2025). Life cycle assessment of aquaculture production in Greece.
-  *Cleaner Environmental Systems*. Summary: https://www.mispeces.com/en/news/Greek-Aquaculture-Life-Cycle-Assessment-Highlights-Key-Areas-for-Improvement-and-Opportunities/
-  – used for: 2.27 kg CO2-eq/kg gilthead sea bream; feed up to 79 % of GHG.
-- Zoli, M., Rossi, L., Costantini, M., Bibbiani, C., Fronte, B., Brambilla, F., & Bacenetti, J. (2023). Quantification and
-  characterization of the environmental impact of sea bream and sea bass production in Italy.
-  *Cleaner Environmental Systems*, 9, 100118. https://doaj.org/article/0c047700b22741bdb3ae6e5e47b07298
-  – used for: feed ≥ 60 % of most impacts; marine eutrophication driven by nutrient emissions.
-- Nederlof, M. A. J., Verdegem, M. C. J., Smaal, A. C., & Jansen, H. M. (2021). Nutrient retention efficiencies in integrated
-  multi-trophic aquaculture. *Reviews in Aquaculture*. Summary (Global Seafood Alliance, 2022):
-  https://www.globalseafood.org/advocate/nutrient-retention-efficiencies-in-integrated-multi-trophic-aquaculture/
-  – used for: nutrient retention in fish; extractive species recover ~7 % N in open-water IMTA.
-- Azizi, G. et al. (2020). Growth weight and reproductive cycle in the mussel (*Mytilus galloprovincialis*) from Cala Iris.
-  EasyChair Preprint 2857. https://easychair.org/publications/preprint/P5vQ/open – rough check of mussel shell share.
+  Life cycle assessment of integrated multi-trophic aquaculture: A review on methodology and challenges for its sustainability
+  evaluation. *Aquaculture*, 590, 741035. https://doi.org/10.1016/j.aquaculture.2024.741035
+  – used for: multi-product functional unit and allocation challenges of IMTA LCA.
+- Bohnes, F. A., Hauschild, M. Z., Schlundt, J., & Laurent, A. (2019). Life cycle assessments of aquaculture systems: a critical review
+  of reported findings with recommendations for policy and system development. *Reviews in Aquaculture*, 11, 1061–1079.
+  https://doi.org/10.1111/raq.12280
+- Nair, R. R., Chougule, K. M., Gomez Trillos, J. C., & Brand-Daniels, U. (2025). A generalized schema to publish and share life cycle
+  inventories (LCI): Exemplary case of an aviation fuel supply chain. *Journal of Cleaner Production*, 520, 146120.
+  https://doi.org/10.1016/j.jclepro.2025.146120 – LCIS2024 structure of `data/lci/`.
 
-## Data and methods
-- ecoinvent 3.7 cut-off database (licensed). https://ecoinvent.org
-- Environmental Footprint (EF) 3.1 method, European Commission JRC; implemented in openLCA LCIA methods package.
-- openLCA. GreenDelta. https://www.openlca.org
-
-## What is and is not from literature
-Most activity data, nutrient contents, prices and all values in `data/factors_illustrative.csv` are **assumptions**.
-Only the values explicitly marked "checked" in `data/lci/dataset/parameters.csv` were compared with the sources above,
-and several differ from them (see `docs/known_issues.md`).
+## What comes from where
+- **From the report:** every number in `data/report/` (page, table and annex in the `source` column) and therefore all
+  impact results, inventory flows and nutrient balances.
+- **Added in this repository:** the scaling to the functional unit, the recalculated feed N and P, the KPI definitions
+  and targets (placeholders), and the data checks.

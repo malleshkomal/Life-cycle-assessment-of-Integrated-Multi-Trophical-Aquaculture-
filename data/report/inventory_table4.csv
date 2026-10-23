@@ -1,0 +1,18 @@
+parameter,unit,SI-IMTA,SE-IMTA,SI-POLY,source
+cycle_length,months,5.3,8.5,26,Table 4
+feed,kg,1888,89,10975,Table 4
+seawater_used,m3,101110,7185,1201764,Table 4
+fish_stocked,kg,677,45,91,Table 4 (initial fish biomass)
+oyster_stocked,kg flesh,5.5,14.4,0,Table 4 (initial oyster flesh biomass)
+diet_protein,%,42,40,42,Table 4
+diet_lipid,%,18,18,18,Table 4
+diet_cellulose,%,3,3.5,3,Table 4
+diet_ash,%,9,9,9,Table 4
+diet_phosphorus,%,1.4,1.3,1.4,Table 4
+farm_area,m2,90000,285000,90000,Table 4
+farm_pond_area,m2,23600,200000,23600,Table 4
+production_pond_area,m2,700,665,1700,Table 4
+fish_gain,kg,1099,65,6137,Table 4
+oyster_gain,kg flesh,130,94,0,Table 4
+macroalgae_gain,kg,1224,35400,0,Table 4 (associated downstream production)
+fcr_reported,-,1.72,0.56,1.79,Table 4

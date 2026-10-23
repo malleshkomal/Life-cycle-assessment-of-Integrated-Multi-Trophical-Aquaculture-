@@ -1,0 +1,4 @@
+system,name,location,species,period,water_exchange
+SI-IMTA,Semi-intensive pond IMTA,"IPMA Aquaculture Research Station (EPPO), Olhao, Portugal","meagre, white seabream, flathead mullet + Pacific oyster (triploid) + macroalgae (Ulva spp.)",9 May - 16 Oct 2017,"pumped, 20-150 % of pond volume per day"
+SE-IMTA,Semi-extensive pond IMTA,"Estero Natural, Cadiz, Spain","gilthead seabream + Pacific oyster + macroalgae (Ulva, Gracilaria) in a second pond",21 Jan - 5 Nov 2019,tidal
+SI-POLY,"Semi-intensive fishpond polyculture (conventional, fish only)","IPMA Aquaculture Research Station (EPPO), Olhao, Portugal",meagre + gilthead seabream,27 May 2017 - 25 Jul 2019,"pumped, 20-150 % of pond volume per day"

@@ -3,56 +3,73 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
-from imtakpi import run_all, load, impacts  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from imtakpi import run_all, load, checks, nutrient_balance, per_tonne, SYSTEMS, CATEGORIES  # noqa: E402
 
+INV, NUT, LC = load()
 RES = run_all()
 
 
-def kpi(code, kid):
-    return next(k["value"] for k in RES[code]["kpis"] if k["id"] == kid)
+def kpi(s, kid):
+    return next(k for k in RES[s]["kpis"] if k["id"] == kid)
 
 
-@pytest.mark.parametrize("code", ["imta-A", "imta-C"])
-@pytest.mark.parametrize("el", ["N", "P"])
-def test_nutrient_balance_closes(code, el):
-    d = RES[code]["nutrients"][el]
-    assert d["fish"] + d["seaweed"] + d["mussels"] + d["to_sea"] == pytest.approx(d["feed"])
+def test_report_totals_are_reproduced():
+    # Annex 1 / section 4 of the report, per tonne of fish + oyster
+    assert RES["SI-IMTA"]["totals"]["GW"] == 2801
+    assert RES["SE-IMTA"]["totals"]["GW"] == 1255
+    assert RES["SI-POLY"]["totals"]["GW"] == 2836
+    assert RES["SI-POLY"]["totals"]["WD"] == 393002
 
 
-def test_lci_nitrogen_matches_mass_balance():
-    inv, _, _ = load()
-    assert inv["imta-A"]["Nitrogen"][1] == pytest.approx(RES["imta-A"]["nutrients"]["N"]["to_sea"])
-    # scenario C: 2,450 kg to sea + 5 kg lost from compost use
-    assert inv["imta-C"]["Nitrogen"][1] == pytest.approx(RES["imta-C"]["nutrients"]["N"]["to_sea"] + 5)
+@pytest.mark.parametrize("s", SYSTEMS)
+def test_feed_nutrients_match_table5(s):
+    nb = nutrient_balance(INV, NUT, s)
+    assert nb["N"]["feed"] == pytest.approx(NUT[("feed", "N")][s], abs=0.1)
+    assert nb["P"]["feed"] == pytest.approx(NUT[("feed", "P")][s], abs=0.1)
 
 
-def test_monoculture_recovers_nothing():
-    assert kpi("imta-A", "C1") == 0
-    assert RES["imta-A"]["share_fish"] == 1
+@pytest.mark.parametrize("s", SYSTEMS)
+def test_nitrogen_balance_closes(s):
+    d = nutrient_balance(INV, NUT, s)["N"]
+    assert d["feed"] == pytest.approx(d["fish_oyster"] + d["macroalgae"] + d["released"])
 
 
-def test_known_values_match_excel():
-    assert kpi("imta-A", "E1") == pytest.approx(2.8954, abs=1e-4)
-    assert kpi("imta-C", "E1") == pytest.approx(2.1249, abs=1e-4)
-    assert kpi("imta-C", "E2") == pytest.approx(0.0725, abs=1e-4)
-    assert kpi("imta-C", "C1") == pytest.approx(0.1833, abs=1e-4)
-    assert RES["imta-C"]["climate_total"] == pytest.approx(126733.6, abs=0.5)
+@pytest.mark.parametrize("s", SYSTEMS)
+def test_functional_unit_scaling_matches_annex_water(s):
+    # seawater per pond cycle scaled to 1 t fish + oyster equals "Water consumption" in Annex 1
+    assert INV["seawater_used"][s] * per_tonne(INV, s) == pytest.approx(LC["amount"]["WD"][s]["Water consumption"], rel=0.01)
 
 
-def test_economic_share():
-    assert RES["imta-C"]["share_fish"] == pytest.approx(280000 / 417500)
+@pytest.mark.parametrize("s", SYSTEMS)
+@pytest.mark.parametrize("c", CATEGORIES)
+def test_processes_sum_to_total(s, c):
+    parts = sum(v for p, v in LC["amount"][c][s].items() if p != "Total")
+    assert parts == pytest.approx(LC["amount"][c][s]["Total"], abs=max(2, 0.005 * LC["amount"][c][s]["Total"]))
 
 
-def test_linearity():
-    inv, _, fac = load()
-    x = inv["imta-C"]
-    doubled = {f: (t, 2 * v) for f, (t, v) in x.items()}
-    assert impacts(doubled, fac)[0] == pytest.approx(2 * impacts(x, fac)[0])
+def test_semi_extensive_takes_up_nitrogen():
+    assert RES["SE-IMTA"]["nutrients"]["N"]["released"] < 0
+    assert kpi("SE-IMTA", "C1")["value"] > 1
 
 
-def test_avoided_products_are_credits():
-    c = RES["imta-C"]["contrib"]
-    assert c["ground limestone (avoided)"][0] < 0
-    assert c["mineral N fertiliser (avoided)"][0] < 0
+def test_known_kpis():
+    assert kpi("SI-IMTA", "C1")["value"] == pytest.approx(0.470, abs=0.001)
+    assert kpi("SI-POLY", "C1")["value"] == pytest.approx(0.202, abs=0.001)
+    assert kpi("SI-IMTA", "C4")["value"] == pytest.approx(1.72, abs=0.005)
+    assert kpi("SI-POLY", "C4")["value"] == pytest.approx(1.79, abs=0.005)
+    assert kpi("SI-IMTA", "C6")["value"] == pytest.approx(0.553, abs=0.001)
+    assert {s: sum(k["met"] for k in RES[s]["kpis"]) for s in SYSTEMS} == {"SI-IMTA": 9, "SE-IMTA": 12, "SI-POLY": 0}
+
+
+def test_baseline_target_is_ten_percent_better():
+    assert kpi("SI-IMTA", "E1")["target"] == pytest.approx(2836 * 0.9)
+
+
+def test_only_known_data_issues_are_flagged():
+    # 1) the semi-extensive FCR in Table 4 (0.56) divides feed by fish + oyster gain, not fish gain only
+    # 2) the polyculture land use in Annex 1 does not follow the pond-area allocation rule over 26 months
+    bad = [(c["check"], c["system"]) for c in checks(INV, NUT, LC) if not c["ok"]]
+    assert bad == [("FCR = feed / fish gain (Table 4)", "SE-IMTA"),
+                   ("Land: allocated farm area = Direct activity in LC (Annex 1)", "SI-POLY")]
+    assert INV["feed"]["SE-IMTA"] / (INV["fish_gain"]["SE-IMTA"] + INV["oyster_gain"]["SE-IMTA"]) == pytest.approx(0.56, abs=0.005)

@@ -1,58 +1,71 @@
 # Methodology
 
-## 1. Life cycle inventory (LCI)
-For each scenario, one foreground process lists all inputs and outputs per year
-(`data/lci/dataset/imta-cirkpi-lci.csv`, LCIS2024 column prefixes `ap_` = activity property, `fp_` = flow property).
+## 1. From the report to the data files
+`make_data.py` holds every number typed from INTEGRATE deliverable PI05#3 and writes:
 
-Direct emissions come from simple balances:
+| File | Content | Report source |
+|---|---|---|
+| `data/report/systems.csv` | the three systems, sites, species, periods | section 3.1 |
+| `data/report/inventory_table4.csv` | inventory per production pond and cycle | Table 4 |
+| `data/report/nutrients_table5.csv` | N and P balance per pond and cycle | Table 5 |
+| `data/report/lcia_annex1.csv` | 7 categories × 11 processes × 3 systems, amount and share | Annex 1 |
+| `data/lci/` | foreground LCI per functional unit, LCIS2024 structure | derived |
 
-- CO2 from boats = diesel [kg] × 3.16
-- N to sea = N in feed − N in fish − N in seaweed (incl. collected residues) − N in mussels
-- P to sea = same logic for phosphorus
+## 2. Scaling to the functional unit
+Reference flow per pond = fish gain + oyster flesh gain.
 
-## 2. Impact assessment (LCIA)
-Impact = Σ (amount of each flow × impact factor of that flow).
+scaling factor = 1,000 kg / (fish gain + oyster gain)
 
-- **In openLCA** the impact factor of each input is calculated from its whole ecoinvent supply chain
-  (matrix inversion: scaling vector s = A⁻¹ f, inventory g = B s, impacts h = C g).
-- **In the KPI tool** (`src/imtakpi/model.py`, Excel) the per-unit factors are read from a table.
-  The shipped table is **illustrative**. Real per-unit factors are obtained by calculating 1 unit of
-  each input in openLCA.
+Every inventory flow per tonne = flow per pond × scaling factor. Example, semi-intensive IMTA:
+feed 1,888 kg × 1,000 / 1,229 = 1,536 kg feed per tonne.
 
-Avoided products (scenario C) enter with a negative sign (system expansion).
+## 3. Nutrient balance
+- N in feed = feed × protein content / 6.25; P in feed = feed × P content. This reproduces Table 5 exactly.
+- N in products = N in fish + oysters + N in macroalgae (Table 5).
+- N released to water = N in feed − N in products. A negative value means the system takes up nutrients from the water
+  (semi-extensive IMTA: fish and oysters also eat natural food).
 
-## 3. Allocation
-Scenario C produces three products. The farm's total impact is split by **economic value**:
+## 4. Impact assessment
+The impact results per process are those of the report (Piscentool, Annex 1). The repository does not re-run the LCA;
+it checks the results (section 6) and builds KPIs on them. The implied impact per kg of feed
+(Feeds process ÷ feed per tonne) is shown in the Excel tab *Comparison* as a plausibility check:
+about 1.0–1.3 kg CO2-eq and 6.8–7.8 kg C per kg feed.
 
-share_fish = revenue_fish / (revenue_fish + revenue_seaweed + revenue_mussels) = 280,000 / 417,500 = 0.671
+## 5. KPI framework
 
-Result per functional unit = farm impact × share_fish / 40,000 kg.
-Mass allocation (fish 34.8 %) is reported as a sensitivity in the Excel tool.
+| ID | KPI | Formula | Target |
+|---|---|---|---|
+| E1–E7 | GW, TCED, NPPU, AP, EP, LC, WD per tonne | Annex 1 total | ≤ polyculture × (1 − 10 %) |
+| C1 | Nitrogen use efficiency | N in all products / N in feed | ≥ 35 % |
+| C2 | Phosphorus use efficiency | P in all products / P in feed | ≥ 30 % |
+| C3 | Net N released to water | N released × scaling factor | ≤ 60 kg N/t |
+| C4 | Fish feed conversion ratio | feed / fish gain | ≤ 1.75 |
+| C5 | Share of non-fed biomass | (oyster + macroalgae gain) / total harvest | ≥ 50 % |
+| C6 | Feed share of global warming | Feeds / total GW | ≤ 60 % |
 
-## 4. KPI framework
-Every KPI = question → formula → data source → target → pass/fail.
+The improvement target (10 %) and all circularity targets are inputs (yellow cells in Excel). The polyculture is the
+baseline for E1–E7, so it is shown as "baseline" there rather than pass/fail.
 
-| ID | Dimension | KPI | Formula | Target |
-|---|---|---|---|---|
-| E1 | Environment | Carbon footprint of fish | farm CO2-eq × share_fish / kg fish | ≤ 2.0 kg CO2-eq/kg |
-| E2 | Environment | Marine eutrophication of fish | farm N-eq × share_fish / kg fish | ≤ 0.08 kg N-eq/kg |
-| E3 | Environment | Energy demand of fish (Excel only) | farm MJ × share_fish / kg fish | ≤ 40 MJ/kg |
-| E4 | Environment | Feed share of climate impact | feed CO2-eq / total CO2-eq | ≤ 75 % |
-| C1 | Circularity | Nitrogen recovery rate | N in seaweed + mussels / (N feed − N fish) | ≥ 15 % |
-| C2 | Circularity | Phosphorus recovery rate | P in seaweed + mussels / (P feed − P fish) | ≥ 10 % |
-| C3 | Circularity | Nitrogen use efficiency | N in all products / N in feed | ≥ 35 % |
-| C4 | Circularity | Feed conversion ratio | kg feed / kg fish | ≤ 1.7 |
-| C5 | Circularity | Share of non-fed biomass | (seaweed + mussels) / total harvest | ≥ 50 % |
-| C6 | Circularity | By-product valorisation rate | (residues collected + shells valorised) / (residues generated + shells) | ≥ 50 % |
-| B1 | Economy | Eco-efficiency | revenue / t CO2-eq (farm) | ≥ 3,000 EUR/t |
-| B2 | Economy | Revenue share of extractive species | (revenue seaweed + mussels) / total revenue | ≥ 25 % |
+## 6. Data checks
+`imtakpi.checks()` and the Excel tab *Data checks* compare the report's tables with each other:
 
-Targets are placeholders; in practice they would be agreed with the company (e.g. in a workshop).
-Circularity KPIs come from the mass balance and do not depend on the LCA database; environmental
-KPIs do. Reading both together reveals trade-offs that a single score would hide.
+1. Feed N and P = feed × recipe (Table 4 → Table 5)
+2. N rejection = feed N − extracted N (Table 5)
+3. Seawater per tonne = *Water consumption* in Annex 1 (confirms the functional unit)
+4. FCR = feed / fish gain (Table 4)
+5. Farm area allocated to the pond × cycle = *Direct activity* in Land competition (Annex 1)
+6. Sum of the 11 processes = reported total, for every category and system
 
-## 5. Verification
-- `run.py`, the Excel tool (`excel/`) and `openlca/IMTA_example_runnable_openLCA.zip` use the same
-  illustrative factors and give identical results (scenario C: 2.125 kg CO2-eq/kg, 0.0725 kg N-eq/kg).
-- The ecoinvent run (`data/openlca_results/`) was compared with literature (2.27 kg CO2-eq/kg for Greek
-  gilthead sea bream) – see `docs/known_issues.md` for why the current run is not yet final.
+37 of 39 checks pass. The two that do not are explained in [`known_issues.md`](known_issues.md).
+
+## 7. Reproducing everything
+```bash
+python make_data.py      # report tables -> data/report, data/lci
+python run.py            # KPIs, impacts, nutrient balance, data checks -> results/*.csv
+python make_excel.py     # offline Excel tool (then open it in Excel, or recalc with LibreOffice)
+python make_charts.py    # PNG + animated GIF charts
+python make_flow.py      # animated flow diagrams + docs/flow.html
+python build_site.py     # docs/index.html
+pytest
+```
+The Excel tool and the Python model give the same KPI values.

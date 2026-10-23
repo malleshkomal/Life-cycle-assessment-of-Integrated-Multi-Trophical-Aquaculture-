@@ -1,0 +1,13 @@
+item,element,SI-IMTA,SE-IMTA,SI-POLY,unit,source
+feed,N,126.9,5.7,737.5,kg,Table 5
+feed,P,26.4,1.2,153.7,kg,Table 5
+produced_biomass,N,29.0,4.5,148.8,kg,Table 5
+produced_biomass,P,5.9,1.0,25.0,kg,Table 5
+downstream_macroalgae,N,30.6,1.8,0,kg,Table 5
+downstream_macroalgae,P,2.6,0.1,0,kg,Table 5
+total_extracted,N,59.6,6.2,148.8,kg,Table 5
+total_extracted,P,8.5,1.1,25.0,kg,Table 5
+total_rejection,N,67.2,-0.5,588.7,kg,Table 5
+total_rejection,P,18.0,0.0,128.7,kg,Table 5
+rejection_per_kg_product,N,0.055,-0.003,0.1,kg/kg,Table 5
+rejection_per_kg_product,P,0.015,0.0,0.021,kg/kg,Table 5

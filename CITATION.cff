@@ -1,7 +1,7 @@
 cff-version: 1.2.0
-message: "If you use this repository, please cite it as below. The LCI format follows the LCIS2024 schema (see references)."
-title: "IMTA circular KPI decision tool (demonstration)"
-version: 0.1.0
+message: "If you use this repository, please cite it and the INTEGRATE deliverable PI05#3, which is the source of all inventory and impact data."
+title: "Life cycle assessment of fish monoculture and IMTA aquaculture: KPI tool for pond IMTA (INTEGRATE PI05#3)"
+version: 1.0.0
 date-released: 2026-10-23
 authors:
   - family-names: Chougule
@@ -14,6 +14,24 @@ keywords:
   - aquaculture
   - IMTA
 references:
+  - type: report
+    title: "LCA of aquaculture systems: comparison between semi-intensive/extensive pond IMTA and semi-intensive traditional fishpond production (Deliverable PI05#3)"
+    authors:
+      - name: "INTEGRATE project (IPMA, CTAQUA)"
+    year: 2020
+    notes: "Interreg Atlantic Area 2014-2020, project EAPA_232/2016"
+  - type: article
+    title: "Life cycle assessment of integrated multi-trophic aquaculture: A review on methodology and challenges for its sustainability evaluation"
+    authors:
+      - family-names: Hala
+        given-names: Ahmad Furqan
+      - family-names: Chougule
+        given-names: Komal
+    journal: Aquaculture
+    volume: 590
+    start: 741035
+    year: 2024
+    doi: 10.1016/j.aquaculture.2024.741035
   - type: article
     title: "A generalized schema to publish and share life cycle inventories (LCI): Exemplary case of an aviation fuel supply chain"
     authors:

@@ -1,139 +1,125 @@
 # Life cycle assessment of fish monoculture and IMTA aquaculture
 
-A transparent **circular KPI decision tool** for aquaculture. It takes a life cycle inventory (LCI), runs the
-life cycle assessment (LCA), closes the nutrient balance and scores two farm designs on **12 KPIs** for
-environment, circularity and economy. The tool is available as an offline **Excel workbook** and as **Python** code with tests.
+A transparent **KPI decision tool** built on a real pond aquaculture LCA. It takes the inventory and impact results of the
+**INTEGRATE project** (Interreg Atlantic Area, deliverable PI05#3), recalculates the nutrient balance, checks the data and scores
+three farm designs on **13 KPIs** for environment and circularity. The tool is available as an offline **Excel workbook** and as **Python** code with tests.
 
-| Scenario | Design |
-|---|---|
-| **A** | Gilthead sea bream **monoculture** |
-| **C** | **IMTA** (integrated multi-trophic aquaculture): sea bream + seaweed + mussels, **with waste valorisation**: seaweed residues composted, mussel shells reused as lime |
+| Code | System | Site |
+|---|---|---|
+| **SI-IMTA** | **Semi-intensive pond IMTA**: meagre, white seabream, mullet + oysters + macroalgae (*Ulva*) | IPMA research station, Olhão, Portugal |
+| **SE-IMTA** | **Semi-extensive pond IMTA**: gilthead seabream + oysters, macroalgae pond fed by the fishpond outflow, tidal water exchange | Estero Natural, Cádiz, Spain |
+| **SI-POLY** | **Semi-intensive fish polyculture**: meagre + gilthead seabream, fish only (**conventional baseline**) | IPMA research station, Olhão, Portugal |
 
-**Functional unit:** 1 kg fresh sea bream at the farm gate, including transport to market. Economic allocation applies.
+**Functional unit:** 1 tonne of aquatic product (fish + oyster flesh) at the farm gate, one production cycle. Macroalgae are a co-product outside the functional unit.
 **Goal and scope:** [`docs/goal_and_scope.md`](docs/goal_and_scope.md) (ISO 14040/44).
 
-> **Status: demonstration (v0.1.0).** Activity data are assumptions, checked against literature ranges.
-> KPI values use **illustrative** impact factors, not ecoinvent. ecoinvent results are in
-> [`data/openlca_results/`](data/openlca_results/) and have **open issues**, listed in [`docs/known_issues.md`](docs/known_issues.md).
-
-
+> **Data source.** Inventory (Table 4), nutrient balance (Table 5) and impact results per process (Annex 1) come from
+> INTEGRATE deliverable PI05#3 (IPMA & CTAQUA, 2020; software Piscentool). The KPI framework, targets, scaling, nutrient re-calculation
+> and data checks are added here. Every transcribed number is in [`make_data.py`](make_data.py) with its table reference.
 
 ## Open the tool offline
 
-- **Excel:** [`excel/IMTA_KPI_decision_tool.xlsx`](excel/IMTA_KPI_decision_tool.xlsx). It has 14 tabs (goal & scope, metadata, parameters, LCI, nutrient balance,
-  factors, LCIA, contribution analysis, allocation, KPI framework, results, openLCA results, sources). All formulas are live.
-  Change a yellow cell and every KPI updates. It needs no internet connection and no external links.
-- **Findings page:** [`docs/index.html`](docs/index.html) is one self-contained file with all charts embedded. Download it and open it in any browser.
-  You can also publish it with GitHub Pages: *Settings → Pages → Branch `main`, folder `/docs`*.
+- **Excel:** [`excel/IMTA_KPI_decision_tool.xlsx`](excel/IMTA_KPI_decision_tool.xlsx). 12 tabs: README, goal & scope, metadata, inventory, LCI per tonne,
+  nutrient balance, LCIA (Annex 1), comparison, KPI framework, dashboard, data checks, sources. All results are live formulas: change a yellow cell
+  (for example the 10 % improvement target or the feed amount) and every KPI updates. No internet, no macros, no external links.
+- **Findings page:** [`docs/index.html`](docs/index.html) – one self-contained file with all charts embedded. Download it and open it in any browser.
+- **Flow diagrams:** [`docs/flow.html`](docs/flow.html) – animated, with a tab for each system.
 
 ## Key findings
 
-1. **IMTA lowers the footprint per kg of fish.** It drops from 2.90 to 2.12 kg CO2-eq/kg with illustrative factors. IMTA also recovers
-   **18 % of the nitrogen** the fish release (0 % in monoculture).
-2. **The farm as a whole emits about 9 % more CO2.** The extra comes from more energy, boats, ropes and transport. Per kg looks better only because
-   output grows. This is an **absolute-vs-relative trade-off** that a single score would hide.
-3. **Waste valorisation lifts the circularity KPIs.** By-product valorisation rises from 0 % to 100 %. Its climate effect is small, though:
-   +460 / −400 kg CO2-eq per year, against 84,300 kg from feed.
-4. **Feed is the hotspot.** It is two thirds of the climate impact with illustrative factors. In ecoinvent, **land use change from Brazilian soy** is a major contributor.
-5. **Model checks matter.** In openLCA, auto-linking chose a lignite-dominated electricity mix instead of Portugal. The farm's nitrogen emission
-   also had no characterisation factor in the EF 3.1 (adapted) method. Both are documented as open issues.
+1. **Semi-extensive IMTA has the lowest impacts in 6 of 7 categories:** global warming −56 %, energy −81 %, eutrophication −97 % against the polyculture.
+   It even takes up nitrogen from the estuary (net uptake 0.5 kg N per cycle): fish and oysters also eat natural food.
+2. **Semi-intensive IMTA vs polyculture** (same station, same target fish density): **eutrophication −57 %** and **water dependence −58 %**.
+   Oysters and macroalgae keep **47 % of the feed nitrogen** in products, against 20 % in the polyculture. Global warming is almost equal (−1 %).
+3. **Feed is the hotspot:** 55–66 % of global warming and over 99 % of primary production use. Uneaten feed and excretion
+   ("Rejects fish") cause 59–84 % of acidification and eutrophication in the semi-intensive systems.
+4. **Land is the trade-off:** the IMTA systems need +24 % (semi-intensive) and +105 % (semi-extensive) more land per tonne.
+5. **Data checks:** 37 of 39 cross-checks between the report's tables pass. Two findings are documented in [`docs/known_issues.md`](docs/known_issues.md):
+   the semi-extensive FCR of 0.56 divides feed by fish **and** oyster gain, and the polyculture land value does not follow the pond-area rule.
 
-## How the waste is used
+## How the fish waste is used
 
-[![Animated flow diagram: fish waste feeds seaweed and mussels, seaweed residues become compost, mussel shells become lime](results/charts/06_waste_flow_animated.svg)](docs/flow.html)
+[![Animated flow diagram: feed nitrogen goes to fish, oysters and macroalgae; the rest is released to the lagoon](results/charts/06_flow_si_imta.svg)](docs/flow.html)
 
-Fish waste feeds the **seaweed** (dissolved N and P) and the **mussels** (particles). **Seaweed residues** are composted into soil fertiliser, and **mussel shells** are crushed into lime. 2,450 kg N is still lost to the sea, so 18 % of the fish waste is recovered. The interactive version is [`docs/flow.html`](docs/flow.html), which also works offline.
+In the semi-intensive IMTA, oysters filter particles and macroalgae take up dissolved nitrogen and phosphorus: 59.6 of 127 kg N end up in products and
+67 kg N is released. In the polyculture, 589 of 738 kg N is released ([diagram](results/charts/06_flow_si_poly.svg)); the semi-extensive IMTA has a net
+uptake ([diagram](results/charts/06_flow_se_imta.svg)).
 
-![KPI scorecard](results/charts/03_kpi_scorecard.png)
+![KPI scorecard](results/charts/anim_04_kpi_scorecard.gif)
+
+## Findings in charts
+
+**1. All categories relative to the polyculture (= 100).** IMTA is lower everywhere except land competition.
+
+![Relative to polyculture](results/charts/anim_02_relative_to_polyculture.gif)
+
+**2. Global warming by process.** Feed dominates; energy for pumping matters in the semi-intensive systems; equipment and buildings weigh more in the short IMTA cycles.
+
+![Global warming by process](results/charts/anim_01_gw_by_process.gif)
+
+**3. Where the nitrogen in the feed goes**, per tonne of fish + oyster.
+
+![Nitrogen fate](results/charts/anim_03_nitrogen_fate.gif)
+
+**4. Which process causes which impact.**
+
+![Process shares](results/charts/anim_05_process_shares.gif)
+
+## KPI framework
+
+| ID | Dimension | KPI | Formula | Target |
+|---|---|---|---|---|
+| E1–E7 | Environment | Global warming, energy demand, primary production use, acidification, eutrophication, land competition, water dependence per tonne | Annex 1 total | at least 10 % below the polyculture |
+| C1 | Circularity | Nitrogen use efficiency | N in fish + oysters + macroalgae / N in feed | ≥ 35 % |
+| C2 | Circularity | Phosphorus use efficiency | P in all products / P in feed | ≥ 30 % |
+| C3 | Circularity | Net N released to water | (N in feed − N in products) per tonne | ≤ 60 kg N/t |
+| C4 | Circularity | Fish feed conversion ratio | feed / fish gain | ≤ 1.75 |
+| C5 | Circularity | Share of non-fed biomass | (oyster + macroalgae) / total harvest | ≥ 50 % |
+| C6 | Circularity | Feed share of global warming | Feeds / total GW | ≤ 60 % |
+
+Result: semi-intensive IMTA **9/13**, semi-extensive IMTA **12/13**, polyculture **0/13** (it is the baseline for E1–E7).
+The targets are placeholders that a company would agree in a workshop. Every step is explained in [`docs/methodology.md`](docs/methodology.md).
 
 ## Quick start
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python run.py           # impacts, nutrient balance, KPIs  -> results/*.csv
-python make_charts.py   # findings charts (PNG)            -> results/charts/
-python make_animations.py  # animated charts (GIF)         -> results/charts/
-python make_flow.py     # animated waste-flow diagram      -> results/charts/, docs/flow.html
-python build_site.py    # offline findings page            -> docs/index.html
-pytest                  # 10 tests
-python run.py --factors my_factors.csv   # use your own per-unit factors
+python make_data.py     # report tables -> data/report/*.csv, data/lci/ (LCIS2024)
+python run.py           # KPIs, impacts, nutrient balance, data checks -> results/*.csv
+python make_excel.py    # offline Excel tool -> excel/
+python make_charts.py   # charts, PNG and animated GIF -> results/charts/
+python make_flow.py     # animated flow diagrams -> results/charts/, docs/flow.html
+python build_site.py    # offline findings page -> docs/index.html
+pytest                  # 35 tests
 ```
-
-To get real factors, calculate **1 unit** of each input in openLCA, for example 1 kWh of `market for electricity, low voltage | PT`
-with EF 3.1. Put each result into a copy of [`data/factors_illustrative.csv`](data/factors_illustrative.csv).
-
-## Findings in charts
-
-**1. Where the nitrogen from the feed goes.** Of the 4,200 kg N in the feed, 1,200 kg stays in the fish. In IMTA, seaweed and mussels take up
-550 kg, so 2,450 kg instead of 3,000 kg is lost to the sea.
-
-![Nitrogen balance](results/charts/anim_01_nitrogen_balance.gif)
-
-**2. Climate change by contributor.** Feed dominates in both designs. IMTA adds electricity, boat fuel, ropes and transport.
-
-![Climate by contributor](results/charts/anim_02_climate_by_contributor.gif)
-
-**3. Per kg vs whole farm.** C is better per kg of fish but emits more in total.
-
-![Per kg vs total](results/charts/anim_03_per_kg_vs_total.gif)
-
-**4. Circularity KPIs against their targets.** The dashed line marks each target. C meets all six. A meets none.
-
-![Circularity KPIs](results/charts/anim_04_circularity_kpis.gif)
-
-**5. ecoinvent run (openLCA, EF 3.1).** This run is not final: the electricity provider is lignite-dominated. See [known issues](docs/known_issues.md).
-
-![openLCA run 3](results/charts/anim_05_openlca_run3.gif)
-
-## KPI framework
-
-| ID | Dimension | KPI | Formula | Target |
-|---|---|---|---|---|
-| E1 | Environment | Carbon footprint of fish | farm CO2-eq × economic share of fish / kg fish | ≤ 2.0 kg CO2-eq/kg |
-| E2 | Environment | Marine eutrophication of fish | farm N-eq × share of fish / kg fish | ≤ 0.08 kg N-eq/kg |
-| E3 | Environment | Energy demand of fish (Excel only) | farm MJ × share of fish / kg fish | ≤ 40 MJ/kg |
-| E4 | Environment | Feed share of climate impact | feed CO2-eq / total | ≤ 75 % |
-| C1 | Circularity | Nitrogen recovery rate | N in seaweed + mussels / N released by fish | ≥ 15 % |
-| C2 | Circularity | Phosphorus recovery rate | P in seaweed + mussels / P released by fish | ≥ 10 % |
-| C3 | Circularity | Nitrogen use efficiency | N in all products / N in feed | ≥ 35 % |
-| C4 | Circularity | Feed conversion ratio | kg feed / kg fish | ≤ 1.7 |
-| C5 | Circularity | Share of non-fed biomass | (seaweed + mussels) / total harvest | ≥ 50 % |
-| C6 | Circularity | By-product valorisation rate | valorised residues + shells / generated | ≥ 50 % |
-| B1 | Economy | Eco-efficiency | revenue / t CO2-eq | ≥ 3,000 EUR/t |
-| B2 | Economy | Revenue share of extractive species | (seaweed + mussels) / total revenue | ≥ 25 % |
-
-The targets are placeholders. A company would agree its own, for example in a workshop. Every step is explained in [`docs/methodology.md`](docs/methodology.md).
 
 ## How it works
 
 | File | What it does |
 |---|---|
-| `src/imtakpi/model.py` | Reads the LCIS2024 files. Computes impacts as amount × factor (avoided products count as credits), economic allocation, the N and P mass balance and 11 KPIs |
-| `run.py` | Writes `results/kpis.csv`, `results/impacts.csv` and `results/nutrient_balance.csv` |
-| `make_charts.py`, `make_animations.py` | Draw the findings charts, static (PNG) and animated (GIF) |
-| `make_flow.py` | Draws the animated waste-flow diagram (SVG) and `docs/flow.html` |
-| `build_site.py` | Builds the self-contained findings page `docs/index.html` |
-| `tests/` | Checks that the nutrient balance closes, that the LCI matches the mass balance, linearity, credits and the known values (the Excel tool gives the same numbers) |
+| `make_data.py` | All numbers transcribed from the report (Tables 4–5, Annex 1), written to `data/report/` and as an LCIS2024 inventory to `data/lci/` |
+| `src/imtakpi/model.py` | Scales to the functional unit, recalculates the N and P balance, evaluates 13 KPIs, runs 39 data checks |
+| `run.py` | Writes `results/kpis.csv`, `impacts_per_tonne.csv`, `nutrient_balance.csv`, `data_checks.csv` |
+| `make_excel.py` | Builds the Excel tool with live formulas (same results as Python) |
+| `make_charts.py`, `make_flow.py`, `build_site.py` | Charts, animated flow diagrams and the findings page |
+| `tests/` | Report totals reproduced, feed N/P = Table 5, N balance closes, functional unit = Annex 1 water, process sums, known KPI values |
 
 ## Project structure
 
 ```
-data/lci/              foreground LCI in the LCIS2024 structure:
-  dataset/             imta-cirkpi-lci.csv (ap_/fp_ columns), parameters.csv
+data/report/           systems, inventory (Table 4), nutrients (Table 5), impacts per process (Annex 1)
+data/lci/              foreground LCI per functional unit in the LCIS2024 structure:
+  dataset/             imta-integrate-lci.csv (ap_/fp_ columns), parameters.csv
   dataset_properties.csv  name, version, schema, UDI, counts
-  metadata/            metadata.csv (dataset, authors, background, licence, sources, glossary)
-  network/             directed graph of the inventory (GraphML, open in Cytoscape)
-  dependencies/        none
-  environment.yml
-data/factors_illustrative.csv   illustrative impact factors (replace with per-unit LCA results)
-data/openlca_results/  aggregated openLCA results (ecoinvent 3.7 cut-off, EF 3.1), with no raw ecoinvent data
+  metadata/            metadata.csv
+  network/             directed graph of the inventory (GraphML)
+  dependencies/, environment.yml
 excel/                 IMTA_KPI_decision_tool.xlsx (offline Excel tool)
-openlca/               runnable JSON-LD example, ecoinvent 3.7 template, LCI entry sheet
 src/imtakpi/           Python package
 tests/                 pytest
 results/               generated tables and charts
-docs/                  goal and scope, methodology, known issues, index.html (findings page)
+docs/                  goal and scope, methodology, known issues, index.html, flow.html
 sources/               REFERENCES.md, references.bib
 ```
 
@@ -141,13 +127,12 @@ sources/               REFERENCES.md, references.bib
 
 - Hala, A. F., **Chougule, K.**, Cunha, M. E., Caria Mendes, M., Oliveira, I., Bradley, T., Forbes, J., & Galileu Speranza, L. (2024).
   Life cycle assessment of integrated multi-trophic aquaculture: A review on methodology and challenges for its sustainability evaluation.
-  *Aquaculture*, 590, 741035. This paper is the basis for the functional unit and allocation choices.
+  *Aquaculture*, 590, 741035. This paper discusses the functional unit and allocation choices that this study has to make.
 
-
-All other sources, and a note on which values come from the literature and which are assumptions, are in [`sources/REFERENCES.md`](sources/REFERENCES.md).
+Data source: INTEGRATE project (2020), deliverable PI05#3, Interreg Atlantic Area EAPA_232/2016 (IPMA, CTAQUA). All other sources are in [`sources/REFERENCES.md`](sources/REFERENCES.md).
 
 ## Licence
 
 - **Code** (`src/`, `tests/`, `*.py`): MIT. See [LICENSE](LICENSE).
-- **Data and documents:** CC BY 4.0.
-- **ecoinvent:** no ecoinvent data are redistributed here. Only dataset names and aggregated results are included. Recalculating requires your own ecoinvent licence.
+- **KPI layer, derived files and documents:** CC BY 4.0.
+- **Report data** (`data/report/`): from INTEGRATE deliverable PI05#3; the rights remain with the INTEGRATE partners.

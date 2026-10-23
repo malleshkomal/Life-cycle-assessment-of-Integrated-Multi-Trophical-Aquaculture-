@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 600" width="1140" height="600" role="img" font-family="Segoe UI, Arial, sans-serif">
+<title>How the fish waste is used: semi-intensive fish polyculture</title>
+<desc>Flows of feed, water and nitrogen through the semi-intensive fish polyculture in one production cycle (INTEGRATE deliverable PI05#3, Tables 4 and 5).</desc>
+<style>
+.flow{fill:none;stroke-linecap:round;stroke-dasharray:10 9;animation:dash 1.2s linear infinite, show .6s ease-out both}
+.base{fill:none;stroke-linecap:round;opacity:.16;animation:show .6s ease-out both}
+.node{animation:pop .6s cubic-bezier(.2,.8,.2,1.2) both}
+.lab{font-size:12px;fill:#444441;animation:show .6s ease-out both}
+.t{font-size:15px;font-weight:600}.s{font-size:12px}
+@keyframes dash{to{stroke-dashoffset:-38}}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+</style>
+<rect width="1140" height="600" fill="#FFFFFF"/>
+<text x="25" y="30" font-size="18" font-weight="600" fill="#2C2C2A">How the fish waste is used: semi-intensive fish polyculture</text>
+<text x="25" y="52" font-size="12" fill="#5F5E5A">IPMA research station, Olhao, Portugal · 1,700 m² pond · 26 months · fish only · one production cycle · nitrogen in kg N</text>
+<path class="base" d="M215,110.0 C257.5,110.0 257.5,265.0 300,265.0" stroke="#BA7517" stroke-width="18.0" style="animation-delay:0.2s"/>
+<path id="si-poly-e0" class="flow" d="M215,110.0 C257.5,110.0 257.5,265.0 300,265.0" stroke="#BA7517" stroke-width="12.0" style="animation-delay:0s,0.2s"/>
+<circle r="8.5" fill="#BA7517" opacity="0"><set attributeName="opacity" to="1" begin="0.6000000000000001s"/><animateMotion dur="2.4s" begin="0.6000000000000001s" repeatCount="indefinite"><mpath href="#si-poly-e0"/></animateMotion></circle>
+<text class="lab" x="227" y="100" text-anchor="start" style="animation-delay:0.5s">738 kg N</text>
+<path class="base" d="M215,235.0 C257.5,235.0 257.5,265.0 300,265.0" stroke="#D4537E" stroke-width="9.0" style="animation-delay:0.2s"/>
+<path id="si-poly-e1" class="flow" d="M215,235.0 C257.5,235.0 257.5,265.0 300,265.0" stroke="#D4537E" stroke-width="3.0" style="animation-delay:0s,0.2s"/>
+<circle r="4.0" fill="#D4537E" opacity="0"><set attributeName="opacity" to="1" begin="0.6000000000000001s"/><animateMotion dur="2.4s" begin="0.6000000000000001s" repeatCount="indefinite"><mpath href="#si-poly-e1"/></animateMotion></circle>
+<path class="base" d="M215,360.0 C257.5,360.0 257.5,265.0 300,265.0" stroke="#378ADD" stroke-width="9.0" style="animation-delay:0.2s"/>
+<path id="si-poly-e2" class="flow" d="M215,360.0 C257.5,360.0 257.5,265.0 300,265.0" stroke="#378ADD" stroke-width="3.0" style="animation-delay:0s,0.2s"/>
+<circle r="4.0" fill="#378ADD" opacity="0"><set attributeName="opacity" to="1" begin="0.6000000000000001s"/><animateMotion dur="2.4s" begin="0.6000000000000001s" repeatCount="indefinite"><mpath href="#si-poly-e2"/></animateMotion></circle>
+<path class="base" d="M215,485.0 C257.5,485.0 257.5,265.0 300,265.0" stroke="#7F77DD" stroke-width="8.5" style="animation-delay:0.2s"/>
+<path id="si-poly-e3" class="flow" d="M215,485.0 C257.5,485.0 257.5,265.0 300,265.0" stroke="#7F77DD" stroke-width="2.5" style="animation-delay:0s,0.2s"/>
+<circle r="3.8" fill="#7F77DD" opacity="0"><set attributeName="opacity" to="1" begin="0.6000000000000001s"/><animateMotion dur="2.4s" begin="0.6000000000000001s" repeatCount="indefinite"><mpath href="#si-poly-e3"/></animateMotion></circle>
+<path class="base" d="M490,265.0 L860,265.0" stroke="#534AB7" stroke-width="11.0" style="animation-delay:0.7s"/>
+<path id="si-poly-e4" class="flow" d="M490,265.0 L860,265.0" stroke="#534AB7" stroke-width="5.0" style="animation-delay:0s,0.7s"/>
+<circle r="5.0" fill="#534AB7" opacity="0"><set attributeName="opacity" to="1" begin="1.1s"/><animateMotion dur="2.4s" begin="1.1s" repeatCount="indefinite"><mpath href="#si-poly-e4"/></animateMotion></circle>
+<text class="lab" x="675" y="255" text-anchor="middle" style="animation-delay:1.0s">harvest</text>
+<path class="base" d="M395.0,300 C487.5,300 487.5,540.0 580,540.0" stroke="#E24B4A" stroke-width="16.2" style="animation-delay:0.7s"/>
+<path id="si-poly-e5" class="flow" d="M395.0,300 C487.5,300 487.5,540.0 580,540.0" stroke="#E24B4A" stroke-width="10.2" style="animation-delay:0s,0.7s"/>
+<circle r="7.6" fill="#E24B4A" opacity="0"><set attributeName="opacity" to="1" begin="1.1s"/><animateMotion dur="2.4s" begin="1.1s" repeatCount="indefinite"><mpath href="#si-poly-e5"/></animateMotion></circle>
+<text class="lab" x="475" y="442" text-anchor="end" style="animation-delay:1.0s">589 kg N</text>
+<g class="node" style="animation-delay:0.0s;transform-origin:120.0px 110.0px"><rect x="25" y="75" width="190" height="70" rx="12" fill="#FAEEDA" stroke="#BA7517" stroke-width="1.5"/><text class="t" x="120.0" y="104" text-anchor="middle" fill="#BA7517">Fish feed</text><text class="s" x="120.0" y="125" text-anchor="middle" fill="#BA7517">10,975 kg · 738 kg N</text></g>
+<g class="node" style="animation-delay:0.0s;transform-origin:120.0px 235.0px"><rect x="25" y="200" width="190" height="70" rx="12" fill="#FBEAF0" stroke="#993556" stroke-width="1.5"/><text class="t" x="120.0" y="229" text-anchor="middle" fill="#993556">Fry</text><text class="s" x="120.0" y="250" text-anchor="middle" fill="#993556">91.0 kg stocked</text></g>
+<g class="node" style="animation-delay:0.0s;transform-origin:120.0px 360.0px"><rect x="25" y="325" width="190" height="70" rx="12" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/><text class="t" x="120.0" y="354" text-anchor="middle" fill="#185FA5">Seawater</text><text class="s" x="120.0" y="375" text-anchor="middle" fill="#185FA5">1,201,764 m³ · pumped</text></g>
+<g class="node" style="animation-delay:0.0s;transform-origin:120.0px 485.0px"><rect x="25" y="450" width="190" height="70" rx="12" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/><text class="t" x="120.0" y="479" text-anchor="middle" fill="#534AB7">Energy</text><text class="s" x="120.0" y="500" text-anchor="middle" fill="#534AB7">pumping + aeration</text></g>
+<g class="node" style="animation-delay:0.4s;transform-origin:395.0px 265.0px"><rect x="300" y="230" width="190" height="70" rx="12" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.5"/><text class="t" x="395.0" y="259" text-anchor="middle" fill="#0F6E56">Fish pond</text><text class="s" x="395.0" y="280" text-anchor="middle" fill="#0F6E56">feed → fish → waste</text></g>
+<g class="node" style="animation-delay:0.9s;transform-origin:675.0px 110.0px"><rect x="580" y="75" width="190" height="70" rx="12" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1.5" stroke-dasharray="5 4"/><text class="t" x="675.0" y="104" text-anchor="middle" fill="#B4B2A9">Oysters</text><text class="s" x="675.0" y="125" text-anchor="middle" fill="#B4B2A9">none in this system</text></g>
+<g class="node" style="animation-delay:0.9s;transform-origin:675.0px 420.0px"><rect x="580" y="385" width="190" height="70" rx="12" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1.5" stroke-dasharray="5 4"/><text class="t" x="675.0" y="414" text-anchor="middle" fill="#B4B2A9">Macroalgae</text><text class="s" x="675.0" y="435" text-anchor="middle" fill="#B4B2A9">none in this system</text></g>
+<g class="node" style="animation-delay:0.9s;transform-origin:955.0px 265.0px"><rect x="860" y="230" width="190" height="70" rx="12" fill="#EEEDFE" stroke="#3C3489" stroke-width="1.5"/><text class="t" x="955.0" y="259" text-anchor="middle" fill="#3C3489">Fish</text><text class="s" x="955.0" y="280" text-anchor="middle" fill="#3C3489">6,137 kg gained</text></g>
+<g class="node" style="animation-delay:1.5s;transform-origin:955.0px 110.0px"><rect x="860" y="75" width="190" height="70" rx="12" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1.5" stroke-dasharray="5 4"/><text class="t" x="955.0" y="104" text-anchor="middle" fill="#B4B2A9">Oyster flesh</text><text class="s" x="955.0" y="125" text-anchor="middle" fill="#B4B2A9">–</text></g>
+<g class="node" style="animation-delay:1.5s;transform-origin:955.0px 420.0px"><rect x="860" y="385" width="190" height="70" rx="12" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1.5" stroke-dasharray="5 4"/><text class="t" x="955.0" y="414" text-anchor="middle" fill="#B4B2A9">Macroalgae harvest</text><text class="s" x="955.0" y="435" text-anchor="middle" fill="#B4B2A9">–</text></g>
+<g class="node" style="animation-delay:0.9s;transform-origin:675.0px 540.0px"><rect x="580" y="505" width="190" height="70" rx="12" fill="#FCEBEB" stroke="#A32D2D" stroke-width="1.5"/><text class="t" x="675.0" y="534" text-anchor="middle" fill="#A32D2D">Lagoon / estuary</text><text class="s" x="675.0" y="555" text-anchor="middle" fill="#A32D2D">589 kg N released</text></g>
+<text x="860" y="520" font-size="13" font-weight="600" fill="#2C2C2A">N in products: 149 kg</text>
+<text x="860" y="540" font-size="12" fill="#5F5E5A">fish 149</text>
+<text x="860" y="560" font-size="12" fill="#5F5E5A">N use efficiency 20%</text>
+<text x="1115" y="590" text-anchor="end" font-size="11" fill="#888780">Data: INTEGRATE deliverable PI05#3 (IPMA, CTAQUA 2020)</text>
+</svg>

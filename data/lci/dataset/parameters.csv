@@ -1,25 +1,4 @@
 par_name,par_amount,par_unit,par_status,par_comment
-feed_total,60000,kg/yr,assumption,FCR 1.5; literature for sea bream about 1.7-2.0 (Garcia Garcia et al. 2016)
-share_fishmeal,0.25,-,assumption,proxy feed recipe
-share_fish_oil,0.1,-,assumption,
-share_soybean_meal,0.3,-,assumption,
-share_wheat,0.25,-,assumption,
-share_rape_oil,0.1,-,assumption,
-N_feed,0.07,kg N/kg,assumption,
-P_feed,0.012,kg P/kg,assumption,
-N_fish,0.03,kg N/kg,assumption,
-P_fish,0.005,kg P/kg,assumption,
-N_seaweed,0.005,kg N/kg,assumption,fresh weight
-P_seaweed,0.0005,kg P/kg,assumption,
-N_mussels,0.01,kg N/kg,assumption,incl. shell
-P_mussels,0.001,kg P/kg,assumption,
-price_fish,7,EUR/kg,assumption,
-price_seaweed,1.5,EUR/kg,assumption,
-price_mussels,2.5,EUR/kg,assumption,
-diesel_density,0.84,kg/L,standard value,
-co2_per_kg_diesel,3.16,kg/kg,standard value,combustion
-distance_market,300,km,assumption,
-shell_share,0.4,kg/kg,assumption,rough check: about one third (Azizi et al. 2020)
-seaweed_residues,10000,kg/yr,assumption,collected in C only
-n_fert_substitution,0.5,-,assumption,
-n_loss_compost,0.1,-,assumption,
+protein_to_N,6.25,-,standard,N = protein / 6.25 (reproduces Table 5 feed N exactly)
+improvement_target,0.1,-,assumption,environmental KPI target: at least 10 % better than the conventional polyculture
+functional_unit,1000,kg,report,1 t aquatic product = fish + oyster flesh weight gain

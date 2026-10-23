@@ -1,5 +1,7 @@
-scenario,element,feed,kept_in_fish,seaweed,mussels,released_by_fish,recovered,to_sea
-imta-A,N,4200.0,1200.0,0.0,0.0,3000.0,0.0,3000.0
-imta-A,P,720.0,200.0,0.0,0.0,520.0,0.0,520.0
-imta-C,N,4200.0,1200.0,300.0,250.0,3000.0,550.0,2450.0
-imta-C,P,720.0,200.0,30.0,25.0,520.0,55.0,465.0
+system,element,feed_kg,fish_oyster_kg,macroalgae_kg,released_kg,use_efficiency,released_per_t_kg
+SI-IMTA,N,126.87,29.0,30.6,67.27,0.4698,54.74
+SI-IMTA,P,26.43,5.9,2.6,17.93,0.3216,14.59
+SE-IMTA,N,5.7,4.5,1.8,-0.6,1.106,-3.8
+SE-IMTA,P,1.16,1.0,0.1,0.06,0.9507,0.36
+SI-POLY,N,737.52,148.8,0.0,588.72,0.2018,95.93
+SI-POLY,P,153.65,25.0,0.0,128.65,0.1627,20.96

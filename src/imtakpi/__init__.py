@@ -1,4 +1,6 @@
-"""imtakpi – circular KPI decision tool for fish monoculture vs IMTA aquaculture."""
-from .model import run_all, load, evaluate, nutrient_balance, impacts, KPI_DEF
+"""imtakpi – KPI decision tool for pond IMTA vs fish polyculture (INTEGRATE deliverable PI05#3)."""
+from .model import (run_all, load, evaluate, nutrient_balance, per_tonne, checks,
+                    KPI_DEF, SYSTEMS, NAMES, CATEGORIES, BASELINE)
 
-__all__ = ["run_all", "load", "evaluate", "nutrient_balance", "impacts", "KPI_DEF"]
+__all__ = ["run_all", "load", "evaluate", "nutrient_balance", "per_tonne", "checks",
+           "KPI_DEF", "SYSTEMS", "NAMES", "CATEGORIES", "BASELINE"]

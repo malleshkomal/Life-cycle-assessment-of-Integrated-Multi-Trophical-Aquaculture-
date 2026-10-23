@@ -1,12 +1,12 @@
 property,value
-name,imta-cirkpi-lci
-version,0.1.0
+name,imta-integrate-lci
+version,1.0.0
 schema_version,LCIS2024
-creation_time,20261023-200000
-udi_name,imta-cirkpi-lci-LCIS2024-0.1.0-20261023-200000
-udi,52c79175-1608-57fa-a944-64736063b67c
-software,openLCA 2.x; Python 3.11; Excel
-external_datasets,ecoinvent 3.7 cut-off (names only - no ecoinvent data redistributed)
-count_activities,2
-count_flows,31
-count_parameters,24
+creation_time,20261023-220000
+udi_name,imta-integrate-lci-LCIS2024-1.0.0-20261023-220000
+udi,53eb108d-c771-575e-ac70-d99573e5655b
+software,Piscentool (original study); Python 3.11; Excel
+external_datasets,Piscentool / SimaPro background (not redistributed)
+count_activities,3
+count_flows,30
+count_parameters,3

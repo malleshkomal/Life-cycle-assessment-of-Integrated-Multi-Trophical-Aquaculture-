@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d3" for="edge" attr.name="amount" attr.type="double"/>
+<key id="d2" for="edge" attr.name="type" attr.type="string"/>
+<key id="d1" for="edge" attr.name="unit" attr.type="string"/>
+<key id="d0" for="edge" attr.name="amount" attr.type="long"/>
+<graph edgedefault="directed"><node id="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle"/>
+<node id="aquatic product (fish + oyster flesh), at farm gate"/>
+<node id="fish, live weight gain"/>
+<node id="oyster flesh, weight gain"/>
+<node id="macroalgae, biomass gain"/>
+<node id="compound fish feed"/>
+<node id="fish fry / fingerlings"/>
+<node id="oyster spat (flesh)"/>
+<node id="seawater, pumped or tidal"/>
+<node id="land occupation, farm area allocated to the pond"/>
+<node id="Nitrogen, to water (net rejection)"/>
+<node id="Phosphorus, to water (net rejection)"/>
+<node id="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle"/>
+<node id="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle"/>
+<edge source="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle" target="aquatic product (fish + oyster flesh), at farm gate">
+  <data key="d0">1</data>
+  <data key="d1">t</data>
+  <data key="d2">production</data>
+</edge>
+<edge source="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle" target="fish, live weight gain">
+  <data key="d3">894.2229</data>
+  <data key="d1">kg</data>
+  <data key="d2">production</data>
+</edge>
+<edge source="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle" target="oyster flesh, weight gain">
+  <data key="d3">105.7771</data>
+  <data key="d1">kg</data>
+  <data key="d2">production</data>
+</edge>
+<edge source="macroalgae, biomass gain" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">995.9317</data>
+  <data key="d1">kg</data>
+  <data key="d2">co-product (outside FU)</data>
+</edge>
+<edge source="macroalgae, biomass gain" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">222641.5094</data>
+  <data key="d1">kg</data>
+  <data key="d2">co-product (outside FU)</data>
+</edge>
+<edge source="compound fish feed" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">1536.2083</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="compound fish feed" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">559.7484</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="compound fish feed" target="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">1788.3331</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="fish fry / fingerlings" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">550.8544</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="fish fry / fingerlings" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">283.0189</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="fish fry / fingerlings" target="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">14.8281</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="oyster spat (flesh)" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">4.4752</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="oyster spat (flesh)" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">90.566</data>
+  <data key="d1">kg</data>
+  <data key="d2">technosphere</data>
+</edge>
+<edge source="seawater, pumped or tidal" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">82270.1383</data>
+  <data key="d1">m3</data>
+  <data key="d2">resource</data>
+</edge>
+<edge source="seawater, pumped or tidal" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">45188.6792</data>
+  <data key="d1">m3</data>
+  <data key="d2">resource</data>
+</edge>
+<edge source="seawater, pumped or tidal" target="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">195822.7147</data>
+  <data key="d1">m3</data>
+  <data key="d2">resource</data>
+</edge>
+<edge source="land occupation, farm area allocated to the pond" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">959.3372</data>
+  <data key="d1">m2a</data>
+  <data key="d2">resource</data>
+</edge>
+<edge source="land occupation, farm area allocated to the pond" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">4221.5998</data>
+  <data key="d1">m2a</data>
+  <data key="d2">resource</data>
+</edge>
+<edge source="land occupation, farm area allocated to the pond" target="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">2288.8399</data>
+  <data key="d1">m2a</data>
+  <data key="d2">resource</data>
+</edge>
+<edge source="Nitrogen, to water (net rejection)" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">54.6786</data>
+  <data key="d1">kg</data>
+  <data key="d2">emission</data>
+</edge>
+<edge source="Nitrogen, to water (net rejection)" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">-3.1447</data>
+  <data key="d1">kg</data>
+  <data key="d2">emission</data>
+</edge>
+<edge source="Nitrogen, to water (net rejection)" target="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">95.9263</data>
+  <data key="d1">kg</data>
+  <data key="d2">emission</data>
+</edge>
+<edge source="Phosphorus, to water (net rejection)" target="Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">14.6461</data>
+  <data key="d1">kg</data>
+  <data key="d2">emission</data>
+</edge>
+<edge source="Phosphorus, to water (net rejection)" target="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">0.0</data>
+  <data key="d1">kg</data>
+  <data key="d2">emission</data>
+</edge>
+<edge source="Phosphorus, to water (net rejection)" target="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle">
+  <data key="d3">20.9712</data>
+  <data key="d1">kg</data>
+  <data key="d2">emission</data>
+</edge>
+<edge source="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle" target="aquatic product (fish + oyster flesh), at farm gate">
+  <data key="d0">1</data>
+  <data key="d1">t</data>
+  <data key="d2">production</data>
+</edge>
+<edge source="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle" target="fish, live weight gain">
+  <data key="d3">408.805</data>
+  <data key="d1">kg</data>
+  <data key="d2">production</data>
+</edge>
+<edge source="Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle" target="oyster flesh, weight gain">
+  <data key="d3">591.195</data>
+  <data key="d1">kg</data>
+  <data key="d2">production</data>
+</edge>
+<edge source="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle" target="aquatic product (fish + oyster flesh), at farm gate">
+  <data key="d0">1</data>
+  <data key="d1">t</data>
+  <data key="d2">production</data>
+</edge>
+<edge source="Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle" target="fish, live weight gain">
+  <data key="d3">1000.0</data>
+  <data key="d1">kg</data>
+  <data key="d2">production</data>
+</edge>
+</graph></graphml>

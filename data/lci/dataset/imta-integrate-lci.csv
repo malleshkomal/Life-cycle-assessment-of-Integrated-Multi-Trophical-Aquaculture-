@@ -1,0 +1,31 @@
+ap_name,ap_code,ap_location,ap_unit,fp_name,fp_type,fp_amount,fp_unit,fp_comment
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"aquatic product (fish + oyster flesh), at farm gate",production,1,t,reference flow = functional unit
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"fish, live weight gain",production,894.2229,kg,Table 4 x scaling
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"oyster flesh, weight gain",production,105.7771,kg,Table 4 x scaling
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"macroalgae, biomass gain",co-product (outside FU),995.9317,kg,associated downstream production; not part of the functional unit
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,compound fish feed,technosphere,1536.2083,kg,"42 % protein, 1.4 % P"
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,fish fry / fingerlings,technosphere,550.8544,kg,Fry process in Piscentool used a carp-fry proxy
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,oyster spat (flesh),technosphere,4.4752,kg,
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"seawater, pumped or tidal",resource,82270.1383,m3,Table 4 x scaling (matches Water consumption in Annex 1)
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"land occupation, farm area allocated to the pond",resource,959.3372,m2a,farm area x pond share x cycle length (report allocation rule); compare Direct activity in Annex 1 LC
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"Nitrogen, to water (net rejection)",emission,54.6786,kg,Table 5 nutrient balance (Cho & Kaushik 1990); negative = net uptake
+"Semi-intensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",si-imta,PT,t,"Phosphorus, to water (net rejection)",emission,14.6461,kg,Table 5 nutrient balance (Cho & Kaushik 1990); negative = net uptake
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"aquatic product (fish + oyster flesh), at farm gate",production,1,t,reference flow = functional unit
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"fish, live weight gain",production,408.805,kg,Table 4 x scaling
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"oyster flesh, weight gain",production,591.195,kg,Table 4 x scaling
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"macroalgae, biomass gain",co-product (outside FU),222641.5094,kg,associated downstream production; not part of the functional unit
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,compound fish feed,technosphere,559.7484,kg,"40 % protein, 1.3 % P"
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,fish fry / fingerlings,technosphere,283.0189,kg,Fry process in Piscentool used a carp-fry proxy
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,oyster spat (flesh),technosphere,90.566,kg,
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"seawater, pumped or tidal",resource,45188.6792,m3,Table 4 x scaling (matches Water consumption in Annex 1)
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"land occupation, farm area allocated to the pond",resource,4221.5998,m2a,farm area x pond share x cycle length (report allocation rule); compare Direct activity in Annex 1 LC
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"Nitrogen, to water (net rejection)",emission,-3.1447,kg,Table 5 nutrient balance (Cho & Kaushik 1990); negative = net uptake
+"Semi-extensive pond IMTA, 1 t aquatic product (fish + oyster flesh), one cycle",se-imta,ES,t,"Phosphorus, to water (net rejection)",emission,0.0,kg,Table 5 nutrient balance (Cho & Kaushik 1990); negative = net uptake
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,"aquatic product (fish + oyster flesh), at farm gate",production,1,t,reference flow = functional unit
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,"fish, live weight gain",production,1000.0,kg,Table 4 x scaling
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,compound fish feed,technosphere,1788.3331,kg,"42 % protein, 1.4 % P"
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,fish fry / fingerlings,technosphere,14.8281,kg,Fry process in Piscentool used a carp-fry proxy
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,"seawater, pumped or tidal",resource,195822.7147,m3,Table 4 x scaling (matches Water consumption in Annex 1)
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,"land occupation, farm area allocated to the pond",resource,2288.8399,m2a,farm area x pond share x cycle length (report allocation rule); compare Direct activity in Annex 1 LC
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,"Nitrogen, to water (net rejection)",emission,95.9263,kg,Table 5 nutrient balance (Cho & Kaushik 1990); negative = net uptake
+"Semi-intensive fishpond polyculture, 1 t aquatic product (fish + oyster flesh), one cycle",si-poly,PT,t,"Phosphorus, to water (net rejection)",emission,20.9712,kg,Table 5 nutrient balance (Cho & Kaushik 1990); negative = net uptake

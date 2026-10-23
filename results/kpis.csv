@@ -1,23 +1,40 @@
-scenario,id,kpi,unit,value,better_if,target,met
-imta-A,E1,Carbon footprint of fish,kg CO2-eq/kg,2.8954,lower,2.0,False
-imta-A,E2,Marine eutrophication of fish,kg N-eq/kg,0.1214,lower,0.08,False
-imta-A,E4,Feed share of climate impact,-,0.7279,lower,0.75,True
-imta-A,C1,Nitrogen recovery rate,-,0.0,higher,0.15,False
-imta-A,C2,Phosphorus recovery rate,-,0.0,higher,0.1,False
-imta-A,C3,Nitrogen use efficiency,-,0.2857,higher,0.35,False
-imta-A,C4,Feed conversion ratio,kg/kg,1.5,lower,1.7,True
-imta-A,C5,Share of non-fed biomass,-,0.0,higher,0.5,False
-imta-A,C6,By-product valorisation rate,-,0.0,higher,0.5,False
-imta-A,B1,Eco-efficiency,EUR/t CO2-eq,2417.6447,higher,3000,False
-imta-A,B2,Revenue share of extractive species,-,0.0,higher,0.25,False
-imta-C,E1,Carbon footprint of fish,kg CO2-eq/kg,2.1249,lower,2.0,False
-imta-C,E2,Marine eutrophication of fish,kg N-eq/kg,0.0725,lower,0.08,True
-imta-C,E4,Feed share of climate impact,-,0.6652,lower,0.75,True
-imta-C,C1,Nitrogen recovery rate,-,0.1833,higher,0.15,True
-imta-C,C2,Phosphorus recovery rate,-,0.1058,higher,0.1,True
-imta-C,C3,Nitrogen use efficiency,-,0.4167,higher,0.35,True
-imta-C,C4,Feed conversion ratio,kg/kg,1.5,lower,1.7,True
-imta-C,C5,Share of non-fed biomass,-,0.6522,higher,0.5,True
-imta-C,C6,By-product valorisation rate,-,1.0,higher,0.5,True
-imta-C,B1,Eco-efficiency,EUR/t CO2-eq,3294.3118,higher,3000,True
-imta-C,B2,Revenue share of extractive species,-,0.3293,higher,0.25,True
+system,id,dimension,kpi,unit,better_if,target,value,met
+SI-IMTA,E1,Environment,Global warming,kg CO2-eq/t,lower,2552.4,2801.0,False
+SI-IMTA,E2,Environment,Cumulative energy demand,MJ-eq/t,lower,89907.3,90127.0,False
+SI-IMTA,E3,Environment,Net primary production use,kg C/t,lower,11122.2,10478.0,True
+SI-IMTA,E4,Environment,Acidification,kg SO2-eq/t,lower,40.5,42.0,False
+SI-IMTA,E5,Environment,Eutrophication,kg PO4-eq/t,lower,54.9,26.0,True
+SI-IMTA,E6,Environment,Land competition,m2a/t,lower,2141.1,2946.0,False
+SI-IMTA,E7,Environment,Water dependence,m3/t,lower,353701.8,163840.0,True
+SI-IMTA,C1,Circularity,Nitrogen use efficiency,%,higher,0.35,0.4698,True
+SI-IMTA,C2,Circularity,Phosphorus use efficiency,%,higher,0.3,0.3216,True
+SI-IMTA,C3,Circularity,Net N released to water,kg N/t,lower,60.0,54.7385,True
+SI-IMTA,C4,Circularity,Fish feed conversion ratio,kg/kg,lower,1.75,1.7179,True
+SI-IMTA,C5,Circularity,Share of non-fed (extractive) biomass,%,higher,0.5,0.552,True
+SI-IMTA,C6,Circularity,Feed share of global warming,%,lower,0.6,0.553,True
+SE-IMTA,E1,Environment,Global warming,kg CO2-eq/t,lower,2552.4,1255.0,True
+SE-IMTA,E2,Environment,Cumulative energy demand,MJ-eq/t,lower,89907.3,19097.0,True
+SE-IMTA,E3,Environment,Net primary production use,kg C/t,lower,11122.2,4402.0,True
+SE-IMTA,E4,Environment,Acidification,kg SO2-eq/t,lower,40.5,6.0,True
+SE-IMTA,E5,Environment,Eutrophication,kg PO4-eq/t,lower,54.9,2.0,True
+SE-IMTA,E6,Environment,Land competition,m2a/t,lower,2141.1,4885.0,False
+SE-IMTA,E7,Environment,Water dependence,m3/t,lower,353701.8,115691.0,True
+SE-IMTA,C1,Circularity,Nitrogen use efficiency,%,higher,0.35,1.106,True
+SE-IMTA,C2,Circularity,Phosphorus use efficiency,%,higher,0.3,0.9507,True
+SE-IMTA,C3,Circularity,Net N released to water,kg N/t,lower,60.0,-3.7987,True
+SE-IMTA,C4,Circularity,Fish feed conversion ratio,kg/kg,lower,1.75,1.3692,True
+SE-IMTA,C5,Circularity,Share of non-fed (extractive) biomass,%,higher,0.5,0.9982,True
+SE-IMTA,C6,Circularity,Feed share of global warming,%,lower,0.6,0.5841,True
+SI-POLY,E1,Environment,Global warming,kg CO2-eq/t,lower,2552.4,2836.0,False
+SI-POLY,E2,Environment,Cumulative energy demand,MJ-eq/t,lower,89907.3,99897.0,False
+SI-POLY,E3,Environment,Net primary production use,kg C/t,lower,11122.2,12358.0,False
+SI-POLY,E4,Environment,Acidification,kg SO2-eq/t,lower,40.5,45.0,False
+SI-POLY,E5,Environment,Eutrophication,kg PO4-eq/t,lower,54.9,61.0,False
+SI-POLY,E6,Environment,Land competition,m2a/t,lower,2141.1,2379.0,False
+SI-POLY,E7,Environment,Water dependence,m3/t,lower,353701.8,393002.0,False
+SI-POLY,C1,Circularity,Nitrogen use efficiency,%,higher,0.35,0.2018,False
+SI-POLY,C2,Circularity,Phosphorus use efficiency,%,higher,0.3,0.1627,False
+SI-POLY,C3,Circularity,Net N released to water,kg N/t,lower,60.0,95.9296,False
+SI-POLY,C4,Circularity,Fish feed conversion ratio,kg/kg,lower,1.75,1.7883,False
+SI-POLY,C5,Circularity,Share of non-fed (extractive) biomass,%,higher,0.5,0.0,False
+SI-POLY,C6,Circularity,Feed share of global warming,%,lower,0.6,0.6604,False

@@ -1,26 +1,39 @@
-# Known issues and limitations
+# Known issues and open questions
 
-This repository is shared openly, including what is not yet right.
+These came out of the data checks (`results/data_checks.csv`, Excel tab *Data checks*). They do not change the
+report's conclusions, but they should be clarified before the numbers are reused.
 
-## Open issues in the ecoinvent / openLCA runs
+## 1. Feed conversion ratio of the semi-extensive IMTA (Table 4)
+Table 4 gives an FCR of **0.56**. Feed / fish gain = 89 / 65 = **1.37**. The 0.56 equals feed / (fish + oyster gain) = 89 / 159.
+The other two systems use feed / fish gain (1,888 / 1,099 = 1.72; 10,975 / 6,137 = 1.79).
+**In this repository:** KPI C4 uses feed / fish gain for all three systems (1.37 for the semi-extensive IMTA).
 
-| # | Issue | Effect | Status |
-|---|---|---|---|
-| 1 | **Electricity provider**: auto-linking selected a lignite-dominated mix (Kosovo/Serbia) instead of `market for electricity, low voltage \| PT` | Electricity ≈ 66 % of climate change in run 3; result (4.95 kg CO2-eq/kg) far above literature (2.27) | Open – provider must be set to PT and the product system recreated with "only default providers" |
-| 2 | **Nitrogen not characterised**: the farm's N emission (to ocean or surface water) has no factor in openLCA's "EF 3.1 Method (adapted)" for marine eutrophication | Marine eutrophication strongly underestimated; the farm (the expected hotspot) does not appear | Open – check which N flows carry a factor (e.g. nitrate, ammonium) and convert |
-| 3 | Other auto-linked providers (e.g. Swiss rapeseed oil, small refrigerated lorry in run 1) | Minor | Open – set explicitly for a final study |
-| 4 | Run 2 used allocation "none" | All burden on fish | Superseded by run 3; kept for transparency |
+## 2. Land competition of the polyculture (Annex 1)
+For both IMTA systems, *Direct activity* in Land competition matches the report's allocation rule
+(farm area × production-pond area / total pond area × cycle length): 959 vs 941 m²a/t and 4,222 vs 4,194 m²a/t.
+For the polyculture the same rule over 26 months gives 2,289 m²a/t, but Annex 1 reports **460** m²a/t
+(this would correspond to about 5 months, or to a one-year basis with a different area). To clarify with the authors.
+**In this repository:** the Annex 1 value is used unchanged.
 
-## Limitations of the model
-- Activity data are assumptions (no measured farm data); FCR 1.5 is optimistic versus literature (1.7–2.0).
-- Fish juveniles, feed milling, infrastructure excluded; including juveniles would raise the footprint.
-- Nutrient recovery is an upper estimate: mussels also feed on natural plankton, biodeposits are not modelled;
-  open-water IMTA in the literature recovers about 7 % of fed N.
-- Illustrative factors (`data/factors_illustrative.csv`) exclude land use change; ecoinvent shows it is significant for soy.
-- EF does not capture IMTA ecosystem services (water quality) or biodiversity effects.
+## 3. Table 5 caption
+The caption says "calculated for 1 tonne of fish and oyster produced per cycle", but the values are **per pond and cycle**:
+N in feed = feed of the pond × 42 % / 6.25 (1,888 × 0.0672 = 126.9 kg). The last row ("by weight of produced fish") is per kg
+of fish + oyster. **In this repository:** Table 5 is read per pond and scaled to the functional unit.
 
-## Next steps
-1. Fix issues 1 and 2, re-run, update `data/openlca_results/`.
-2. Replace illustrative factors with per-unit openLCA results.
-3. Sensitivity analysis: FCR, soy origin, allocation method, electricity mix.
-4. Add uncertainty (pedigree matrix → Monte Carlo).
+## 4. Text vs Annex 1
+- Section 4.3 quotes 10,423 kg C for the semi-intensive IMTA; that is the *Feeds* contribution. The total is 10,478 kg C.
+- Section 4.5 quotes 3 kg PO4-eq for the semi-extensive IMTA; Annex 1 gives a total of 2 kg PO4-eq.
+**In this repository:** Annex 1 totals are used.
+
+## 5. Rounding and missing shares
+Annex 1 amounts are rounded to whole units, so small values lose precision (semi-extensive acidification 6 kg SO2-eq,
+eutrophication 2 kg PO4-eq). Three shares are printed as `###` (overflow) and are left empty in `lcia_annex1.csv`.
+Process sums match the totals within ±2 units.
+
+## 6. Macroalgae nitrogen
+Implied N content of the harvested macroalgae: 30.6 / 1,224 = 2.5 % (semi-intensive) vs 1.8 / 35,400 = 0.005 % (semi-extensive).
+The basis (fresh vs dry weight, harvested vs grown) is probably different. Worth checking against the raw data.
+
+## 7. Scope differences between the systems
+Cycle lengths differ (5.3, 8.5, 26 months) and the ponds are experimental. Short cycles raise the share of equipment
+and buildings (section 5 of the report). Comparisons are per functional unit, not per year.
