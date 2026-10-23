@@ -15,18 +15,13 @@ LCI in the LCIS2024 format → LCA in openLCA (ecoinvent 3.7, EF 3.1) → 12 KPI
 (Excel + Python), with documented assumptions and known issues.
 
 ### 📄 Selected publications
-- Nair, R. R., **Chougule, K. M.**, Gomez, J. C., & Brand-Daniels, U. (2025). A generalized schema to publish and share
-  life cycle inventories (LCI): Exemplary case of an aviation fuel supply chain. *Journal of Cleaner Production*, 520, 146120.
-  https://doi.org/10.1016/j.jclepro.2025.146120
 - Hala, A. F., **Chougule, K.**, et al. (2024). Life cycle assessment of integrated multi-trophic aquaculture:
   A review on methodology and challenges for its sustainability evaluation. *Aquaculture*, 590, 741035.
-- Techno-economic and environmental assessment of green hydrogen production via alkaline and PEM electrolysis.
-- Environmental assessment of renewable hydrogen production in Europe with alkaline and PEM electrolysis.
+
 
 ### 🛠 Tools
 `Python (pandas, NumPy)` `Brightway` `openLCA` `GaBi` `Umberto` `Aspen Plus` `Git/GitHub` `Excel KPI dashboards`
 
-### 🌍 Languages
-English (C1+) · German (B2) · Hindi, Kannada (native)
+
 
 📫 [LinkedIn](https://www.linkedin.com/) – add your profile link
