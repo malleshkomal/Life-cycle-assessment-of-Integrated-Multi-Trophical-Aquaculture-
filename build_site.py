@@ -64,6 +64,7 @@ Functional unit: 1 tonne of aquatic product (fish + oyster flesh) at the farm ga
 <p class="note">Inventory and impact results are taken from INTEGRATE deliverable PI05#3 (IPMA &amp; CTAQUA, 2020; Piscentool).
 The KPI framework, targets, nutrient-balance re-calculation and data checks are added in this repository.</p>
 <h2>Key findings</h2>
+{img("00_key_numbers.png", "Key numbers per tonne of fish + oyster")}
 <ol>
 <li><b>Semi-extensive IMTA has the lowest impacts</b> in 6 of 7 categories: global warming −56 %, energy −81 %, eutrophication −97 % against the polyculture. It takes up more nitrogen than the feed brings (net uptake).</li>
 <li><b>Semi-intensive IMTA vs polyculture</b> (same site, same target density): eutrophication −57 % and water dependence −58 %, because oysters and macroalgae keep 47 % of the feed nitrogen in products (polyculture: 20 %). Global warming is almost the same (−1 %).</li>
@@ -72,12 +73,17 @@ The KPI framework, targets, nutrient-balance re-calculation and data checks are 
 <li><b>Data checks:</b> the tables agree (feed N, water per tonne, process sums), with two findings to clarify – the semi-extensive FCR of 0.56 includes oyster gain, and the polyculture land value does not follow the pond-area rule.</li>
 </ol>
 <h2>Impacts per tonne of fish + oyster</h2><div class="wrap"><table><tr><th>Category</th><th>Unit</th>{head}<th>SI-IMTA vs POLY</th><th>SE-IMTA vs POLY</th></tr>{irows}</table></div>
+<h2>KPI framework</h2>
+{img("07_kpi_framework.png", "KPI framework: data, scaling, KPI values, targets, score")}
 <h2>KPI scorecard</h2><p style="color:var(--mut);font-size:.9rem">Environmental targets: at least 10 % better than the polyculture (grey = baseline). Circularity targets are placeholders.</p>
 <div class="wrap"><table><tr><th>ID</th><th>KPI</th><th>Unit</th><th>Target</th>{head}</tr>{rows}</table></div>
+{img("08_kpi_distance_to_target.png", "Margin of each KPI to its target")}
 <h2>How the fish waste is used (semi-intensive IMTA)</h2>
 <div class="flow">{flow}</div>
 <p style="font-size:.9rem">All three systems side by side: open <code>flow.html</code> in the same folder.</p>
 <h2>Figures</h2>
+<h3>Environmental profile</h3>
+{img("06_environmental_profile.png", "Each impact as % of the fish-only pond")}
 <h3>Figure 1 – Impacts against the fish-only pond</h3>
 {img("01_change_vs_fish_pond.png", "Change of each impact category against the fish-only pond, per tonne")}
 <h3>Figure 2 – Global warming by process</h3>

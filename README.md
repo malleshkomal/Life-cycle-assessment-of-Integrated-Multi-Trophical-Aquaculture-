@@ -22,73 +22,97 @@ three farm designs on **13 KPIs** for environment and circularity. The tool is a
 - **Excel:** [`excel/IMTA_KPI_decision_tool.xlsx`](excel/IMTA_KPI_decision_tool.xlsx) · **[preview in the browser](https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmalleshkomal%2FLife-cycle-assessment-of-Integrated-Multi-Trophical-Aquaculture-%2Fmain%2Fexcel%2FIMTA_KPI_decision_tool.xlsx)** (all tabs, no download). 12 tabs: README, goal & scope, metadata, inventory, LCI per tonne,
   nutrient balance, LCIA (Annex 1), comparison, KPI framework, dashboard, data checks, sources. All results are live formulas: change a yellow cell
   (for example the 10 % improvement target or the feed amount) and every KPI updates. No internet, no macros, no external links.
-  [![Excel KPI decision tool: KPI framework tab](excel/excel_kpi_framework.png)](excel/IMTA_KPI_decision_tool.xlsx)
 - **Findings page:** [`docs/index.html`](docs/index.html) – one self-contained file with all charts embedded. Download it and open it in any browser.
 - **Flow diagrams:** [`docs/flow.html`](docs/flow.html) – one tab per system.
 
 ## Key findings
 
-1. **Semi-extensive IMTA has the lowest impacts in 6 of 7 categories:** global warming −56 %, energy −81 %, eutrophication −97 % against the polyculture.
-   It even takes up nitrogen from the estuary (net uptake 0.5 kg N per cycle): fish and oysters also eat natural food.
-2. **Semi-intensive IMTA vs polyculture** (same station, same target fish density): **eutrophication −57 %** and **water dependence −58 %**.
-   Oysters and macroalgae keep **47 % of the feed nitrogen** in products, against 20 % in the polyculture. Global warming is almost equal (−1 %).
-3. **Feed is the hotspot:** 55–66 % of global warming and over 99 % of primary production use. Uneaten feed and excretion
-   ("Rejects fish") cause 59–84 % of acidification and eutrophication in the semi-intensive systems.
-4. **Land is the trade-off:** the IMTA systems need +24 % (semi-intensive) and +105 % (semi-extensive) more land per tonne.
-5. **Data checks:** 37 of 39 cross-checks between the report's tables pass. Two findings are documented in [`docs/known_issues.md`](docs/known_issues.md):
-   the semi-extensive FCR of 0.56 divides feed by fish **and** oyster gain, and the polyculture land value does not follow the pond-area rule.
+![Key numbers](results/charts/00_key_numbers.png)
 
-## Results
+### 1. Both IMTA systems lower six of seven impacts – the semi-extensive one by far the most
+Against the fish-only pond, the semi-extensive IMTA cuts global warming by 56 %, energy by 81 % and eutrophication by 97 %.
+It even takes up nitrogen from the estuary (net uptake), because fish and oysters also eat natural food. The semi-intensive IMTA
+has almost the same global warming (−1 %) but much lower eutrophication (−57 %) and water dependence (−58 %).
 
-All figures are per tonne of aquatic product (fish + oyster flesh). The fish-only pond (semi-intensive polyculture) is the baseline.
+<table><tr>
+<td width="50%"><img src="results/charts/06_environmental_profile.png" alt="Radar chart of the seven impact categories, relative to the fish-only pond"></td>
+<td width="50%"><img src="results/charts/01_change_vs_fish_pond.png" alt="Change of each impact category against the fish-only pond"></td>
+</tr></table>
 
-### Figure 1 – Impacts against the fish-only pond
-Both IMTA systems are lower in six of seven categories. The semi-extensive IMTA cuts most; land competition is the trade-off.
+### 2. Oysters and macroalgae keep nitrogen out of the water
+In the semi-intensive IMTA, 47 % of the feed nitrogen ends up in fish, oysters and macroalgae, against 20 % in the fish-only pond.
+Released nitrogen falls from 96 to 55 kg N per tonne.
 
-![Figure 1: change of each impact category against the fish-only pond](results/charts/01_change_vs_fish_pond.png)
+![Fate of feed nitrogen](results/charts/03_nitrogen_fate.png)
 
-### Figure 2 – Global warming by process
-Feed is 55–66 % of the total. Pumping energy matters only in the semi-intensive ponds; equipment weighs more in the short IMTA cycles.
+[![Flow diagram of the semi-intensive IMTA: feed, fish, oysters, macroalgae and nitrogen released](results/charts/06_flow_si_imta.svg)](docs/flow.html)
 
-![Figure 2: global warming by process](results/charts/02_global_warming_by_process.png)
+Other systems: [fish-only pond](results/charts/06_flow_si_poly.svg) · [semi-extensive IMTA](results/charts/06_flow_se_imta.svg) · all three with tabs in [`docs/flow.html`](docs/flow.html).
 
-### Figure 3 – Where the nitrogen in the feed goes
-Oysters and macroalgae keep 47 % of the feed nitrogen in products in the semi-intensive IMTA, against 20 % in the fish-only pond.
+### 3. Feed is the hotspot
+Feed causes 55–66 % of global warming and over 99 % of primary production use. Uneaten feed and excretion ("Rejects fish") cause
+59–84 % of acidification and eutrophication in the semi-intensive ponds. Pumping energy matters only where water is pumped, not with tides.
 
-![Figure 3: fate of feed nitrogen](results/charts/03_nitrogen_fate.png)
+<table><tr>
+<td width="45%"><img src="results/charts/02_global_warming_by_process.png" alt="Global warming by process"></td>
+<td width="55%"><img src="results/charts/04_process_heatmap.png" alt="Heatmap: share of each impact per process"></td>
+</tr></table>
 
-### Figure 4 – Which process drives which impact
-Feeds drive global warming and primary production use; uneaten feed and excretion ("Rejects fish") drive acidification and eutrophication;
-direct farm activity and water use drive land and water.
+### 4. Land is the trade-off
+Both IMTA systems need more land per tonne: +24 % (semi-intensive) and +105 % (semi-extensive). It is the only category where the fish-only pond is better.
 
-![Figure 4: heatmap of process shares per impact category](results/charts/04_process_heatmap.png)
-
-### Figure 5 – KPI scorecard
-
-![Figure 5: KPI scorecard](results/charts/05_kpi_scorecard.png)
-
-### Figure 6 – How the fish waste is used (semi-intensive IMTA, one production cycle)
-
-[![Figure 6: flow diagram of feed, fish, oysters, macroalgae and nitrogen released](results/charts/06_flow_si_imta.svg)](docs/flow.html)
-
-59.6 of 127 kg N end up in fish, oysters and macroalgae; 67 kg N is released. Other systems:
-[fish-only pond](results/charts/06_flow_si_poly.svg) (589 of 738 kg N released) and
-[semi-extensive IMTA](results/charts/06_flow_se_imta.svg) (net uptake from the estuary).
+### 5. The data were checked
+37 of 39 cross-checks between the report's tables pass (feed N and P, water per tonne, process sums). Two findings are documented in
+[`docs/known_issues.md`](docs/known_issues.md): the semi-extensive FCR of 0.56 divides feed by fish **and** oyster gain, and the fish-only pond's
+land value does not follow the report's pond-area rule.
 
 ## KPI framework
 
-| ID | Dimension | KPI | Formula | Target |
-|---|---|---|---|---|
-| E1–E7 | Environment | Global warming, energy demand, primary production use, acidification, eutrophication, land competition, water dependence per tonne | Annex 1 total | at least 10 % below the polyculture |
-| C1 | Circularity | Nitrogen use efficiency | N in fish + oysters + macroalgae / N in feed | ≥ 35 % |
-| C2 | Circularity | Phosphorus use efficiency | P in all products / P in feed | ≥ 30 % |
-| C3 | Circularity | Net N released to water | (N in feed − N in products) per tonne | ≤ 60 kg N/t |
-| C4 | Circularity | Fish feed conversion ratio | feed / fish gain | ≤ 1.75 |
-| C5 | Circularity | Share of non-fed biomass | (oyster + macroalgae) / total harvest | ≥ 50 % |
-| C6 | Circularity | Feed share of global warming | Feeds / total GW | ≤ 60 % |
+The framework turns the LCA results into **13 KPIs** in two dimensions – **7 environmental** (one per impact category) and
+**6 circularity** KPIs – each with a target and a pass/fail result.
 
-Result: semi-intensive IMTA **9/13**, semi-extensive IMTA **12/13**, polyculture **0/13** (it is the baseline for E1–E7).
-The targets are placeholders that a company would agree in a workshop. Every step is explained in [`docs/methodology.md`](docs/methodology.md).
+![KPI framework: data, scaling, KPI values, targets, score](results/charts/07_kpi_framework.png)
+
+**How the scorecard is built**
+
+1. **Data** – inventory (Table 4), nitrogen and phosphorus (Table 5) and impacts per process (Annex 1) of the report.
+2. **Scale** to the functional unit: factor = 1,000 / (fish gain + oyster gain). Semi-intensive IMTA: 1,000 / 1,229 = 0.814.
+3. **KPI values** – environmental KPIs are the Annex 1 totals; circularity KPIs are calculated, e.g. nitrogen use efficiency =
+   (29.0 + 30.6) / 126.9 = 47 %, where N in feed = 1,888 kg × 42 % protein / 6.25.
+4. **Targets** – environmental: at least **10 % better than the fish-only pond** (value × 0.9); circularity: fixed values. All targets are
+   yellow input cells in Excel, to be agreed with stakeholders.
+5. **Score** – `value ≤ target` (or `≥` when higher is better) gives ✅ or ❌; the ticks are counted.
+
+| ID | KPI | Unit | Formula | Target | Semi-intensive IMTA | Semi-extensive IMTA | Fish-only pond |
+|---|---|---|---|---|---|---|---|
+| E1 | Global warming | kg CO2-eq/t | Annex 1 total | ≤ 2,552 | 2,801 ❌ | 1,255 ✅ | 2,836 ⚪ |
+| E2 | Cumulative energy demand | MJ-eq/t | Annex 1 total | ≤ 89,907 | 90,127 ❌ | 19,097 ✅ | 99,897 ⚪ |
+| E3 | Net primary production use | kg C/t | Annex 1 total | ≤ 11,122 | 10,478 ✅ | 4,402 ✅ | 12,358 ⚪ |
+| E4 | Acidification | kg SO2-eq/t | Annex 1 total | ≤ 40.5 | 42.0 ❌ | 6.00 ✅ | 45.0 ⚪ |
+| E5 | Eutrophication | kg PO4-eq/t | Annex 1 total | ≤ 54.9 | 26.0 ✅ | 2.00 ✅ | 61.0 ⚪ |
+| E6 | Land competition | m2a/t | Annex 1 total | ≤ 2,141 | 2,946 ❌ | 4,885 ❌ | 2,379 ⚪ |
+| E7 | Water dependence | m3/t | Annex 1 total | ≤ 353,702 | 163,840 ✅ | 115,691 ✅ | 393,002 ⚪ |
+| C1 | Nitrogen use efficiency | % | N in fish + oysters + macroalgae / N in feed | ≥ 35 % | 47 % ✅ | 111 % ✅ | 20 % ❌ |
+| C2 | Phosphorus use efficiency | % | P in all products / P in feed | ≥ 30 % | 32 % ✅ | 95 % ✅ | 16 % ❌ |
+| C3 | Net N released to water | kg N/t | (N in feed − N in products) per tonne | ≤ 60.0 | 54.7 ✅ | -3.80 ✅ | 95.9 ❌ |
+| C4 | Fish feed conversion ratio | kg/kg | feed / fish gain | ≤ 1.75 | 1.72 ✅ | 1.37 ✅ | 1.79 ❌ |
+| C5 | Share of non-fed (extractive) biomass | % | (oyster + macroalgae) / total harvest | ≥ 50 % | 55 % ✅ | 100 % ✅ | 0 % ❌ |
+| C6 | Feed share of global warming | % | Feeds / total global warming | ≤ 60 % | 55 % ✅ | 58 % ✅ | 66 % ❌ |
+| | **Targets met** | | | | **9 / 13** | **12 / 13** | **0 / 13** |
+
+✅ met · ❌ not met · ⚪ baseline (the fish-only pond is the reference for E1–E7)
+
+<table><tr>
+<td width="50%"><img src="results/charts/05_kpi_scorecard.png" alt="KPI scorecard"></td>
+<td width="50%"><img src="results/charts/08_kpi_distance_to_target.png" alt="Margin of each KPI to its target"></td>
+</tr></table>
+
+The same framework in the **Excel tool** (tab *KPI framework*) – change a target or an input and every KPI updates.
+[Preview in the browser](https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmalleshkomal%2FLife-cycle-assessment-of-Integrated-Multi-Trophical-Aquaculture-%2Fmain%2Fexcel%2FIMTA_KPI_decision_tool.xlsx) · [download](excel/IMTA_KPI_decision_tool.xlsx)
+
+[![Excel KPI framework tab](excel/excel_kpi_framework.png)](excel/IMTA_KPI_decision_tool.xlsx)
+
+Every step is explained in [`docs/methodology.md`](docs/methodology.md).
 
 ## Quick start
 
@@ -98,7 +122,7 @@ pip install -r requirements.txt
 python make_data.py     # report tables -> data/report/*.csv, data/lci/ (LCIS2024)
 python run.py           # KPIs, impacts, nutrient balance, data checks -> results/*.csv
 python make_excel.py    # offline Excel tool -> excel/
-python make_charts.py   # figures 1-5 (PNG)       -> results/charts/
+python make_charts.py   # all figures (PNG)       -> results/charts/
 python make_flow.py     # flow diagrams (SVG)     -> results/charts/, docs/flow.html
 python build_site.py    # offline findings page -> docs/index.html
 pytest                  # 35 tests
