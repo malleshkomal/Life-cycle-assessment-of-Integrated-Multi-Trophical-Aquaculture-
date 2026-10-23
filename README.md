@@ -24,7 +24,7 @@ three farm designs on **13 KPIs** for environment and circularity. The tool is a
   (for example the 10 % improvement target or the feed amount) and every KPI updates. No internet, no macros, no external links.
   [![Excel KPI decision tool: KPI framework tab](excel/excel_kpi_framework.png)](excel/IMTA_KPI_decision_tool.xlsx)
 - **Findings page:** [`docs/index.html`](docs/index.html) – one self-contained file with all charts embedded. Download it and open it in any browser.
-- **Flow diagrams:** [`docs/flow.html`](docs/flow.html) – animated, with a tab for each system.
+- **Flow diagrams:** [`docs/flow.html`](docs/flow.html) – one tab per system.
 
 ## Key findings
 
@@ -38,33 +38,42 @@ three farm designs on **13 KPIs** for environment and circularity. The tool is a
 5. **Data checks:** 37 of 39 cross-checks between the report's tables pass. Two findings are documented in [`docs/known_issues.md`](docs/known_issues.md):
    the semi-extensive FCR of 0.56 divides feed by fish **and** oyster gain, and the polyculture land value does not follow the pond-area rule.
 
-## How the fish waste is used
+## Results
 
-[![Animated flow diagram: feed nitrogen goes to fish, oysters and macroalgae; the rest is released to the lagoon](results/charts/06_flow_si_imta.svg)](docs/flow.html)
+All figures are per tonne of aquatic product (fish + oyster flesh). The fish-only pond (semi-intensive polyculture) is the baseline.
 
-In the semi-intensive IMTA, oysters filter particles and macroalgae take up dissolved nitrogen and phosphorus: 59.6 of 127 kg N end up in products and
-67 kg N is released. In the polyculture, 589 of 738 kg N is released ([diagram](results/charts/06_flow_si_poly.svg)); the semi-extensive IMTA has a net
-uptake ([diagram](results/charts/06_flow_se_imta.svg)).
+### Figure 1 – Impacts against the fish-only pond
+Both IMTA systems are lower in six of seven categories. The semi-extensive IMTA cuts most; land competition is the trade-off.
 
-![KPI scorecard](results/charts/anim_04_kpi_scorecard.gif)
+![Figure 1: change of each impact category against the fish-only pond](results/charts/01_change_vs_fish_pond.png)
 
-## Findings in charts
+### Figure 2 – Global warming by process
+Feed is 55–66 % of the total. Pumping energy matters only in the semi-intensive ponds; equipment weighs more in the short IMTA cycles.
 
-**1. All categories relative to the polyculture (= 100).** IMTA is lower everywhere except land competition.
+![Figure 2: global warming by process](results/charts/02_global_warming_by_process.png)
 
-![Relative to polyculture](results/charts/anim_02_relative_to_polyculture.gif)
+### Figure 3 – Where the nitrogen in the feed goes
+Oysters and macroalgae keep 47 % of the feed nitrogen in products in the semi-intensive IMTA, against 20 % in the fish-only pond.
 
-**2. Global warming by process.** Feed dominates; energy for pumping matters in the semi-intensive systems; equipment and buildings weigh more in the short IMTA cycles.
+![Figure 3: fate of feed nitrogen](results/charts/03_nitrogen_fate.png)
 
-![Global warming by process](results/charts/anim_01_gw_by_process.gif)
+### Figure 4 – Which process drives which impact
+Feeds drive global warming and primary production use; uneaten feed and excretion ("Rejects fish") drive acidification and eutrophication;
+direct farm activity and water use drive land and water.
 
-**3. Where the nitrogen in the feed goes**, per tonne of fish + oyster.
+![Figure 4: heatmap of process shares per impact category](results/charts/04_process_heatmap.png)
 
-![Nitrogen fate](results/charts/anim_03_nitrogen_fate.gif)
+### Figure 5 – KPI scorecard
 
-**4. Which process causes which impact.**
+![Figure 5: KPI scorecard](results/charts/05_kpi_scorecard.png)
 
-![Process shares](results/charts/anim_05_process_shares.gif)
+### Figure 6 – How the fish waste is used (semi-intensive IMTA, one production cycle)
+
+[![Figure 6: flow diagram of feed, fish, oysters, macroalgae and nitrogen released](results/charts/06_flow_si_imta.svg)](docs/flow.html)
+
+59.6 of 127 kg N end up in fish, oysters and macroalgae; 67 kg N is released. Other systems:
+[fish-only pond](results/charts/06_flow_si_poly.svg) (589 of 738 kg N released) and
+[semi-extensive IMTA](results/charts/06_flow_se_imta.svg) (net uptake from the estuary).
 
 ## KPI framework
 
@@ -89,8 +98,8 @@ pip install -r requirements.txt
 python make_data.py     # report tables -> data/report/*.csv, data/lci/ (LCIS2024)
 python run.py           # KPIs, impacts, nutrient balance, data checks -> results/*.csv
 python make_excel.py    # offline Excel tool -> excel/
-python make_charts.py   # charts, PNG and animated GIF -> results/charts/
-python make_flow.py     # animated flow diagrams -> results/charts/, docs/flow.html
+python make_charts.py   # figures 1-5 (PNG)       -> results/charts/
+python make_flow.py     # flow diagrams (SVG)     -> results/charts/, docs/flow.html
 python build_site.py    # offline findings page -> docs/index.html
 pytest                  # 35 tests
 ```
@@ -103,7 +112,7 @@ pytest                  # 35 tests
 | `src/imtakpi/model.py` | Scales to the functional unit, recalculates the N and P balance, evaluates 13 KPIs, runs 39 data checks |
 | `run.py` | Writes `results/kpis.csv`, `impacts_per_tonne.csv`, `nutrient_balance.csv`, `data_checks.csv` |
 | `make_excel.py` | Builds the Excel tool with live formulas (same results as Python) |
-| `make_charts.py`, `make_flow.py`, `build_site.py` | Charts, animated flow diagrams and the findings page |
+| `make_charts.py`, `make_flow.py`, `build_site.py` | Figures, flow diagrams and the findings page |
 | `tests/` | Report totals reproduced, feed N/P = Table 5, N balance closes, functional unit = Annex 1 water, process sums, known KPI values |
 
 ## Project structure

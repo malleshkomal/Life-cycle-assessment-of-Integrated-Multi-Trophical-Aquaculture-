@@ -1,4 +1,4 @@
-"""Animated flow diagrams: how the fish waste is used in each pond system (one production cycle).
+"""Flow diagrams: how the fish waste is used in each pond system (one production cycle).
 
 Output: results/charts/06_flow_<system>.svg (one per system) and docs/flow.html (offline page with tabs).
 All numbers come from data/report (Tables 4 and 5 of INTEGRATE deliverable PI05#3) via the model.
@@ -18,14 +18,9 @@ PLACE = {"SI-IMTA": "IPMA research station, Olhao, Portugal · 700 m² pond · 5
          "SE-IMTA": "Estero Natural, Cadiz, Spain · 665 m² fish enclosure + macroalgae pond · 8.5 months",
          "SI-POLY": "IPMA research station, Olhao, Portugal · 1,700 m² pond · 26 months · fish only"}
 STYLE = """<style>
-.flow{fill:none;stroke-linecap:round;stroke-dasharray:10 9;animation:dash 1.2s linear infinite, show .6s ease-out both}
-.base{fill:none;stroke-linecap:round;opacity:.16;animation:show .6s ease-out both}
-.node{animation:pop .6s cubic-bezier(.2,.8,.2,1.2) both}
-.lab{font-size:12px;fill:#444441;animation:show .6s ease-out both}
+.flow{fill:none;stroke-linecap:butt;opacity:.85}
+.lab{font-size:12px;fill:#444441}
 .t{font-size:15px;font-weight:600}.s{font-size:12px}
-@keyframes dash{to{stroke-dashoffset:-38}}
-@keyframes show{from{opacity:0}to{opacity:1}}
-@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
 </style>"""
 
 
@@ -97,12 +92,14 @@ def build(s):
            f'<text x="25" y="52" font-size="12" fill="#5F5E5A">{PLACE[s]} · one production cycle · nitrogen in kg N</text>']
     for j, (a, sa, b, sb, col, lab, w, d) in enumerate(edges):
         p1, p2 = port(a, sa), port(b, sb)
+        if b == "pond" and sb == "l":
+            order = ["feed", "fry", "water", "energy"].index(a)
+            p2 = (p2[0] - 6, nodes["pond"][1] + 14 + order * 14)
         path = curve(p1, p2)
         eid = f"{pid}-e{j}"
-        out.append(f'<path class="base" d="{path}" stroke="{col}" stroke-width="{w + 6:.1f}" style="animation-delay:{d}s"/>')
-        out.append(f'<path id="{eid}" class="flow" d="{path}" stroke="{col}" stroke-width="{w:.1f}" style="animation-delay:0s,{d}s"/>')
-        out.append(f'<circle r="{w / 2 + 2.5:.1f}" fill="{col}" opacity="0"><set attributeName="opacity" to="1" begin="{d + .4}s"/>'
-                   f'<animateMotion dur="2.4s" begin="{d + .4}s" repeatCount="indefinite"><mpath href="#{eid}"/></animateMotion></circle>')
+        out.append(f'<marker id="{eid}-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">'
+                   f'<path d="M0,0 L10,5 L0,10 z" fill="{col}"/></marker>')
+        out.append(f'<path id="{eid}" class="flow" d="{path}" stroke="{col}" stroke-width="{w:.1f}" marker-end="url(#{eid}-a)"/>')
         if lab:
             lx, ly, anc = (p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2 - 10, "middle"
             if a == "feed":
@@ -113,10 +110,10 @@ def build(s):
                     lx, ly, anc = p1[0] + 80, (p1[1] + p2[1]) / 2 + 22, "end"
             elif a == "sea":
                 lx, ly, anc = p1[0] + 12, (p1[1] + p2[1]) / 2 + 4, "start"
-            out.append(f'<text class="lab" x="{lx:.0f}" y="{ly:.0f}" text-anchor="{anc}" style="animation-delay:{d + .3}s">{lab}</text>')
+            out.append(f'<text class="lab" x="{lx:.0f}" y="{ly:.0f}" text-anchor="{anc}">{lab}</text>')
     for k, (x0, y0, fill, stroke, t, sub, d) in nodes.items():
         dash = ' stroke-dasharray="5 4"' if fill == grey[0] else ""
-        out.append(f'<g class="node" style="animation-delay:{d}s;transform-origin:{x0 + NW / 2}px {y0 + NH / 2}px">'
+        out.append(f'<g class="node">'
                    f'<rect x="{x0}" y="{y0}" width="{NW}" height="{NH}" rx="12" fill="{fill}" stroke="{stroke}" stroke-width="1.5"{dash}/>'
                    f'<text class="t" x="{x0 + NW / 2}" y="{y0 + 29}" text-anchor="middle" fill="{stroke}">{t}</text>'
                    f'<text class="s" x="{x0 + NW / 2}" y="{y0 + 50}" text-anchor="middle" fill="{stroke}">{sub}</text></g>')
@@ -171,7 +168,7 @@ Part of the repository “Life cycle assessment of fish monoculture and IMTA aqu
 <script>
 document.querySelectorAll('[role=tab]').forEach(b=>b.addEventListener('click',()=>{{
  document.querySelectorAll('[role=tab]').forEach(x=>x.setAttribute('aria-selected',x===b));
- document.querySelectorAll('section[data-s]').forEach(p=>{{p.hidden=p.dataset.s!==b.dataset.s; if(!p.hidden){{const sv=p.querySelector('svg'); const c=sv.cloneNode(true); sv.replaceWith(c);}}}});
+ document.querySelectorAll('section[data-s]').forEach(p=>{{p.hidden=p.dataset.s!==b.dataset.s;}});
 }}));
 </script>
 </main></body></html>"""

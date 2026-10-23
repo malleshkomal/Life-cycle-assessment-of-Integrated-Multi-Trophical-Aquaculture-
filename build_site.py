@@ -14,7 +14,7 @@ NAME = {"SI-IMTA": "Semi-intensive pond IMTA", "SE-IMTA": "Semi-extensive pond I
 
 def img(name, alt):
     b = base64.b64encode((CH / name).read_bytes()).decode()
-    mime = "image/gif" if name.endswith(".gif") else "image/png"
+    mime = "image/png"
     return f'<figure><img alt="{html.escape(alt)}" src="data:{mime};base64,{b}"><figcaption>{html.escape(alt)}</figcaption></figure>'
 
 
@@ -77,12 +77,15 @@ The KPI framework, targets, nutrient-balance re-calculation and data checks are 
 <h2>How the fish waste is used (semi-intensive IMTA)</h2>
 <div class="flow">{flow}</div>
 <p style="font-size:.9rem">All three systems side by side: open <code>flow.html</code> in the same folder.</p>
-<h2>Charts</h2>
-{img("anim_02_relative_to_polyculture.gif", "All seven impact categories relative to the fish polyculture (= 100)")}
-{img("anim_01_gw_by_process.gif", "Global warming by process, kg CO2-eq per tonne")}
-{img("anim_03_nitrogen_fate.gif", "Where the nitrogen in the feed goes, per tonne")}
-{img("anim_05_process_shares.gif", "Which process causes which impact")}
-{img("anim_04_kpi_scorecard.gif", "KPI scorecard")}
+<h2>Figures</h2>
+<h3>Figure 1 – Impacts against the fish-only pond</h3>
+{img("01_change_vs_fish_pond.png", "Change of each impact category against the fish-only pond, per tonne")}
+<h3>Figure 2 – Global warming by process</h3>
+{img("02_global_warming_by_process.png", "Global warming by process, kg CO2-eq per tonne")}
+<h3>Figure 3 – Where the nitrogen in the feed goes</h3>
+{img("03_nitrogen_fate.png", "Fate of the nitrogen in the feed, kg N per tonne")}
+<h3>Figure 4 – Which process drives which impact</h3>
+{img("04_process_heatmap.png", "Share of each impact category per process")}
 <h2>Method and sources</h2>
 <p>Primary source: INTEGRATE (2020) deliverable PI05#3, <i>LCA of aquaculture systems: comparison between semi-intensive/extensive pond IMTA and semi-intensive traditional fishpond production</i>
 (Interreg Atlantic Area EAPA_232/2016; IPMA, CTAQUA). Nutrient emissions: Cho &amp; Kaushik (1990). Software: Piscentool (Wilfart et al. 2012).
