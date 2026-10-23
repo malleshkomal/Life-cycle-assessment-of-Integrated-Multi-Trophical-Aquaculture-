@@ -38,6 +38,12 @@ environment, circularity and economy. The tool is available as an offline **Exce
 5. **Model checks matter.** In openLCA, auto-linking chose a lignite-dominated electricity mix instead of Portugal. The farm's nitrogen emission
    also had no characterisation factor in the EF 3.1 (adapted) method. Both are documented as open issues.
 
+## How the waste is used
+
+[![Animated flow diagram: fish waste feeds seaweed and mussels, seaweed residues become compost, mussel shells become lime](results/charts/06_waste_flow_animated.svg)](docs/flow.html)
+
+Fish waste feeds the **seaweed** (dissolved N and P) and the **mussels** (particles). **Seaweed residues** are composted into soil fertiliser, and **mussel shells** are crushed into lime. 2,450 kg N is still lost to the sea, so 18 % of the fish waste is recovered. The interactive version is [`docs/flow.html`](docs/flow.html), which also works offline.
+
 ![KPI scorecard](results/charts/03_kpi_scorecard.png)
 
 ## Quick start
@@ -46,7 +52,9 @@ environment, circularity and economy. The tool is available as an offline **Exce
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 python run.py           # impacts, nutrient balance, KPIs  -> results/*.csv
-python make_charts.py   # findings charts                  -> results/charts/
+python make_charts.py   # findings charts (PNG)            -> results/charts/
+python make_animations.py  # animated charts (GIF)         -> results/charts/
+python make_flow.py     # animated waste-flow diagram      -> results/charts/, docs/flow.html
 python build_site.py    # offline findings page            -> docs/index.html
 pytest                  # 10 tests
 python run.py --factors my_factors.csv   # use your own per-unit factors
@@ -60,19 +68,23 @@ with EF 3.1. Put each result into a copy of [`data/factors_illustrative.csv`](da
 **1. Where the nitrogen from the feed goes.** Of the 4,200 kg N in the feed, 1,200 kg stays in the fish. In IMTA, seaweed and mussels take up
 550 kg, so 2,450 kg instead of 3,000 kg is lost to the sea.
 
-![Nitrogen balance](results/charts/01_nitrogen_balance.png)
+![Nitrogen balance](results/charts/anim_01_nitrogen_balance.gif)
 
 **2. Climate change by contributor.** Feed dominates in both designs. IMTA adds electricity, boat fuel, ropes and transport.
 
-![Climate by contributor](results/charts/02_climate_by_contributor.png)
+![Climate by contributor](results/charts/anim_02_climate_by_contributor.gif)
 
 **3. Per kg vs whole farm.** C is better per kg of fish but emits more in total.
 
-![Per kg vs total](results/charts/04_per_kg_vs_total.png)
+![Per kg vs total](results/charts/anim_03_per_kg_vs_total.gif)
 
-**4. ecoinvent run (openLCA, EF 3.1).** This run is not final: the electricity provider is lignite-dominated. See [known issues](docs/known_issues.md).
+**4. Circularity KPIs against their targets.** The dashed line marks each target. C meets all six. A meets none.
 
-![openLCA run 3](results/charts/05_openlca_run3_contributions.png)
+![Circularity KPIs](results/charts/anim_04_circularity_kpis.gif)
+
+**5. ecoinvent run (openLCA, EF 3.1).** This run is not final: the electricity provider is lignite-dominated. See [known issues](docs/known_issues.md).
+
+![openLCA run 3](results/charts/anim_05_openlca_run3.gif)
 
 ## KPI framework
 
@@ -99,7 +111,8 @@ The targets are placeholders. A company would agree its own, for example in a wo
 |---|---|
 | `src/imtakpi/model.py` | Reads the LCIS2024 files. Computes impacts as amount × factor (avoided products count as credits), economic allocation, the N and P mass balance and 11 KPIs |
 | `run.py` | Writes `results/kpis.csv`, `results/impacts.csv` and `results/nutrient_balance.csv` |
-| `make_charts.py` | Draws the findings charts |
+| `make_charts.py`, `make_animations.py` | Draw the findings charts, static (PNG) and animated (GIF) |
+| `make_flow.py` | Draws the animated waste-flow diagram (SVG) and `docs/flow.html` |
 | `build_site.py` | Builds the self-contained findings page `docs/index.html` |
 | `tests/` | Checks that the nutrient balance closes, that the LCI matches the mass balance, linearity, credits and the known values (the Excel tool gives the same numbers) |
 

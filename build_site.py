@@ -13,7 +13,8 @@ CH = ROOT / "results" / "charts"
 
 def img(name, alt):
     b = base64.b64encode((CH / name).read_bytes()).decode()
-    return f'<figure><img alt="{html.escape(alt)}" src="data:image/png;base64,{b}"><figcaption>{html.escape(alt)}</figcaption></figure>'
+    mime = "image/gif" if name.endswith(".gif") else "image/png"
+    return f'<figure><img alt="{html.escape(alt)}" src="data:{mime};base64,{b}"><figcaption>{html.escape(alt)}</figcaption></figure>'
 
 
 def fmt(v):
@@ -42,7 +43,7 @@ main{{max-width:900px;margin:0 auto;padding:24px 16px 64px}} h1{{font-size:1.6re
 .note{{border-left:4px solid #ba7517;padding:8px 12px;background:rgba(186,117,23,.08)}}
 table{{border-collapse:collapse;width:100%;font-size:.9rem}} th,td{{border:1px solid var(--line);padding:6px 8px;text-align:left}}
 td.ok{{background:var(--ok)}} td.no{{background:var(--no)}} .wrap{{overflow-x:auto}}
-figure{{margin:16px 0}} img{{max-width:100%;height:auto;background:#fff;border-radius:6px}} figcaption{{color:var(--mut);font-size:.85rem}}
+figure{{margin:16px 0}} .flow{{overflow-x:auto;background:#fff;border-radius:10px;border:1px solid var(--line)}} .flow svg{{display:block;max-width:100%;height:auto}} img{{max-width:100%;height:auto;background:#fff;border-radius:6px}} figcaption{{color:var(--mut);font-size:.85rem}}
 </style></head><body><main>
 <h1>Life cycle assessment of fish monoculture and IMTA aquaculture</h1>
 <p>Circular KPI decision tool: gilthead sea bream farm in Portugal, <b>A: fish monoculture</b> vs <b>C: IMTA</b> (fish + seaweed + mussels) with valorisation of seaweed residues and mussel shells.
@@ -56,11 +57,14 @@ Functional unit: 1 kg fresh sea bream at farm gate, economic allocation.</p>
 <li><b>Feed is the hotspot</b>; in ecoinvent, land use change from Brazilian soy is a major contributor.</li>
 </ol>
 <h2>KPI scorecard</h2><div class="wrap"><table><tr><th>ID</th><th>KPI</th><th>Unit</th><th>Target</th>{head}</tr>{rows}</table></div>
+<h2>How the waste is used</h2>
+<div class="flow">{(CH / "06_waste_flow_animated.svg").read_text(encoding="utf-8").split("?>")[-1]}</div>
 <h2>Charts</h2>
-{img("01_nitrogen_balance.png", "1. Nitrogen balance: where the nitrogen from the feed goes")}
-{img("02_climate_by_contributor.png", "2. Climate change by contributor, whole farm (illustrative factors)")}
-{img("04_per_kg_vs_total.png", "4. Per kg of fish vs whole farm")}
-{img("05_openlca_run3_contributions.png", "5. openLCA run 3 with ecoinvent 3.7 / EF 3.1 – not final (electricity provider issue)")}
+{img("anim_01_nitrogen_balance.gif", "Nitrogen balance: where the nitrogen from the feed goes")}
+{img("anim_02_climate_by_contributor.gif", "Climate change by contributor, whole farm (illustrative factors)")}
+{img("anim_03_per_kg_vs_total.gif", "Per kg of fish vs whole farm")}
+{img("anim_04_circularity_kpis.gif", "Circularity and economic KPIs against their targets")}
+{img("anim_05_openlca_run3.gif", "openLCA run 3 with ecoinvent 3.7 / EF 3.1 – not final (electricity provider issue)")}
 <h2>Method and sources</h2>
 <p>LCI shared in the LCIS2024 structure (Nair, Chougule, Gomez &amp; Brand-Daniels 2025, <i>J. Clean. Prod.</i> 520, 146120). Functional unit and allocation choices follow the IMTA challenges discussed in Hala, Chougule et al. (2024), <i>Aquaculture</i> 590, 741035.
 Full documentation, data and code: see the repository README, <code>docs/</code> and <code>sources/REFERENCES.md</code>.</p>
