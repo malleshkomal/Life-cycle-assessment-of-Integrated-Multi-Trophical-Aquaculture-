@@ -285,7 +285,7 @@ def fig_radar():
         ax.fill(ang, v, color=COL[s], alpha=0.18 if s != "SI-POLY" else 0.07)
         if s == "SE-IMTA":
             for a, val in zip(ang[:-1], v[:-1]):
-                ax.text(a, val + (20 if val < 150 else -28), f"{val:.0f}", color=COL[s], fontsize=8, ha="center", va="center", fontweight="bold")
+                ax.text(a, val + (20 if val < 150 else -34), f"{val:.0f}", color=COL[s], fontsize=8, ha="center", va="center", fontweight="bold", bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.9))
     ax.set_xticks(ang[:-1], [CAT_LABEL[c].replace(" ", "\n", 1) for c in cats], fontsize=9, color=INK)
     ax.set_ylim(0, 220)
     ax.set_yticks([50, 100, 150, 200], ["50", "100", "150", "200"], fontsize=7.5, color=MUTED)
