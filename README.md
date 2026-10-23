@@ -16,9 +16,7 @@ environment, circularity and economy. The tool is available as an offline **Exce
 > KPI values use **illustrative** impact factors, not ecoinvent. ecoinvent results are in
 > [`data/openlca_results/`](data/openlca_results/) and have **open issues**, listed in [`docs/known_issues.md`](docs/known_issues.md).
 
-> Built by [Komal Chougule](https://github.com/malleshkomal). The LCI is shared in the LCIS2024 structure from
-> Nair, Chougule, Gomez & Brand-Daniels (2025), and the IMTA method choices build on Hala, Chougule et al. (2024).
-> Both papers are cited below.
+
 
 ## Open the tool offline
 
