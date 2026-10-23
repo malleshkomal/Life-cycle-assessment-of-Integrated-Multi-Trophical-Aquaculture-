@@ -239,30 +239,55 @@ def fig_score():
 def fig_key_numbers():
     tot = {s: RES[s]["totals"] for s in SYSTEMS}
     ch = lambda s, c: (tot[s][c] / tot["SI-POLY"][c] - 1) * 100  # noqa: E731
-    nk = {s: RES[s]["nutrients"]["N"]["use_efficiency"] for s in SYSTEMS}
-    feed_sh = [LC["amount"]["GW"][s]["Feeds"] / tot[s]["GW"] * 100 for s in SYSTEMS]
+    nk = {s: RES[s]["nutrients"]["N"]["use_efficiency"] * 100 for s in SYSTEMS}
+    fs = {s: LC["amount"]["GW"][s]["Feeds"] / tot[s]["GW"] * 100 for s in SYSTEMS}
+    short = {"SI-IMTA": "Semi-int.\nIMTA", "SE-IMTA": "Semi-ext.\nIMTA", "SI-POLY": "Fish-only\npond"}
+    # big number, label, context, colour, values per system, unit, highlighted systems, number format
     tiles = [
-        (f"{ch('SI-IMTA', 'EP'):.0f} %", "eutrophication", "semi-intensive IMTA\nvs fish-only pond", "#1D9E75"),
-        (f"{nk['SI-IMTA']:.0%}", "of feed nitrogen kept\nin products", f"semi-intensive IMTA\n(fish-only pond: {nk['SI-POLY']:.0%})", "#0F6E56"),
-        (f"{ch('SE-IMTA', 'GW'):.0f} %", "global warming", "semi-extensive IMTA\nvs fish-only pond", "#378ADD"),
-        (f"{min(feed_sh):.0f}–{max(feed_sh):.0f} %", "of greenhouse gases\nfrom feed", "in all three systems\n= the hotspot", "#BA7517"),
-        (f"+{ch('SI-IMTA', 'LC'):.0f} / +{ch('SE-IMTA', 'LC'):.0f} %", "land competition", "semi-intensive / semi-extensive\nIMTA: the trade-off", "#E24B4A"),
+        (f"{ch('SI-IMTA', 'EP'):.0f} %", "eutrophication", "semi-intensive IMTA vs fish-only pond", "#1D9E75",
+         {s: tot[s]["EP"] for s in SYSTEMS}, "kg PO4-eq / t", ["SI-IMTA"], "{:.0f}"),
+        (f"{nk['SI-IMTA']:.0f} %", "of feed nitrogen kept in products", f"semi-intensive IMTA (fish-only pond {nk['SI-POLY']:.0f} %)", "#0F6E56",
+         nk, "% of feed N", ["SI-IMTA"], "{:.0f} %"),
+        (f"{ch('SE-IMTA', 'GW'):.0f} %", "global warming", "semi-extensive IMTA vs fish-only pond", "#378ADD",
+         {s: tot[s]["GW"] for s in SYSTEMS}, "kg CO2-eq / t", ["SE-IMTA"], "{:,.0f}"),
+        (f"{min(fs.values()):.0f}–{max(fs.values()):.0f} %", "of greenhouse gases from feed", "the hotspot in all three systems", "#BA7517",
+         fs, "% of global warming", SYSTEMS, "{:.0f} %"),
+        (f"+{ch('SI-IMTA', 'LC'):.0f} / +{ch('SE-IMTA', 'LC'):.0f} %", "land competition", "IMTA needs more land: the trade-off", "#E24B4A",
+         {s: tot[s]["LC"] for s in SYSTEMS}, "m2a / t", ["SI-IMTA", "SE-IMTA"], "{:,.0f}"),
     ]
-    fig = plt.figure(figsize=(12.5, 3.3))
-    fig.text(0.01, 0.95, "Key numbers", fontsize=13, fontweight="bold", color=INK, va="top")
-    fig.text(0.01, 0.84, "per tonne of fish + oyster · INTEGRATE pond study (Portugal, Spain)", fontsize=9.5, color=MUTED, va="top")
-    w, gap = 0.188, 0.01
-    for i, (big, lab, ctx, c) in enumerate(tiles):
-        x = 0.01 + i * (w + gap)
-        ax = fig.add_axes([x, 0.06, w, 0.66])
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-        ax.axis("off")
-        ax.add_patch(plt.Rectangle((0, 0), 1, 1, color="#FAF9F5", transform=ax.transAxes, zorder=0))
-        ax.add_patch(plt.Rectangle((0, 0.94), 1, 0.06, color=c, transform=ax.transAxes))
-        ax.text(0.07, 0.70, big, fontsize=21 if len(big) < 9 else 16, fontweight="bold", color=c, va="center")
-        ax.text(0.07, 0.42, lab, fontsize=10, color=INK, va="center", linespacing=1.15)
-        ax.text(0.07, 0.13, ctx, fontsize=8.3, color=MUTED, va="center", linespacing=1.15)
+    fig = plt.figure(figsize=(14, 5.6))
+    fig.text(0.012, 0.975, "Key numbers", fontsize=14, fontweight="bold", color=INK, va="top")
+    fig.text(0.012, 0.915, "per tonne of fish + oyster · INTEGRATE pond study (Portugal, Spain) · "
+             "bars: the values behind each number, highlighted = the system the number refers to", fontsize=9.5, color=MUTED, va="top")
+    n, left, right, gap = len(tiles), 0.012, 0.988, 0.012
+    w = (right - left - gap * (n - 1)) / n
+    for i, (big, lab, ctx, c, vals, unit, hi, fmt) in enumerate(tiles):
+        x = left + i * (w + gap)
+        bg = fig.add_axes([x, 0.06, w, 0.78])
+        bg.set_xlim(0, 1)
+        bg.set_ylim(0, 1)
+        bg.axis("off")
+        bg.add_patch(plt.Rectangle((0, 0), 1, 1, color="#FAF9F5", zorder=0))
+        bg.add_patch(plt.Rectangle((0, 0.975), 1, 0.025, color=c))
+        bg.text(0.06, 0.88, big, fontsize=20 if len(big) < 9 else 15.5, fontweight="bold", color=c, va="center")
+        bg.text(0.06, 0.765, lab, fontsize=10, color=INK, va="center")
+        bg.text(0.06, 0.70, ctx, fontsize=8, color=MUTED, va="center")
+        ax = fig.add_axes([x + w * 0.08, 0.13, w * 0.86, 0.41])
+        ys = [vals[s] for s in SYSTEMS]
+        cols = [c if s in hi else "#D3D1C7" for s in SYSTEMS]
+        ax.bar(range(3), ys, 0.62, color=cols)
+        top = max(ys) * 1.28
+        for j, v in enumerate(ys):
+            ax.text(j, v + top * 0.03, fmt.format(v), ha="center", va="bottom", fontsize=8.5,
+                    color=INK if SYSTEMS[j] in hi else MUTED, fontweight="bold" if SYSTEMS[j] in hi else "normal")
+        ax.set_ylim(0, top)
+        ax.set_xticks(range(3), [short[s] for s in SYSTEMS], fontsize=7.6)
+        ax.set_yticks([])
+        ax.set_facecolor("none")
+        for sp in ("left", "top", "right"):
+            ax.spines[sp].set_visible(False)
+        ax.tick_params(axis="x", length=0, colors=MUTED)
+        ax.set_title(unit, fontsize=8, color=MUTED, loc="left", pad=4)
     save(fig, "00_key_numbers.png")
 
 
