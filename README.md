@@ -22,6 +22,7 @@ three farm designs on **13 KPIs** for environment and circularity. The tool is a
 - **Excel:** [`excel/IMTA_KPI_decision_tool.xlsx`](excel/IMTA_KPI_decision_tool.xlsx). 12 tabs: README, goal & scope, metadata, inventory, LCI per tonne,
   nutrient balance, LCIA (Annex 1), comparison, KPI framework, dashboard, data checks, sources. All results are live formulas: change a yellow cell
   (for example the 10 % improvement target or the feed amount) and every KPI updates. No internet, no macros, no external links.
+  [![Excel KPI decision tool: KPI framework tab](excel/excel_kpi_framework.png)](excel/IMTA_KPI_decision_tool.xlsx)
 - **Findings page:** [`docs/index.html`](docs/index.html) – one self-contained file with all charts embedded. Download it and open it in any browser.
 - **Flow diagrams:** [`docs/flow.html`](docs/flow.html) – animated, with a tab for each system.
 
