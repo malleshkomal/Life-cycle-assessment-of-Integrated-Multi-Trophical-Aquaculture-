@@ -240,56 +240,72 @@ widths(nb, {"A": 34, "B": 8, "C": 22, "D": 22, "E": 22, "F": 48})
 
 # ------------------------------------------------------------------ LCI per tonne
 lci = sheet("LCI per tonne", "Foreground LCI per functional unit (1 t fish + oyster flesh) - inputs and outputs, all formulas")
-lci["A3"], lci["A3"].font = ("Inputs = what the farm takes in (from other processes or from nature). Outputs = what leaves the farm "
-                             "(products, co-products, emissions). Amounts per tonne of fish + oyster flesh."), ITAL
-header(lci, 4, ["Flow (fp_name)", "Input / output", *SYSHEAD, "Unit", "Comment"])
+lci["A3"], lci["A3"].font = ("Table 1 INPUTS = what the farm takes in. Table 2 OUTPUTS = what leaves the farm. "
+                             "Amounts per tonne of fish + oyster flesh; all values are formulas on the Inventory and Nutrient balance tabs."), ITAL
 scaled = lambda k: "=Inventory!{c}%d*Inventory!{c}%d" % (R[k], R["scale"])  # noqa: E731
-groups = [
-    ("OUTPUTS - products (the functional unit)", "Output", [
-        ("aquatic product, fish + oyster flesh, at farm gate", "reference product", "=1", "t", "functional unit = fish + oyster flesh"),
-        ("fish, live weight gain", "product", scaled("fish_gain"), "kg", "part of the 1 t"),
-        ("oyster flesh, weight gain", "product", scaled("oyster_gain"), "kg", "part of the 1 t")]),
-    ("OUTPUTS - co-product", "Output", [
-        ("macroalgae, biomass gain", "co-product, outside FU", scaled("macroalgae_gain"), "kg", "harvested; not allocated any burden")]),
-    ("INPUTS - from the technosphere (products of other processes)", "Input", [
-        ("compound fish feed", "technosphere", scaled("feed"), "kg", "40-42 % protein"),
-        ("fish fry / fingerlings", "technosphere", scaled("fish_stocked"), "kg", "carp-fry proxy in Piscentool"),
-        ("oyster spat (flesh)", "technosphere", scaled("oyster_stocked"), "kg", "")]),
-    ("INPUTS - from nature (resources)", "Input", [
-        ("seawater, pumped or tidal", "resource", scaled("seawater_used"), "m3", "equals Water consumption in Annex 1"),
-        ("land, farm area allocated to the pond", "resource", scaled("land"), "m2a", "compare Direct activity, Land competition")]),
-    ("OUTPUTS - emissions to nature", "Output", [
-        ("nitrogen, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "kg N", "negative = net uptake from the water"),
-        ("phosphorus, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("P", "per_t")], "kg P", "negative = net uptake from the water")]),
+IO = {"INPUTS": ("185FA5", "E6F1FB"), "OUTPUTS": ("0F6E56", "E1F5EE")}
+tables = [
+    ("INPUTS", "1  INPUTS - what the farm takes in", [
+        ("From the technosphere (products of other processes)", [
+            ("compound fish feed", "technosphere", scaled("feed"), "kg", "40-42 % protein"),
+            ("fish fry / fingerlings", "technosphere", scaled("fish_stocked"), "kg", "carp-fry proxy in Piscentool"),
+            ("oyster spat (flesh)", "technosphere", scaled("oyster_stocked"), "kg", "")]),
+        ("From nature (resources)", [
+            ("seawater, pumped or tidal", "resource", scaled("seawater_used"), "m3", "equals Water consumption in Annex 1"),
+            ("land, farm area allocated to the pond", "resource", scaled("land"), "m2a", "compare Direct activity, Land competition")]),
+        ("Included in the impact results, but the report gives no quantities", [
+            (name, "technosphere", None, "", f"only its impacts are reported: process '{proc}' in LCIA (Annex 1)")
+            for name, proc in (("electricity / fuel for pumping and aeration", "Energy consumption"),
+                               ("equipment (pumps, aerators, nets)", "Equipment"), ("buildings", "Building impact"),
+                               ("vehicles", "Vehicle"), ("chemical products", "Chemical products"),
+                               ("transport of inputs", "Transports"))]),
+    ]),
+    ("OUTPUTS", "2  OUTPUTS - what leaves the farm", [
+        ("Products (the functional unit)", [
+            ("aquatic product, fish + oyster flesh, at farm gate", "reference product", "=1", "t", "functional unit"),
+            ("fish, live weight gain", "product", scaled("fish_gain"), "kg", "part of the 1 t"),
+            ("oyster flesh, weight gain", "product", scaled("oyster_gain"), "kg", "part of the 1 t")]),
+        ("Co-product (outside the functional unit)", [
+            ("macroalgae, biomass gain", "co-product", scaled("macroalgae_gain"), "kg", "harvested; not allocated any burden")]),
+        ("Emissions to nature", [
+            ("nitrogen, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "kg N", "negative = net uptake from the water"),
+            ("phosphorus, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("P", "per_t")], "kg P", "negative = net uptake from the water")]),
+    ]),
 ]
 LCI = {}
 rr = 5
-for title, direction, items in groups:
-    section(lci, rr, title, 7)
+for io, title, groups in tables:
+    dark, light = IO[io]
+    band = PatternFill("solid", fgColor=dark)
+    for j in range(1, 8):
+        lci.cell(row=rr, column=j).fill = band
+    lci.cell(row=rr, column=1, value=title).font = Font(name=F, bold=True, size=13, color="FFFFFF")
+    lci.row_dimensions[rr].height = 22
     rr += 1
-    for name, kind, f, unit, note in items:
-        LCI[name] = rr
-        lci.cell(row=rr, column=1, value=name).font = NORM
-        c = lci.cell(row=rr, column=2, value=f"{direction} - {kind}")
-        c.font = Font(name=F, bold=True, color="0F6E56" if direction == "Output" else "185FA5")
-        for col in COLS:
-            put(lci, f"{col}{rr}", f.format(c=col), "#,##0.0")
-        lci.cell(row=rr, column=6, value=unit).font = NORM
-        lci.cell(row=rr, column=7, value=note).font = ITAL
+    for j, lab in enumerate(["Flow (fp_name)", "Kind", *SYSHEAD, "Unit", "Comment"]):
+        c = lci.cell(row=rr, column=1 + j, value=lab)
+        c.font, c.fill, c.border = Font(name=F, bold=True, color=dark), PatternFill("solid", fgColor=light), BOX
+        c.alignment = Alignment(wrap_text=True, vertical="center")
+    rr += 1
+    for sub, items in groups:
+        lci.cell(row=rr, column=1, value=sub).font = Font(name=F, bold=True, italic=True, color=dark)
         rr += 1
-rr += 1
-section(lci, rr, "INPUTS - included in the impact results, but the report gives no quantities", 7)
-rr += 1
-for name, proc in (("electricity / fuel for pumping and aeration", "Energy consumption"), ("equipment (pumps, aerators, nets)", "Equipment"),
-                   ("buildings", "Building impact"), ("vehicles", "Vehicle"), ("chemical products", "Chemical products"),
-                   ("transport of inputs", "Transports")):
-    lci.cell(row=rr, column=1, value=name).font = NORM
-    lci.cell(row=rr, column=2, value="Input - technosphere").font = Font(name=F, bold=True, color="185FA5")
-    for col in COLS:
-        put(lci, f"{col}{rr}", "n/a", "@").alignment = Alignment(horizontal="right")
-    lci.cell(row=rr, column=7, value=f"only its impacts are reported: process '{proc}' in LCIA (Annex 1)").font = ITAL
-    rr += 1
-widths(lci, {"A": 44, "B": 30, "C": 22, "D": 22, "E": 22, "F": 8, "G": 52})
+        for name, kind, f, unit, note in items:
+            LCI[name] = rr
+            c = lci.cell(row=rr, column=1, value="   " + name)
+            c.font, c.border = NORM, BOX
+            c = lci.cell(row=rr, column=2, value=kind)
+            c.font, c.border = Font(name=F, color=dark), BOX
+            for col in COLS:
+                if f is None:
+                    put(lci, f"{col}{rr}", "n/a", "@").alignment = Alignment(horizontal="right")
+                else:
+                    put(lci, f"{col}{rr}", f.format(c=col), "#,##0.0")
+            lci.cell(row=rr, column=6, value=unit).font = NORM
+            lci.cell(row=rr, column=7, value=note).font = ITAL
+            rr += 1
+    rr += 2
+widths(lci, {"A": 48, "B": 18, "C": 22, "D": 22, "E": 22, "F": 8, "G": 52})
 lci.freeze_panes = "C5"
 
 # ------------------------------------------------------------------ LCIA (Annex 1)
