@@ -102,49 +102,9 @@ def rows(name):
 
 SYSHEAD = [NAMES[s] for s in SYSTEMS]
 
-# ------------------------------------------------------------------ README
+# ------------------------------------------------------------------ README (filled in at the end, once every tab exists)
 rd = wb.active
 rd.title = "README"
-rd["A1"], rd["A1"].font = "Pond IMTA vs fish polyculture: LCA results and circular KPI tool", TITLE
-rd["A2"], rd["A2"].font = SRC + ". Numbers transcribed from Tables 4-5 and Annex 1; KPI layer added by K. M. Chougule.", ITAL
-lines = [
-    ("What this workbook does", True),
-    ("It takes the inventory and the life cycle impact results of the INTEGRATE pond study and turns them into a KPI decision tool.", False),
-    ("Three systems are compared per functional unit of 1 tonne of aquatic product (fish + oyster flesh):", False),
-    ("   - Semi-intensive pond IMTA (IPMA, Olhao, Portugal): meagre, white seabream, mullet + oysters + macroalgae (Ulva)", False),
-    ("   - Semi-extensive pond IMTA (Estero Natural, Cadiz, Spain): gilthead seabream + oysters, macroalgae pond fed by the fishpond outflow", False),
-    ("   - Semi-intensive fish polyculture (IPMA): meagre + gilthead seabream, fish only = conventional baseline", False),
-    ("", False),
-    ("Tabs, left to right", True),
-    ("Goal & scope - functional unit, boundary, software, impact categories, allocation.", False),
-    ("Metadata - dataset description in the LCIS2024 structure.", False),
-    ("Inventory - Table 4 of the report per pond and cycle (yellow), scaled to 1 t aquatic product (formulas).", False),
-    ("LCI per tonne - the foreground inventory for one functional unit (all formulas).", False),
-    ("Nutrient balance - N and P from feed to fish + oysters, macroalgae and water (Table 5); feed N/P recomputed from the recipe.", False),
-    ("LCIA (Annex 1) - impacts per tonne by 11 processes and 7 categories (yellow = report values), with shares.", False),
-    ("Contribution analysis - share of each process in each impact (heatmap) and contribution charts per system and per impact category.", False),
-    ("Comparison - totals side by side, change against the polyculture baseline, implied impact per kg of feed.", False),
-    ("KPI framework - 13 KPIs (7 environmental, 6 circularity) with targets, pass/fail and colours.", False),
-    ("Dashboard - score per system and charts.", False),
-    ("Charts - environmental profile (radar), change vs polyculture, N and P fate, KPI targets met, margin to target. All live.", False),
-    ("Flow diagrams - how the fish waste is used in each system, with the flows behind each diagram.", False),
-    ("Figures - the report figures from make_charts.py as static images, each with its data table (live formulas) on the right.", False),
-    ("Data checks - cross-checks between the report tables (two findings are flagged on purpose).", False),
-    ("Sources - report, method references and the author's publications.", False),
-    ("", False),
-    ("Colour code", True),
-    ("Blue text on yellow = input from the report, you can change it. Black = formula. Green / red = KPI target met / not met.", False),
-    ("", False),
-    ("Things to try", True),
-    ("- KPI framework: change the improvement target (cell F5) from 10 % to 0 % -> more environmental KPIs pass for the semi-intensive IMTA.", False),
-    ("- Inventory: lower the semi-intensive IMTA feed (C6) -> feed N, N released, FCR and N use efficiency update.", False),
-    ("- Inventory: set the oyster gain of the semi-intensive IMTA to 0 -> the functional unit shrinks and per-tonne values rise.", False),
-    ("", False),
-    ("Works offline. No macros, no external links.", True),
-]
-for i, (t, b) in enumerate(lines):
-    rd.cell(row=4 + i, column=1, value=t).font = BOLD if b else NORM
-rd.column_dimensions["A"].width = 130
 
 # ------------------------------------------------------------------ Goal & scope
 gs = sheet("Goal & scope", "Life cycle assessment of pond IMTA and fish polyculture - goal and scope (ISO 14040/44)")
@@ -891,6 +851,182 @@ for i, (a, b) in enumerate(srcs):
     c = so.cell(row=4 + i, column=2, value=b)
     c.font, c.alignment = NORM, Alignment(wrap_text=True, vertical="top")
 widths(so, {"A": 22, "B": 130})
+
+# ------------------------------------------------------------------ README content
+def build_readme():
+    ws = rd
+    widths(ws, {"A": 3, "B": 30, "C": 30, "D": 24, "E": 24, "F": 52})
+    DARK = PatternFill("solid", fgColor="0F6E56")
+    LINK = Font(name=F, color="0563C1", underline="single")
+
+    def text(r, value, font=NORM, h=None, cols="B:F", fill=None):
+        ws.merge_cells(f"{cols[0]}{r}:{cols[-1]}{r}")
+        c = ws[f"{cols[0]}{r}"]
+        c.value, c.font = value, font
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+        if fill:
+            c.fill = fill
+        if h:
+            ws.row_dimensions[r].height = h
+        return r + 1
+
+    def heading(r, n, title):
+        for col in "BCDEF":
+            ws[f"{col}{r}"].fill = SFILL
+        ws[f"B{r}"].value, ws[f"B{r}"].font = f"{n}   {title}", Font(name=F, bold=True, size=12, color="0F6E56")
+        ws.row_dimensions[r].height = 20
+        return r + 2
+
+    def head(r, labels, merge=None):
+        for col, lab in zip("BCDEF", labels):
+            c = ws[f"{col}{r}"]
+            c.value, c.font, c.fill, c.border = lab, HFONT, HFILL, BOX
+            c.alignment = Alignment(wrap_text=True, vertical="center")
+        if merge:
+            ws.merge_cells(f"{merge[0]}{r}:{merge[1]}{r}")
+        return r + 1
+
+    def row(r, values, merge=None, fonts=None, h=None):
+        for i, (col, v) in enumerate(zip("BCDEF", values)):
+            c = ws[f"{col}{r}"]
+            c.value, c.border = v, BOX
+            c.font = (fonts or {}).get(i, NORM)
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+        if merge:
+            ws.merge_cells(f"{merge[0]}{r}:{merge[1]}{r}")
+        if h:
+            ws.row_dimensions[r].height = h
+        return r + 1
+
+    # title band
+    for col in "ABCDEF":
+        ws[f"{col}1"].fill = DARK
+        ws[f"{col}2"].fill = DARK
+    ws["B1"].value, ws["B1"].font = "Pond IMTA vs fish polyculture: LCA results and circular KPI decision tool", Font(name=F, bold=True, size=16, color="FFFFFF")
+    ws["B2"].value, ws["B2"].font = SRC + " · KPI layer by K. M. Chougule", Font(name=F, italic=True, color="E1F5EE")
+    ws.row_dimensions[1].height = 30
+    r = 4
+
+    r = heading(r, "1", "What this workbook does")
+    r = text(r, "It takes the inventory and the life cycle impact results of the INTEGRATE pond study and turns them into a KPI "
+                "decision tool: 13 KPIs (7 environmental, 6 circularity) with targets and a pass / fail score for three farm designs. "
+                "Every result is a live formula: change a yellow input and the KPIs, charts and tables update.", h=48)
+    r = text(r, "Functional unit: 1 tonne of aquatic product (fish + oyster flesh) at the farm gate, one production cycle. "
+                "Macroalgae are a co-product outside the functional unit.", font=BOLD, h=32)
+    r += 1
+
+    r = heading(r, "2", "Systems compared")
+    r = head(r, ["Code", "System", "Site", "", "Species and role"], merge=("D", "E"))
+    systems = [("SI-IMTA", "Semi-intensive pond IMTA", "IPMA research station, Olhao, Portugal",
+                "Meagre, white seabream, mullet + oysters + macroalgae (Ulva)"),
+               ("SE-IMTA", "Semi-extensive pond IMTA", "Estero Natural, Cadiz, Spain",
+                "Gilthead seabream + oysters; macroalgae pond fed by the fishpond outflow; tidal water exchange"),
+               ("SI-POLY", "Semi-intensive fish polyculture", "IPMA research station, Olhao, Portugal",
+                "Meagre + gilthead seabream, fish only. Conventional baseline")]
+    for code, name, site, sp in systems:
+        r = row(r, [code, name, site, None, sp], merge=("D", "E"),
+                fonts={0: Font(name=F, bold=True, color=SYS_COLOR[code]), 1: BOLD}, h=32)
+    r += 1
+
+    r = heading(r, "3", "Key results (live, per tonne of fish + oyster)")
+    r = head(r, ["Indicator", "", *SYSHEAD], merge=("B", "C"))
+    results = [("KPI targets met (of 13)", "='KPI framework'!{m}%d" % KP["score"], "@"),
+               ("Global warming, kg CO2-eq/t", "=Comparison!{c}%d" % CP["GW"], "#,##0"),
+               ("Eutrophication, kg PO4-eq/t", "=Comparison!{c}%d" % CP["EP"], "#,##0"),
+               ("Land competition, m2a/t", "=Comparison!{c}%d" % CP["LC"], "#,##0"),
+               ("Water dependence, m3/t", "=Comparison!{c}%d" % CP["WD"], "#,##0"),
+               ("Nitrogen use efficiency", "='Nutrient balance'!{c}%d" % NB[("N", "eff")], "0%"),
+               ("Net N released, kg N/t (minus = uptake)", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "0.0")]
+    for lab, f, fmt in results:
+        ws.merge_cells(f"B{r}:C{r}")
+        ws[f"B{r}"].value, ws[f"B{r}"].font, ws[f"B{r}"].border = lab, NORM, BOX
+        ws[f"C{r}"].border = BOX
+        for col, out, m in zip(COLS, "DEF", ("J", "K", "L")):
+            put(ws, f"{out}{r}", f.format(c=col, m=m), fmt, bold=lab.startswith("KPI"))
+            ws[f"{out}{r}"].alignment = Alignment(horizontal="right")
+        r += 1
+    r = text(r, "Semi-extensive IMTA scores best on 6 of 7 impacts; both IMTA systems need more land than the fish-only pond.", font=ITAL)
+    r += 1
+
+    r = heading(r, "4", "Tabs (click a name to open it)")
+    r = head(r, ["Tab", "What you find there", "", "", "Type"], merge=("C", "E"))
+    tabs = [
+        ("Goal & scope", "Functional unit, boundary, software, impact categories, allocation", "Reference"),
+        ("Metadata", "Dataset description in the LCIS2024 structure", "Reference"),
+        ("Inventory", "Table 4 of the report per pond and cycle (yellow), scaled to 1 t of product", "Input + calculation"),
+        ("Nutrient balance", "N and P from feed to fish + oysters, macroalgae and water (Table 5)", "Input + calculation"),
+        ("LCI per tonne", "Foreground inventory for one functional unit", "Calculation"),
+        ("LCIA (Annex 1)", "Impacts per tonne for 11 processes and 7 categories, with shares", "Input + calculation"),
+        ("Contribution analysis", "Share of each process in each impact (heatmap) and contribution charts", "Calculation + charts"),
+        ("Comparison", "Totals side by side and change against the fish-only pond", "Calculation + chart"),
+        ("KPI framework", "13 KPIs with targets and pass / fail; the improvement target is in F5", "Input + calculation"),
+        ("Dashboard", "Score per system and two summary charts", "Results + charts"),
+        ("Charts", "Radar profile, change vs baseline, N and P fate, targets met, margin to target", "Charts (live)"),
+        ("Figures", "Report figures from make_charts.py, each with its data table", "Pictures + data"),
+        ("Flow diagrams", "How the fish waste is used in each system, with the flows", "Pictures + data"),
+        ("Data checks", "Cross-checks between the report tables; two findings flagged on purpose", "Quality check"),
+        ("Sources", "Report, method references and publications", "Reference"),
+    ]
+    for name, what, typ in tabs:
+        assert name in wb.sheetnames, name
+        ws.merge_cells(f"C{r}:E{r}")
+        c = ws[f"B{r}"]
+        c.value, c.hyperlink, c.font, c.border = name, f"#'{name}'!A1", LINK, BOX
+        ws[f"C{r}"].value, ws[f"C{r}"].font = what, NORM
+        ws[f"F{r}"].value, ws[f"F{r}"].font = typ, ITAL
+        for col in "CDEF":
+            ws[f"{col}{r}"].border = BOX
+        r += 1
+    r += 1
+
+    r = heading(r, "5", "Colour code")
+    legend = [(put(ws, f"B{r}", 1888, "#,##0", inp=True), "Input from the report. You can change it."),
+              (None, "Formula. Do not type over it."),
+              (None, "KPI target met"),
+              (None, "KPI target not met")]
+    put(ws, f"B{r + 1}", "=B%d*2" % r, "#,##0")
+    put(ws, f"B{r + 2}", "✓", "@").fill = GOOD
+    put(ws, f"B{r + 3}", "✗", "@").fill = BAD
+    for i, (_, lab) in enumerate(legend):
+        ws.merge_cells(f"C{r + i}:F{r + i}")
+        ws[f"C{r + i}"].value, ws[f"C{r + i}"].font = lab, NORM
+        ws[f"B{r + i}"].alignment = Alignment(horizontal="center")
+    r += len(legend) + 1
+
+    r = heading(r, "6", "Things to try")
+    r = head(r, ["Step", "Where", "", "What happens", ""], merge=("D", "F"))
+    tries = [("Change the improvement target from 10 % to 0 %", "KPI framework", "F5",
+              "More environmental KPIs pass for the semi-intensive IMTA"),
+             ("Lower the semi-intensive IMTA feed", "Inventory", "C%d" % R["feed"],
+              "Feed N, N released, FCR and N use efficiency update"),
+             ("Set the semi-intensive IMTA oyster gain to 0", "Inventory", "C%d" % R["oyster_gain"],
+              "The functional unit shrinks and per-tonne values rise")]
+    for step, tab, cell, what in tries:
+        ws.merge_cells(f"D{r}:F{r}")
+        ws[f"B{r}"].value, ws[f"B{r}"].font = step, NORM
+        c = ws[f"C{r}"]
+        c.value, c.hyperlink, c.font = f"{tab} {cell}", f"#'{tab}'!{cell}", LINK
+        ws[f"D{r}"].value, ws[f"D{r}"].font = what, NORM
+        for col in "BCDEF":
+            ws[f"{col}{r}"].border = BOX
+            ws[f"{col}{r}"].alignment = Alignment(wrap_text=True, vertical="top")
+        ws.row_dimensions[r].height = 30
+        r += 1
+    r += 1
+
+    r = heading(r, "7", "About")
+    about = [("Data source", "INTEGRATE deliverable PI05#3 (IPMA & CTAQUA, 2020): Table 4 inventory, Table 5 nutrients, Annex 1 impacts"),
+             ("Added here", "Scaling to the functional unit, recalculated N and P balance, 13 KPIs with targets, data checks, charts"),
+             ("Targets", "Placeholders for a stakeholder workshop; change them in the KPI framework tab"),
+             ("Licence", "Report data: INTEGRATE partners. KPI layer: CC BY 4.0. Code: MIT"),
+             ("Repository", "github.com/malleshkomal/Life-cycle-assessment-of-Integrated-Multi-Trophical-Aquaculture-"),
+             ("Works offline", "No macros, no external links")]
+    for k, v in about:
+        r = row(r, [k, v, None, None, None], merge=("C", "F"), fonts={0: BOLD}, h=30 if len(v) > 90 else None)
+    ws.freeze_panes = "A4"
+
+
+build_readme()
 
 for ws in wb.worksheets:
     ws.sheet_view.showGridLines = ws.title in ("LCIA (Annex 1)",)
