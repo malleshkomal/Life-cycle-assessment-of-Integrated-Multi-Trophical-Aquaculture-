@@ -19,10 +19,10 @@ three farm designs on **13 KPIs** for environment and circularity. The tool is a
 
 ## Open the tool offline
 
-- **Excel:** [`excel/IMTA_KPI_decision_tool.xlsx`](excel/IMTA_KPI_decision_tool.xlsx) · **[preview in the browser](https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmalleshkomal%2FLife-cycle-assessment-of-Integrated-Multi-Trophical-Aquaculture-%2Fmain%2Fexcel%2FIMTA_KPI_decision_tool.xlsx)** (all tabs, no download). 15 tabs: README, goal & scope, metadata, inventory, LCI per tonne,
-  nutrient balance, LCIA (Annex 1), **contribution analysis**, comparison, KPI framework, dashboard, **charts**, **figures**, data checks, sources.
+- **Excel:** [`excel/IMTA_KPI_decision_tool.xlsx`](excel/IMTA_KPI_decision_tool.xlsx) · **[preview in the browser](https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmalleshkomal%2FLife-cycle-assessment-of-Integrated-Multi-Trophical-Aquaculture-%2Fmain%2Fexcel%2FIMTA_KPI_decision_tool.xlsx)** (all tabs, no download). 16 tabs: README, goal & scope, metadata, inventory, LCI per tonne,
+  nutrient balance, LCIA (Annex 1), **contribution analysis**, comparison, KPI framework, dashboard, **charts**, **figures**, **flow diagrams**, data checks, sources.
   19 live charts: contribution per process for each system and each impact category (with a heatmap of shares), environmental profile (radar),
-  change against the fish-only pond, nitrogen and phosphorus fate, KPI targets met and margin to target. The *Figures* tab holds the report PNGs, each with its data table (live formulas) beside it.
+  change against the fish-only pond, nitrogen and phosphorus fate, KPI targets met and margin to target. The *Figures* tab holds the report PNGs, each with its data table (live formulas) beside it; the *Flow diagrams* tab holds the three flow diagrams with their flows.
   All results are live formulas: change a yellow cell
   (for example the 10 % improvement target or the feed amount) and every KPI updates. No internet, no macros, no external links.
 - **Findings page:** [`docs/index.html`](docs/index.html) – one self-contained file with all charts embedded. Download it and open it in any browser.

@@ -127,6 +127,7 @@ lines = [
     ("KPI framework - 13 KPIs (7 environmental, 6 circularity) with targets, pass/fail and colours.", False),
     ("Dashboard - score per system and charts.", False),
     ("Charts - environmental profile (radar), change vs polyculture, N and P fate, KPI targets met, margin to target. All live.", False),
+    ("Flow diagrams - how the fish waste is used in each system, with the flows behind each diagram.", False),
     ("Figures - the report figures from make_charts.py as static images, each with its data table (live formulas) on the right.", False),
     ("Data checks - cross-checks between the report tables (two findings are flagged on purpose).", False),
     ("Sources - report, method references and the author's publications.", False),
@@ -799,6 +800,48 @@ for png in sorted((ROOT / "results" / "charts").glob("*.png")):
     end_data = data_for(png.name, r + 1)
     r = max(r + int(img.height / 20) + 4, end_data + 3)
 widths(fg, {"P": 44, **{chr(ord("Q") + i): 14 for i in range(7)}})
+
+# ------------------------------------------------------------------ Flow diagrams (static) + their data (live)
+import cairosvg  # noqa: E402  (renders the make_flow.py SVGs, which Excel cannot hold)
+
+fl = sheet("Flow diagrams", "Flow diagrams - how the fish waste is used in each system (per pond and production cycle)")
+fl["A3"], fl["A3"].font = ("Diagrams from make_flow.py (static). The table next to each one is live: it reads the Inventory and "
+                           "Nutrient balance tabs."), ITAL
+FLOW_SVG = {"SI-IMTA": "06_flow_si_imta.svg", "SE-IMTA": "06_flow_se_imta.svg", "SI-POLY": "06_flow_si_poly.svg"}
+r = 5
+for col, sy in zip(COLS, SYSTEMS):
+    buf = BytesIO(cairosvg.svg2png(url=str(ROOT / "results" / "charts" / FLOW_SVG[sy]), output_width=1400))
+    img = Image(buf)
+    img.width, img.height = 900, int(img.height * 900 / img.width)
+    fl.cell(row=r, column=1, value=NAMES[sy]).font = Font(name=F, bold=True, size=12, color=SYS_COLOR[sy])
+    fl.add_image(img, f"A{r + 1}")
+    inv_ = lambda k: f"=Inventory!{col}{R[k]}"  # noqa: E731
+    nb_ = lambda el, k: f"='Nutrient balance'!{col}{NB[(el, k)]}"  # noqa: E731
+    items = [
+        ("Fish feed", inv_("feed"), "kg", "#,##0"),
+        ("N in feed", nb_("N", "feed"), "kg N", "#,##0.0"),
+        ("Fry + oyster spat stocked", f"=Inventory!{col}{R['fish_stocked']}+Inventory!{col}{R['oyster_stocked']}", "kg", "#,##0"),
+        ("Seawater", inv_("seawater_used"), "m3", "#,##0"),
+        ("Fish gained", inv_("fish_gain"), "kg", "#,##0"),
+        ("Oyster flesh gained", inv_("oyster_gain"), "kg", "#,##0"),
+        ("Macroalgae harvest", inv_("macroalgae_gain"), "kg", "#,##0"),
+        ("N in fish + oysters", nb_("N", "produced_biomass"), "kg N", "#,##0.0"),
+        ("N in macroalgae", nb_("N", "downstream_macroalgae"), "kg N", "#,##0.0"),
+        ("N in products", f"={nb_('N', 'produced_biomass')[1:]}+{nb_('N', 'downstream_macroalgae')[1:]}", "kg N", "#,##0.0"),
+        ("N released (Table 5; minus = net uptake)", nb_("N", "reported"), "kg N", "#,##0.0"),
+        ("N use efficiency", nb_("N", "eff"), "%", "0%"),
+    ]
+    fl.cell(row=r + 1, column=DC, value=f"Data: {NAMES[sy]}, one pond and cycle").font = BOLD
+    for j, h in enumerate(["Flow", "Value", "Unit"]):
+        c = fl.cell(row=r + 2, column=DC + j, value=h)
+        c.font, c.fill, c.border = HFONT, HFILL, BOX
+    for i, (lab, f, unit, fmt) in enumerate(items):
+        rr = r + 3 + i
+        fl.cell(row=rr, column=DC, value=lab).font = NORM
+        put(fl, f"Q{rr}", f, fmt, bold=lab in ("N in products", "N use efficiency"))
+        fl.cell(row=rr, column=DC + 2, value=unit).font = NORM
+    r += max(int(img.height / 20) + 4, len(items) + 6)
+widths(fl, {"P": 44, "Q": 14, "R": 8})
 
 # ------------------------------------------------------------------ Data checks
 dc = sheet("Data checks", "Data checks - do the report's tables agree with each other?")
