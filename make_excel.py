@@ -127,7 +127,7 @@ lines = [
     ("KPI framework - 13 KPIs (7 environmental, 6 circularity) with targets, pass/fail and colours.", False),
     ("Dashboard - score per system and charts.", False),
     ("Charts - environmental profile (radar), change vs polyculture, N and P fate, KPI targets met, margin to target. All live.", False),
-    ("Figures - the report figures from make_charts.py as static images (key numbers, KPI framework, scorecard and more).", False),
+    ("Figures - the report figures from make_charts.py as static images, each with its data table (live formulas) on the right.", False),
     ("Data checks - cross-checks between the report tables (two findings are flagged on purpose).", False),
     ("Sources - report, method references and the author's publications.", False),
     ("", False),
@@ -676,9 +676,115 @@ bars_down(mc_, -1, 1.5)
 cs.add_chart(chart_size(mc_, 18, 13), f"H{hdr - 1}")
 widths(cs, {"A": 40, "B": 2, "C": 18, "D": 18, "E": 20, "F": 2})
 
-# ------------------------------------------------------------------ Figures (static)
-fg = sheet("Figures", "Figures - the report charts drawn by make_charts.py (static images; the Charts and Contribution analysis tabs are live)")
-r = 4
+# ------------------------------------------------------------------ Figures (static) + their data (live)
+fg = sheet("Figures", "Figures - the report charts drawn by make_charts.py, each with its data table on the right")
+fg["A3"], fg["A3"].font = ("The pictures are static (published values). The tables next to them are live formulas, "
+                           "so they update when you change an input."), ITAL
+DC = 16  # data tables start in column P
+
+
+def ftable(top, title, head, body):
+    """Write a data table at column P; body rows are [label, value or formula, ...] with a number format per row."""
+    fg.cell(row=top, column=DC, value=title).font = BOLD
+    for j, h in enumerate(head):
+        c = fg.cell(row=top + 1, column=DC + j, value=h)
+        c.font, c.fill, c.border = HFONT, HFILL, BOX
+        c.alignment = Alignment(wrap_text=True, vertical="center")
+    for i, (fmt, vals) in enumerate(body):
+        rr = top + 2 + i
+        fg.cell(row=rr, column=DC, value=vals[0]).font = NORM
+        fg.cell(row=rr, column=DC, value=vals[0]).border = BOX
+        for j, v in enumerate(vals[1:]):
+            c = fg.cell(row=rr, column=DC + 1 + j)
+            put(fg, c.coordinate, v, fmt)
+    return top + 2 + len(body)
+
+
+def per_sys(fmt, label, f):
+    return (fmt, [label, *[f.format(c=col) for col in COLS]])
+
+
+ann_gw = lambda c, p: f"'LCIA (Annex 1)'!{c}{LA[('GW', p)]}"  # noqa: E731
+FIG_GW = [("Feeds", ["Feeds"]), ("Transport", ["Transports"]), ("Energy (pumping, aeration)", ["Energy consumption"]),
+          ("Equipment", ["Equipment"]), ("Other (buildings, vehicles, chemicals, fry)", ["Building impact", "Vehicle", "Chemical products", "Fry"])]
+SH = ["", *SYSHEAD]
+
+
+def data_for(name, top):
+    if name.startswith("00"):
+        return ftable(top, "Data: key numbers (per tonne of fish + oyster)", ["Indicator", *SYSHEAD], [
+            per_sys("#,##0", "Eutrophication, kg PO4-eq/t", "=Comparison!{c}%d" % CP["EP"]),
+            per_sys("0%", "Eutrophication vs fish-only pond", "=Comparison!{c}%d/Comparison!$E%d-1" % (CP["EP"], CP["EP"])),
+            per_sys("0%", "Feed nitrogen kept in products", "='Nutrient balance'!{c}%d" % NB[("N", "eff")]),
+            per_sys("#,##0", "Global warming, kg CO2-eq/t", "=Comparison!{c}%d" % CP["GW"]),
+            per_sys("0%", "Global warming vs fish-only pond", "=Comparison!{c}%d/Comparison!$E%d-1" % (CP["GW"], CP["GW"])),
+            per_sys("0%", "Share of global warming from feed", "=%s/'LCIA (Annex 1)'!{c}%d" % (ann_gw("{c}", "Feeds"), LA[("GW", "Total")])),
+            per_sys("#,##0", "Land competition, m2a/t", "=Comparison!{c}%d" % CP["LC"]),
+            per_sys("0%", "Land competition vs fish-only pond", "=Comparison!{c}%d/Comparison!$E%d-1" % (CP["LC"], CP["LC"])),
+        ])
+    if name.startswith("01"):
+        return ftable(top, "Data: change per tonne against the fish-only pond", ["Impact category", "SI-IMTA vs POLY", "SE-IMTA vs POLY"],
+                      [("+0%;-0%;0%", [CAT_NAMES[c], f"=Comparison!F{CP[c]}", f"=Comparison!G{CP[c]}"]) for c in CATEGORIES])
+    if name.startswith("02"):
+        body = [per_sys("#,##0", lab, "=" + "+".join(ann_gw("{c}", p) for p in procs)) for lab, procs in FIG_GW]
+        body.append(per_sys("#,##0", "Total (reported)", "='LCIA (Annex 1)'!{c}%d" % LA[("GW", "Total")]))
+        body.append(per_sys("0%", "Feed share of total", "=%s/'LCIA (Annex 1)'!{c}%d" % (ann_gw("{c}", "Feeds"), LA[("GW", "Total")])))
+        return ftable(top, "Data: global warming by process, kg CO2-eq per tonne", ["Process", *SYSHEAD], body)
+    if name.startswith("03"):
+        sc = "*Inventory!{c}%d" % R["scale"]
+        return ftable(top, "Data: fate of the feed nitrogen, kg N per tonne", ["Item", *SYSHEAD], [
+            per_sys("#,##0.0", "N in feed", "='Nutrient balance'!{c}%d" % NB[("N", "feed")] + sc),
+            per_sys("#,##0.0", "in fish + oysters", "='Nutrient balance'!{c}%d" % NB[("N", "produced_biomass")] + sc),
+            per_sys("#,##0.0", "in macroalgae", "='Nutrient balance'!{c}%d" % NB[("N", "downstream_macroalgae")] + sc),
+            per_sys("#,##0.0", "released to water (net; negative = uptake)", "='Nutrient balance'!{c}%d" % NB[("N", "released")] + sc),
+            per_sys("0%", "kept in products (N use efficiency)", "='Nutrient balance'!{c}%d" % NB[("N", "eff")]),
+        ])
+    if name.startswith("04"):
+        rr = top
+        for col, sy in zip(COLS, SYSTEMS):
+            body = [("0%", [lab, *[f"=IF({lcia_abs(col, c)}=0,0,({lcia_sum(col, c, procs)})/{lcia_abs(col, c)})" for c in CATEGORIES]])
+                    for lab, procs, _ in GROUPS]
+            rr = ftable(rr, f"Data: share of each impact per process - {NAMES[sy]}", ["Process group", *CATEGORIES], body) + 1
+            fg.conditional_formatting.add(f"Q{rr - 1 - len(GROUPS)}:W{rr - 2}", ColorScaleRule(
+                start_type="num", start_value=0, start_color="FFFFFF", end_type="num", end_value=1, end_color="0F6E56"))
+        return rr
+    if name.startswith("05"):
+        body = []
+        for kid, dim, kname, unit, better, target, cat in KPI_DEF:
+            k = KP[kid]
+            fmt = "0.0%" if unit == "%" else "#,##0.00"
+            body.append((fmt, [f"{kid} {kname} ({unit})", f"='KPI framework'!F{k}", *[f"='KPI framework'!{vc}{k}" for vc in ("G", "H", "I")],
+                               *[f"='KPI framework'!{mc}{k}" for mc in ("J", "K", "L")]]))
+        body.append(("@", ["Targets met", "", "", "", "", *[f"='KPI framework'!{mc}{KP['score']}" for mc in ("J", "K", "L")]]))
+        return ftable(top, "Data: KPI scorecard", ["KPI", "Target", "Value SI-IMTA", "Value SE-IMTA", "Value SI-POLY",
+                                                    "Met SI-IMTA", "Met SE-IMTA", "Met SI-POLY"], body)
+    if name.startswith("06"):
+        return ftable(top, "Data: each impact as % of the fish-only pond", ["Impact category", *SYSHEAD],
+                      [("0%", [CAT_NAMES[c], *[f"=Comparison!{col}{CP[c]}/Comparison!$E{CP[c]}" for col in COLS]]) for c in CATEGORIES])
+    if name.startswith("07"):
+        return ftable(top, "Data: the framework steps with this workbook's numbers", ["Step", *SYSHEAD], [
+            per_sys("#,##0", "1 Data: fish + oyster gain per pond, kg", "=Inventory!{c}%d" % R["product"]),
+            per_sys("0.000", "2 Scale: factor to 1 t = 1,000 / gain", "=Inventory!{c}%d" % R["scale"]),
+            per_sys("#,##0.0", "3 KPI example: N in feed per pond, kg", "='Nutrient balance'!{c}%d" % NB[("N", "feed")]),
+            per_sys("0%", "3 KPI example: N use efficiency (C1)", "='Nutrient balance'!{c}%d" % NB[("N", "eff")]),
+            ("0%", ["4 Target: improvement vs fish-only pond", "='KPI framework'!$F$5", "='KPI framework'!$F$5", "='KPI framework'!$F$5"]),
+            ("@", ["5 Score: targets met", *[f"='KPI framework'!{mc}{KP['score']}" for mc in ("J", "K", "L")]]),
+        ])
+    if name.startswith("08"):
+        body = []
+        for kid, dim, kname, unit, better, target, cat in KPI_DEF:
+            k = KP[kid]
+            vals = []
+            for vc, sy in zip(("G", "H", "I"), SYSTEMS):
+                t, v = f"'KPI framework'!$F{k}", f"'KPI framework'!{vc}{k}"
+                m = f"({t}-{v})/ABS({t})" if better == "lower" else f"({v}-{t})/ABS({t})"
+                vals.append('="baseline"' if cat and sy == "SI-POLY" else "=" + m)
+            body.append(("+0%;-0%;0%", [f"{kid} {kname}", *vals]))
+        return ftable(top, "Data: margin to target (positive = met; not capped)", ["KPI", *SYSHEAD], body)
+    return top
+
+
+r = 5
 for png in sorted((ROOT / "results" / "charts").glob("*.png")):
     with PILImage.open(png) as im:                      # downscale the 200-dpi PNGs to keep the workbook small
         im = im.convert("RGB")
@@ -690,7 +796,9 @@ for png in sorted((ROOT / "results" / "charts").glob("*.png")):
     img.width, img.height = 900, int(img.height * scale)
     fg.cell(row=r, column=1, value=png.name).font = ITAL
     fg.add_image(img, f"A{r + 1}")
-    r += int(img.height / 20) + 4
+    end_data = data_for(png.name, r + 1)
+    r = max(r + int(img.height / 20) + 4, end_data + 3)
+widths(fg, {"P": 44, **{chr(ord("Q") + i): 14 for i in range(7)}})
 
 # ------------------------------------------------------------------ Data checks
 dc = sheet("Data checks", "Data checks - do the report's tables agree with each other?")
