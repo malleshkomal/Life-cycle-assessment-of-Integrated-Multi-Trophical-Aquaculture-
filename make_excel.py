@@ -5,13 +5,16 @@ Recalculate with LibreOffice (or just open the file in Excel) to see the values.
 """
 import csv
 import sys
+from io import BytesIO
 from pathlib import Path
 
 from openpyxl import Workbook
-from openpyxl.chart import BarChart, Reference, Series
+from openpyxl.chart import BarChart, RadarChart, Reference, Series
 from openpyxl.chart.series import SeriesLabel
-from openpyxl.formatting.rule import CellIsRule, FormulaRule
+from openpyxl.drawing.image import Image
+from openpyxl.formatting.rule import CellIsRule, ColorScaleRule, FormulaRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from PIL import Image as PILImage
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
@@ -29,6 +32,12 @@ th = Side(style="thin", color="BFBFBF")
 BOX = Border(top=th, bottom=th, left=th, right=th)
 COLS = ["C", "D", "E"]                      # SI-IMTA, SE-IMTA, SI-POLY
 SRC = "Source: INTEGRATE deliverable PI05#3 (IPMA & CTAQUA, 2020)"
+SYS_COLOR = {"SI-IMTA": "1D9E75", "SE-IMTA": "378ADD", "SI-POLY": "888780"}
+GROUPS = [("Feeds", ["Feeds"], "534AB7"), ("Rejects fish (uneaten feed, excretion)", ["Rejects fish"], "E24B4A"),
+          ("Energy consumption", ["Energy consumption"], "EF9F27"), ("Transports", ["Transports"], "378ADD"),
+          ("Equipment", ["Equipment"], "5F5E5A"), ("Direct activity (farm area, water mgmt.)", ["Direct activity"], "1D9E75"),
+          ("Water consumption", ["Water consumption"], "85B7EB"),
+          ("Other (buildings, vehicles, chemicals, fry)", ["Building impact", "Vehicle", "Chemical products", "Fry"], "D3D1C7")]
 CAT_NAMES = {"GW": "Global warming", "TCED": "Cumulative energy demand", "NPPU": "Net primary production use",
              "AP": "Acidification", "EP": "Eutrophication", "LC": "Land competition", "WD": "Water dependence"}
 
@@ -69,6 +78,23 @@ def widths(ws, d):
         ws.column_dimensions[k].width = v
 
 
+def color(series, hex_):
+    series.graphicalProperties.solidFill = hex_
+    series.graphicalProperties.line.solidFill = hex_
+
+
+def bars_down(ch, lo=None, hi=None):
+    """Horizontal bars listed top to bottom, labels clear of negative bars."""
+    ch.x_axis.scaling.orientation, ch.x_axis.tickLblPos = "maxMin", "low"
+    ch.y_axis.scaling.min, ch.y_axis.scaling.max = lo, hi
+    return ch
+
+
+def chart_size(ch, w=18, h=9):
+    ch.width, ch.height = w, h
+    return ch
+
+
 def rows(name):
     with open(D / name, encoding="utf-8") as f:
         return list(csv.DictReader(f))
@@ -96,9 +122,12 @@ lines = [
     ("LCI per tonne - the foreground inventory for one functional unit (all formulas).", False),
     ("Nutrient balance - N and P from feed to fish + oysters, macroalgae and water (Table 5); feed N/P recomputed from the recipe.", False),
     ("LCIA (Annex 1) - impacts per tonne by 11 processes and 7 categories (yellow = report values), with shares.", False),
+    ("Contribution analysis - share of each process in each impact (heatmap) and contribution charts per system and per impact category.", False),
     ("Comparison - totals side by side, change against the polyculture baseline, implied impact per kg of feed.", False),
     ("KPI framework - 13 KPIs (7 environmental, 6 circularity) with targets, pass/fail and colours.", False),
     ("Dashboard - score per system and charts.", False),
+    ("Charts - environmental profile (radar), change vs polyculture, N and P fate, KPI targets met, margin to target. All live.", False),
+    ("Figures - the report figures from make_charts.py as static images (key numbers, KPI framework, scorecard and more).", False),
     ("Data checks - cross-checks between the report tables (two findings are flagged on purpose).", False),
     ("Sources - report, method references and the author's publications.", False),
     ("", False),
@@ -316,6 +345,80 @@ for cat in CATEGORIES:
 widths(la, {"A": 24, "B": 11, "C": 18, "D": 18, "E": 18, "F": 2, "G": 13, "H": 13, "I": 13})
 la.freeze_panes = "C5"
 
+# ------------------------------------------------------------------ Contribution analysis
+ca = sheet("Contribution analysis", "Contribution analysis - which process drives which impact, per tonne of fish + oyster")
+ca["A3"], ca["A3"].font = ("All values are formulas on the LCIA (Annex 1) tab. Share = process / sum of the absolute process amounts, "
+                           "so a negative share is a removal (net nutrient uptake)."), ITAL
+
+
+def lcia_sum(col, cat, procs):
+    return "+".join(f"'LCIA (Annex 1)'!{col}{LA[(cat, p)]}" for p in procs)
+
+
+def lcia_abs(col, cat):
+    return f"SUMPRODUCT(ABS('LCIA (Annex 1)'!{col}{LA[(cat, PROCS[0])]}:{col}{LA[(cat, PROCS[-1])]}))"
+
+
+r = 5
+section(ca, r, "1  Share of each impact per process group (heatmap) and contribution chart per system", 8)
+r += 2
+for col, s in zip(COLS, SYSTEMS):
+    top = r
+    ca.cell(row=r, column=1, value=NAMES[s]).font = Font(name=F, bold=True, color=SYS_COLOR[s])
+    r += 1
+    header(ca, r, ["Process group", *CATEGORIES])
+    hdr = r
+    r += 1
+    for lab, procs, _ in GROUPS:
+        ca.cell(row=r, column=1, value=lab).font = NORM
+        for j, cat in enumerate(CATEGORIES):
+            ref = ca.cell(row=r, column=2 + j).coordinate
+            put(ca, ref, f"=IF({lcia_abs(col, cat)}=0,0,({lcia_sum(col, cat, procs)})/{lcia_abs(col, cat)})", "0%")
+        r += 1
+    ca.conditional_formatting.add(f"B{hdr + 1}:H{r - 1}", ColorScaleRule(start_type="num", start_value=0, start_color="FFFFFF",
+                                                                         end_type="num", end_value=1, end_color="0F6E56"))
+    ch = BarChart()
+    ch.type, ch.grouping, ch.overlap = "bar", "stacked", 100
+    ch.title = f"Contribution per impact category - {NAMES[s]}"
+    ch.x_axis.title, ch.y_axis.title, ch.y_axis.number_format = "impact category", "share of impact", "0%"
+    for i, (lab, _, hx) in enumerate(GROUPS):
+        se = Series(Reference(ca, min_col=2, max_col=8, min_row=hdr + 1 + i), title=lab)
+        color(se, hx)
+        ch.series.append(se)
+    ch.set_categories(Reference(ca, min_col=2, max_col=8, min_row=hdr))
+    bars_down(ch, hi=1)
+    ca.add_chart(chart_size(ch, 20, 8.5), f"J{top}")
+    r = top + 19
+section(ca, r, "2  Contribution per impact category, absolute amounts per tonne (stacked by process group)", 8)
+r += 2
+for cat in CATEGORIES:
+    top = r
+    unit = next(x["unit"] for x in ann if x["category"] == cat)
+    ca.cell(row=r, column=1, value=f"{cat} - {CAT_NAMES[cat]} ({unit} per t)").font = BOLD
+    r += 1
+    header(ca, r, ["Process group", "", *SYSHEAD])
+    hdr = r
+    r += 1
+    for lab, procs, _ in GROUPS:
+        ca.cell(row=r, column=1, value=lab).font = NORM
+        for col in COLS:
+            put(ca, f"{col}{r}", f"={lcia_sum(col, cat, procs)}", "#,##0")
+        r += 1
+    ca.cell(row=r, column=1, value="Total (reported)").font = BOLD
+    for col in COLS:
+        put(ca, f"{col}{r}", f"='LCIA (Annex 1)'!{col}{LA[(cat, 'Total')]}", "#,##0", bold=True)
+    ch = BarChart()
+    ch.type, ch.grouping, ch.overlap = "col", "stacked", 100
+    ch.title, ch.y_axis.title = f"{CAT_NAMES[cat]} by process", f"{unit} per t fish + oyster"
+    for i, (lab, _, hx) in enumerate(GROUPS):
+        se = Series(Reference(ca, min_col=3, max_col=5, min_row=hdr + 1 + i), title=lab)
+        color(se, hx)
+        ch.series.append(se)
+    ch.set_categories(Reference(ca, min_col=3, max_col=5, min_row=hdr))
+    ca.add_chart(chart_size(ch, 20, 8.5), f"J{top}")
+    r = top + 19
+widths(ca, {"A": 40, "B": 9, "C": 18, "D": 18, "E": 18, "F": 9, "G": 9, "H": 9})
+
 # ------------------------------------------------------------------ Comparison
 cp = sheet("Comparison", "Comparison per tonne of fish + oyster, and change against the polyculture baseline")
 header(cp, 4, ["Impact category", "Unit", *SYSHEAD, "SI-IMTA vs POLY", "SE-IMTA vs POLY", "Lowest"])
@@ -458,6 +561,136 @@ ec.series[0].tx = SeriesLabel(v="Eutrophication")
 ec.set_categories(Reference(db, min_col=3, max_col=5, min_row=4))
 ec.legend, ec.height, ec.width = None, 8, 20
 db.add_chart(ec, "G26")
+
+# ------------------------------------------------------------------ Charts
+cs = sheet("Charts", "Charts - all live: they update when an input or target changes")
+r = 4
+
+
+def block(title, labels):
+    global r
+    section(cs, r, title, 6)
+    header(cs, r + 1, labels)
+    r += 2
+    return r - 1
+
+
+# 1 Environmental profile (radar)
+hdr = block("1  Environmental profile: each impact per tonne as % of the fish-only pond (100 % = baseline)", ["Impact category", "", *SYSHEAD])
+for cat in CATEGORIES:
+    cs.cell(row=r, column=1, value=CAT_NAMES[cat]).font = NORM
+    for col in COLS:
+        put(cs, f"{col}{r}", f"=Comparison!{col}{CP[cat]}/Comparison!$E{CP[cat]}", "0%")
+    r += 1
+rc = RadarChart()
+rc.type, rc.title = "marker", "Environmental profile (% of fish-only pond; smaller = lower impact)"
+rc.add_data(Reference(cs, min_col=3, max_col=5, min_row=hdr, max_row=r - 1), titles_from_data=True)
+rc.set_categories(Reference(cs, min_col=1, min_row=hdr + 1, max_row=r - 1))
+for se, sy in zip(rc.series, SYSTEMS):
+    color(se, SYS_COLOR[sy])
+    se.graphicalProperties.line.width = 28000
+rc.y_axis.number_format = "0%"
+rc.y_axis.scaling.min, rc.y_axis.scaling.max, rc.y_axis.majorUnit = 0, 2.5, 0.5
+cs.add_chart(chart_size(rc, 16, 10), f"H{hdr - 1}")
+r = hdr + 20
+
+# 2 Change against the fish-only pond
+hdr = block("2  Change per tonne against the fish-only pond (negative = better)", ["Impact category", "", "SI-IMTA vs POLY", "SE-IMTA vs POLY"])
+for cat in CATEGORIES:
+    cs.cell(row=r, column=1, value=CAT_NAMES[cat]).font = NORM
+    for col, src in (("C", "F"), ("D", "G")):
+        put(cs, f"{col}{r}", f"=Comparison!{src}{CP[cat]}", "+0%;-0%;0%")
+    r += 1
+bc2 = BarChart()
+bc2.type, bc2.grouping, bc2.title = "bar", "clustered", "Change against the fish-only pond"
+bc2.add_data(Reference(cs, min_col=3, max_col=4, min_row=hdr, max_row=r - 1), titles_from_data=True)
+bc2.set_categories(Reference(cs, min_col=1, min_row=hdr + 1, max_row=r - 1))
+for se, sy in zip(bc2.series, ("SI-IMTA", "SE-IMTA")):
+    color(se, SYS_COLOR[sy])
+bc2.y_axis.number_format = "0%"
+bars_down(bc2, -1, 1.5)
+cs.add_chart(chart_size(bc2, 16, 9), f"H{hdr - 1}")
+r = hdr + 20
+
+# 3-4 Nutrient fate per tonne
+for el, name in (("N", "nitrogen"), ("P", "phosphorus")):
+    hdr = block(f"{3 if el == 'N' else 4}  Fate of the {name} in the feed, kg {el} per tonne (negative release = net uptake from the water)",
+                ["System", "", f"in fish + oysters", f"in macroalgae", f"released to water (net)"])
+    for col, sy in zip(COLS, SYSTEMS):
+        cs.cell(row=r, column=1, value=NAMES[sy]).font = NORM
+        sc = f"Inventory!{col}{R['scale']}"
+        for out, key in (("C", "produced_biomass"), ("D", "downstream_macroalgae"), ("E", "released")):
+            put(cs, f"{out}{r}", f"='Nutrient balance'!{col}{NB[(el, key)]}*{sc}", "#,##0.0")
+        r += 1
+    nc = BarChart()
+    nc.type, nc.grouping, nc.overlap = "bar", "stacked", 100
+    nc.title, nc.y_axis.title = f"Where the feed {name} goes", f"kg {el} per t fish + oyster"
+    nc.add_data(Reference(cs, min_col=3, max_col=5, min_row=hdr, max_row=r - 1), titles_from_data=True)
+    nc.set_categories(Reference(cs, min_col=1, min_row=hdr + 1, max_row=r - 1))
+    for se, hx in zip(nc.series, ("534AB7", "1D9E75", "E24B4A")):
+        color(se, hx)
+    bars_down(nc)
+    cs.add_chart(chart_size(nc, 16, 7.5), f"H{hdr - 1}")
+    r = hdr + 17
+
+# 5 KPI targets met
+env = [KP[k[0]] for k in KPI_DEF if k[6]]
+circ = [KP[k[0]] for k in KPI_DEF if not k[6]]
+hdr = block("5  KPI targets met per system", ["System", "", "Environmental (of 7)", "Circularity (of 6)", "Total (of 13)"])
+for mc, sy in zip(("J", "K", "L"), SYSTEMS):
+    cs.cell(row=r, column=1, value=NAMES[sy]).font = NORM
+    put(cs, f"C{r}", f"=COUNTIF('KPI framework'!{mc}{min(env)}:{mc}{max(env)},\"✓\")", "0")
+    put(cs, f"D{r}", f"=COUNTIF('KPI framework'!{mc}{min(circ)}:{mc}{max(circ)},\"✓\")", "0")
+    put(cs, f"E{r}", f"=C{r}+D{r}", "0", bold=True)
+    r += 1
+kc = BarChart()
+kc.type, kc.grouping, kc.overlap = "col", "stacked", 100
+kc.title, kc.y_axis.title = "KPI targets met (of 13)", "targets met"
+kc.add_data(Reference(cs, min_col=3, max_col=4, min_row=hdr, max_row=r - 1), titles_from_data=True)
+kc.set_categories(Reference(cs, min_col=1, min_row=hdr + 1, max_row=r - 1))
+for se, hx in zip(kc.series, ("378ADD", "1D9E75")):
+    color(se, hx)
+kc.y_axis.scaling.min, kc.y_axis.scaling.max, kc.y_axis.majorUnit = 0, 13, 1
+cs.add_chart(chart_size(kc, 16, 8), f"H{hdr - 1}")
+r = hdr + 18
+
+# 6 Margin to target
+hdr = block("6  Margin to target per KPI (positive = target met; capped at -100 % and +150 %; blank = baseline)", ["KPI", "", *SYSHEAD])
+for kid, dim, name, unit, better, target, cat in KPI_DEF:
+    k = KP[kid]
+    cs.cell(row=r, column=1, value=f"{kid} {name}").font = NORM
+    for vc, col, sy in zip(("G", "H", "I"), COLS, SYSTEMS):
+        t, v = f"'KPI framework'!$F{k}", f"'KPI framework'!{vc}{k}"
+        m = f"({t}-{v})/ABS({t})" if better == "lower" else f"({v}-{t})/ABS({t})"
+        f = "=NA()" if cat and sy == "SI-POLY" else f"=MAX(-1,MIN(1.5,{m}))"
+        put(cs, f"{col}{r}", f, "+0%;-0%;0%")
+    r += 1
+mc_ = BarChart()
+mc_.type, mc_.grouping, mc_.title = "bar", "clustered", "Margin to KPI target (right of 0 = met)"
+mc_.add_data(Reference(cs, min_col=3, max_col=5, min_row=hdr, max_row=r - 1), titles_from_data=True)
+mc_.set_categories(Reference(cs, min_col=1, min_row=hdr + 1, max_row=r - 1))
+for se, sy in zip(mc_.series, SYSTEMS):
+    color(se, SYS_COLOR[sy])
+mc_.y_axis.number_format = "0%"
+bars_down(mc_, -1, 1.5)
+cs.add_chart(chart_size(mc_, 18, 13), f"H{hdr - 1}")
+widths(cs, {"A": 40, "B": 2, "C": 18, "D": 18, "E": 20, "F": 2})
+
+# ------------------------------------------------------------------ Figures (static)
+fg = sheet("Figures", "Figures - the report charts drawn by make_charts.py (static images; the Charts and Contribution analysis tabs are live)")
+r = 4
+for png in sorted((ROOT / "results" / "charts").glob("*.png")):
+    with PILImage.open(png) as im:                      # downscale the 200-dpi PNGs to keep the workbook small
+        im = im.convert("RGB")
+        im.thumbnail((1400, 1400))
+        buf = BytesIO()
+        im.save(buf, "PNG", optimize=True)
+    img = Image(buf)
+    scale = 900 / img.width
+    img.width, img.height = 900, int(img.height * scale)
+    fg.cell(row=r, column=1, value=png.name).font = ITAL
+    fg.add_image(img, f"A{r + 1}")
+    r += int(img.height / 20) + 4
 
 # ------------------------------------------------------------------ Data checks
 dc = sheet("Data checks", "Data checks - do the report's tables agree with each other?")
