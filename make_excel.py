@@ -806,12 +806,9 @@ for png in sorted((ROOT / "results" / "charts").glob("*.png")):
 widths(fg, {"P": 44, **{chr(ord("Q") + i): 14 for i in range(7)}})
 
 # ------------------------------------------------------------------ Flow diagrams (static) + their data (live)
-import cairosvg  # noqa: E402  (renders the make_flow.py SVGs, which Excel cannot hold)
-
 fl = sheet("Flow diagrams", "Flow diagrams - how the fish waste is used in each system (per pond and production cycle)")
-fl["A3"], fl["A3"].font = ("Each system: a live flow diagram drawn with cells (numbers update with the inputs), the data table on the right, "
-                           "and the same diagram as a picture below."), ITAL
-FLOW_SVG = {"SI-IMTA": "06_flow_si_imta.svg", "SE-IMTA": "06_flow_se_imta.svg", "SI-POLY": "06_flow_si_poly.svg"}
+fl["A3"], fl["A3"].font = ("Each system: a flow diagram drawn with cells and its data table on the right. "
+                           "All numbers are live: they update when you change an input."), ITAL
 BOXC = {"feed": ("FAEEDA", "BA7517"), "fry": ("FBEAF0", "993556"), "water": ("E6F1FB", "185FA5"), "energy": ("EEEDFE", "534AB7"),
         "pond": ("E1F5EE", "0F6E56"), "oys": ("FAECE7", "993C1D"), "alg": ("EAF3DE", "3B6D11"), "fish": ("EEEDFE", "3C3489"),
         "sea": ("FCEBEB", "A32D2D"), "none": ("F1EFE8", "888780")}
@@ -895,14 +892,7 @@ for col, sy in zip(COLS, SYSTEMS):
         put(fl, f"J{rr}", f, fmt, bold=lab in ("N in products", "N use efficiency"))
         fl.cell(row=rr, column=11, value=unit).font = NORM
 
-    # picture of the make_flow.py diagram below
-    pr = t + len(items) + 4
-    fl[f"A{pr}"].value, fl[f"A{pr}"].font = "Same diagram as a picture (make_flow.py, published values):", ITAL
-    buf = BytesIO(cairosvg.svg2png(url=str(ROOT / "results" / "charts" / FLOW_SVG[sy]), output_width=1400))
-    img = Image(buf)
-    img.width, img.height = 900, int(img.height * 900 / img.width)
-    fl.add_image(img, f"A{pr + 1}")
-    r = pr + 1 + int(img.height / 20) + 4
+    r = t + len(items) + 5
 wb.move_sheet(fl, offset=wb.sheetnames.index("Goal & scope") + 1 - wb.sheetnames.index("Flow diagrams"))
 
 # ------------------------------------------------------------------ Data checks
@@ -1054,7 +1044,7 @@ def build_readme():
     r = head(r, ["Tab", "What you find there", "", "", "Type"], merge=("C", "E"))
     tabs = [
         ("Goal & scope", "Functional unit, boundary, software, impact categories, allocation", "Reference"),
-        ("Flow diagrams", "How the fish waste is used in each system, with the flows", "Pictures + data"),
+        ("Flow diagrams", "How the fish waste is used in each system, with the flows", "Diagrams + data (live)"),
         ("Metadata", "Dataset description in the LCIS2024 structure", "Reference"),
         ("Inventory", "Table 4 of the report per pond and cycle (yellow), scaled to 1 t of product", "Input + calculation"),
         ("Nutrient balance", "N and P from feed to fish + oysters, macroalgae and water (Table 5)", "Input + calculation"),

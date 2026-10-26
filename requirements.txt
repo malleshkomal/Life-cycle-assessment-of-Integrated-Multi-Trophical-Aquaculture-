@@ -4,4 +4,3 @@ networkx
 matplotlib
 pytest
 pillow
-cairosvg
