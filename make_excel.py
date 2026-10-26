@@ -239,30 +239,58 @@ for el in ("N", "P"):
 widths(nb, {"A": 34, "B": 8, "C": 22, "D": 22, "E": 22, "F": 48})
 
 # ------------------------------------------------------------------ LCI per tonne
-lci = sheet("LCI per tonne", "Foreground LCI per functional unit (1 t fish + oyster flesh) - all formulas")
-header(lci, 4, ["Flow (fp_name)", "Type", *SYSHEAD, "Unit", "Comment"])
-flows = [("aquatic product, fish + oyster flesh, at farm gate", "reference product", "=1", "t", "functional unit"),
-         ("fish, live weight gain", "product", "=Inventory!{c}%d*Inventory!{c}%d" % (R["fish_gain"], R["scale"]), "kg", ""),
-         ("oyster flesh, weight gain", "product", "=Inventory!{c}%d*Inventory!{c}%d" % (R["oyster_gain"], R["scale"]), "kg", ""),
-         ("macroalgae, biomass gain", "co-product, outside FU", "=Inventory!{c}%d*Inventory!{c}%d" % (R["macroalgae_gain"], R["scale"]), "kg", "not allocated any burden"),
-         ("compound fish feed", "technosphere input", "=Inventory!{c}%d*Inventory!{c}%d" % (R["feed"], R["scale"]), "kg", "40-42 % protein"),
-         ("fish fry / fingerlings", "technosphere input", "=Inventory!{c}%d*Inventory!{c}%d" % (R["fish_stocked"], R["scale"]), "kg", "carp-fry proxy in Piscentool"),
-         ("oyster spat (flesh)", "technosphere input", "=Inventory!{c}%d*Inventory!{c}%d" % (R["oyster_stocked"], R["scale"]), "kg", ""),
-         ("seawater, pumped or tidal", "resource", "=Inventory!{c}%d*Inventory!{c}%d" % (R["seawater_used"], R["scale"]), "m3", "equals Water consumption in Annex 1"),
-         ("land, farm area allocated to the pond", "resource", "=Inventory!{c}%d*Inventory!{c}%d" % (R["land"], R["scale"]), "m2a", "compare Direct activity, Land competition"),
-         ("nitrogen, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "kg N", "negative = uptake"),
-         ("phosphorus, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("P", "per_t")], "kg P", "negative = uptake")]
+lci = sheet("LCI per tonne", "Foreground LCI per functional unit (1 t fish + oyster flesh) - inputs and outputs, all formulas")
+lci["A3"], lci["A3"].font = ("Inputs = what the farm takes in (from other processes or from nature). Outputs = what leaves the farm "
+                             "(products, co-products, emissions). Amounts per tonne of fish + oyster flesh."), ITAL
+header(lci, 4, ["Flow (fp_name)", "Input / output", *SYSHEAD, "Unit", "Comment"])
+scaled = lambda k: "=Inventory!{c}%d*Inventory!{c}%d" % (R[k], R["scale"])  # noqa: E731
+groups = [
+    ("OUTPUTS - products (the functional unit)", "Output", [
+        ("aquatic product, fish + oyster flesh, at farm gate", "reference product", "=1", "t", "functional unit = fish + oyster flesh"),
+        ("fish, live weight gain", "product", scaled("fish_gain"), "kg", "part of the 1 t"),
+        ("oyster flesh, weight gain", "product", scaled("oyster_gain"), "kg", "part of the 1 t")]),
+    ("OUTPUTS - co-product", "Output", [
+        ("macroalgae, biomass gain", "co-product, outside FU", scaled("macroalgae_gain"), "kg", "harvested; not allocated any burden")]),
+    ("INPUTS - from the technosphere (products of other processes)", "Input", [
+        ("compound fish feed", "technosphere", scaled("feed"), "kg", "40-42 % protein"),
+        ("fish fry / fingerlings", "technosphere", scaled("fish_stocked"), "kg", "carp-fry proxy in Piscentool"),
+        ("oyster spat (flesh)", "technosphere", scaled("oyster_stocked"), "kg", "")]),
+    ("INPUTS - from nature (resources)", "Input", [
+        ("seawater, pumped or tidal", "resource", scaled("seawater_used"), "m3", "equals Water consumption in Annex 1"),
+        ("land, farm area allocated to the pond", "resource", scaled("land"), "m2a", "compare Direct activity, Land competition")]),
+    ("OUTPUTS - emissions to nature", "Output", [
+        ("nitrogen, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "kg N", "negative = net uptake from the water"),
+        ("phosphorus, to water (net)", "emission", "='Nutrient balance'!{c}%d" % NB[("P", "per_t")], "kg P", "negative = net uptake from the water")]),
+]
 LCI = {}
-for i, (name, typ, f, unit, note) in enumerate(flows):
-    rr = 5 + i
-    LCI[name] = rr
+rr = 5
+for title, direction, items in groups:
+    section(lci, rr, title, 7)
+    rr += 1
+    for name, kind, f, unit, note in items:
+        LCI[name] = rr
+        lci.cell(row=rr, column=1, value=name).font = NORM
+        c = lci.cell(row=rr, column=2, value=f"{direction} - {kind}")
+        c.font = Font(name=F, bold=True, color="0F6E56" if direction == "Output" else "185FA5")
+        for col in COLS:
+            put(lci, f"{col}{rr}", f.format(c=col), "#,##0.0")
+        lci.cell(row=rr, column=6, value=unit).font = NORM
+        lci.cell(row=rr, column=7, value=note).font = ITAL
+        rr += 1
+rr += 1
+section(lci, rr, "INPUTS - included in the impact results, but the report gives no quantities", 7)
+rr += 1
+for name, proc in (("electricity / fuel for pumping and aeration", "Energy consumption"), ("equipment (pumps, aerators, nets)", "Equipment"),
+                   ("buildings", "Building impact"), ("vehicles", "Vehicle"), ("chemical products", "Chemical products"),
+                   ("transport of inputs", "Transports")):
     lci.cell(row=rr, column=1, value=name).font = NORM
-    lci.cell(row=rr, column=2, value=typ).font = NORM
+    lci.cell(row=rr, column=2, value="Input - technosphere").font = Font(name=F, bold=True, color="185FA5")
     for col in COLS:
-        put(lci, f"{col}{rr}", f.format(c=col), "#,##0.0")
-    lci.cell(row=rr, column=6, value=unit).font = NORM
-    lci.cell(row=rr, column=7, value=note).font = ITAL
-widths(lci, {"A": 44, "B": 22, "C": 22, "D": 22, "E": 22, "F": 8, "G": 40})
+        put(lci, f"{col}{rr}", "n/a", "@").alignment = Alignment(horizontal="right")
+    lci.cell(row=rr, column=7, value=f"only its impacts are reported: process '{proc}' in LCIA (Annex 1)").font = ITAL
+    rr += 1
+widths(lci, {"A": 44, "B": 30, "C": 22, "D": 22, "E": 22, "F": 8, "G": 52})
+lci.freeze_panes = "C5"
 
 # ------------------------------------------------------------------ LCIA (Annex 1)
 la = sheet("LCIA (Annex 1)", "Life cycle impact assessment per tonne of fish + oyster - Annex 1 of the report (Piscentool)")
@@ -957,7 +985,7 @@ def build_readme():
         ("Metadata", "Dataset description in the LCIS2024 structure", "Reference"),
         ("Inventory", "Table 4 of the report per pond and cycle (yellow), scaled to 1 t of product", "Input + calculation"),
         ("Nutrient balance", "N and P from feed to fish + oysters, macroalgae and water (Table 5)", "Input + calculation"),
-        ("LCI per tonne", "Foreground inventory for one functional unit", "Calculation"),
+        ("LCI per tonne", "Foreground inventory for one functional unit, grouped into inputs and outputs", "Calculation"),
         ("LCIA (Annex 1)", "Impacts per tonne for 11 processes and 7 categories, with shares", "Input + calculation"),
         ("Contribution analysis", "Share of each process in each impact (heatmap) and contribution charts", "Calculation + charts"),
         ("Comparison", "Totals side by side and change against the fish-only pond", "Calculation + chart"),
