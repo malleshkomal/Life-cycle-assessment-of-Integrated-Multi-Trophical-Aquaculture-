@@ -809,43 +809,100 @@ widths(fg, {"P": 44, **{chr(ord("Q") + i): 14 for i in range(7)}})
 import cairosvg  # noqa: E402  (renders the make_flow.py SVGs, which Excel cannot hold)
 
 fl = sheet("Flow diagrams", "Flow diagrams - how the fish waste is used in each system (per pond and production cycle)")
-fl["A3"], fl["A3"].font = ("Diagrams from make_flow.py (static). The table next to each one is live: it reads the Inventory and "
-                           "Nutrient balance tabs."), ITAL
+fl["A3"], fl["A3"].font = ("Each system: a live flow diagram drawn with cells (numbers update with the inputs), the data table on the right, "
+                           "and the same diagram as a picture below."), ITAL
 FLOW_SVG = {"SI-IMTA": "06_flow_si_imta.svg", "SE-IMTA": "06_flow_se_imta.svg", "SI-POLY": "06_flow_si_poly.svg"}
+BOXC = {"feed": ("FAEEDA", "BA7517"), "fry": ("FBEAF0", "993556"), "water": ("E6F1FB", "185FA5"), "energy": ("EEEDFE", "534AB7"),
+        "pond": ("E1F5EE", "0F6E56"), "oys": ("FAECE7", "993C1D"), "alg": ("EAF3DE", "3B6D11"), "fish": ("EEEDFE", "3C3489"),
+        "sea": ("FCEBEB", "A32D2D"), "none": ("F1EFE8", "888780")}
+ARROW = Font(name=F, bold=True, size=16, color="5F5E5A")
+widths(fl, {"A": 26, "B": 5, "C": 26, "D": 5, "E": 26, "F": 5, "G": 26, "H": 3, "I": 40, "J": 14, "K": 8})
+
+
+def box(r0, col, kind, title, value):
+    """A 2-row box: title (bold) above a value line (text or formula)."""
+    fill_, edge = BOXC[kind]
+    side = Side(style="medium", color=edge)
+    for i, v in enumerate((title, value)):
+        c = fl[f"{col}{r0 + i}"]
+        c.value, c.fill = v, PatternFill("solid", fgColor=fill_)
+        c.font = Font(name=F, bold=(i == 0), size=11 if i == 0 else 10, color=edge)
+        c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        c.border = Border(left=side, right=side, top=side if i == 0 else None, bottom=side if i == 1 else None)
+
+
+def arrow(ref, sym, label=None):
+    fl[ref].value, fl[ref].font = sym, ARROW
+    fl[ref].alignment = Alignment(horizontal="center", vertical="center")
+
+
 r = 5
 for col, sy in zip(COLS, SYSTEMS):
+    imta, tidal = sy != "SI-POLY", sy == "SE-IMTA"
+    inv_ = lambda k: f"Inventory!{col}{R[k]}"  # noqa: E731
+    nb_ = lambda el, k: f"'Nutrient balance'!{col}{NB[(el, k)]}"  # noqa: E731
+    fl.cell(row=r, column=1, value=NAMES[sy]).font = Font(name=F, bold=True, size=13, color=SYS_COLOR[sy])
+    t = r + 2
+    for rr in range(t, t + 11):
+        fl.row_dimensions[rr].height = 18
+    # inputs (column A) -> pond (C) -> middle (E) -> outputs (G)
+    box(t, "A", "feed", "Fish feed", f'=TEXT({inv_("feed")},"#,##0")&" kg · "&TEXT({nb_("N", "feed")},"#,##0.0")&" kg N"')
+    box(t + 3, "A", "fry", "Fry + oyster spat" if imta else "Fry", f'=TEXT({inv_("fish_stocked")}+{inv_("oyster_stocked")},"#,##0")&" kg stocked"')
+    box(t + 6, "A", "water", "Seawater", f'=TEXT({inv_("seawater_used")},"#,##0")&" m3 · {"tidal" if tidal else "pumped"}"')
+    box(t + 9, "A", "energy", "Energy", "almost none (tides)" if tidal else "pumping + aeration")
+    arrow(f"B{t + 1}", "↘"), arrow(f"B{t + 3}", "→"), arrow(f"B{t + 6}", "↗"), arrow(f"B{t + 9}", "↗")
+    box(t + 3, "C", "pond", "Fish pond" + (" + oysters" if imta else ""), "feed → fish → waste")
+    box(t, "E", "oys" if imta else "none", "Oysters", "filter particles" if imta else "none in this system")
+    box(t, "G", "oys" if imta else "none", "Oyster flesh", f'=TEXT({inv_("oyster_gain")},"#,##0")&" kg"' if imta else "–")
+    arrow(f"D{t + 2}", "↗"), arrow(f"F{t}", "→")
+    fl[f"E{t + 3}"].value, fl[f"E{t + 3}"].font = "harvest  →  →  →", Font(name=F, bold=True, color="534AB7")
+    fl[f"E{t + 3}"].alignment = Alignment(horizontal="center", vertical="center")
+    arrow(f"D{t + 3}", "→"), arrow(f"F{t + 3}", "→")
+    box(t + 3, "G", "fish", "Fish", f'=TEXT({inv_("fish_gain")},"#,##0")&" kg gained"')
+    arrow(f"D{t + 5}", "↘")
+    box(t + 6, "E", "alg" if imta else "none", "Macroalgae", ("Ulva + Gracilaria" if tidal else "Ulva") + " take up N, P" if imta else "none in this system")
+    box(t + 6, "G", "alg" if imta else "none", "Macroalgae harvest",
+        f'=TEXT({inv_("macroalgae_gain")},"#,##0")&" kg · "&TEXT({nb_("N", "downstream_macroalgae")},"0.0")&" kg N"' if imta else "–")
+    arrow(f"F{t + 6}", "→"), arrow(f"E{t + 8}", "↓")
+    rep = nb_("N", "reported")
+    box(t + 9, "E", "sea", "Lagoon / estuary", f'=IF({rep}<0,"net uptake "&TEXT(-{rep},"0.0")&" kg N",TEXT({rep},"0.0")&" kg N released")')
+    fl[f"G{t + 9}"].value = f'="N in products: "&TEXT({nb_("N", "produced_biomass")}+{nb_("N", "downstream_macroalgae")},"0.0")&" kg N"'
+    fl[f"G{t + 10}"].value = f'="N use efficiency: "&TEXT({nb_("N", "eff")},"0%")'
+    fl[f"G{t + 9}"].font, fl[f"G{t + 10}"].font = BOLD, NORM
+
+    # data table (column I)
+    items = [
+        ("Fish feed", "=" + inv_("feed"), "kg", "#,##0"),
+        ("N in feed", "=" + nb_("N", "feed"), "kg N", "#,##0.0"),
+        ("Fry + oyster spat stocked", f"={inv_('fish_stocked')}+{inv_('oyster_stocked')}", "kg", "#,##0"),
+        ("Seawater", "=" + inv_("seawater_used"), "m3", "#,##0"),
+        ("Fish gained", "=" + inv_("fish_gain"), "kg", "#,##0"),
+        ("Oyster flesh gained", "=" + inv_("oyster_gain"), "kg", "#,##0"),
+        ("Macroalgae harvest", "=" + inv_("macroalgae_gain"), "kg", "#,##0"),
+        ("N in fish + oysters", "=" + nb_("N", "produced_biomass"), "kg N", "#,##0.0"),
+        ("N in macroalgae", "=" + nb_("N", "downstream_macroalgae"), "kg N", "#,##0.0"),
+        ("N in products", f"={nb_('N', 'produced_biomass')}+{nb_('N', 'downstream_macroalgae')}", "kg N", "#,##0.0"),
+        ("N released (Table 5; minus = net uptake)", "=" + rep, "kg N", "#,##0.0"),
+        ("N use efficiency", "=" + nb_("N", "eff"), "%", "0%"),
+    ]
+    fl[f"I{t}"].value, fl[f"I{t}"].font = "Data (live)", BOLD
+    for j, h in enumerate(["Flow", "Value", "Unit"]):
+        c = fl.cell(row=t + 1, column=9 + j, value=h)
+        c.font, c.fill, c.border = HFONT, HFILL, BOX
+    for i, (lab, f, unit, fmt) in enumerate(items):
+        rr = t + 2 + i
+        fl.cell(row=rr, column=9, value=lab).font = NORM
+        put(fl, f"J{rr}", f, fmt, bold=lab in ("N in products", "N use efficiency"))
+        fl.cell(row=rr, column=11, value=unit).font = NORM
+
+    # picture of the make_flow.py diagram below
+    pr = t + len(items) + 4
+    fl[f"A{pr}"].value, fl[f"A{pr}"].font = "Same diagram as a picture (make_flow.py, published values):", ITAL
     buf = BytesIO(cairosvg.svg2png(url=str(ROOT / "results" / "charts" / FLOW_SVG[sy]), output_width=1400))
     img = Image(buf)
     img.width, img.height = 900, int(img.height * 900 / img.width)
-    fl.cell(row=r, column=1, value=NAMES[sy]).font = Font(name=F, bold=True, size=12, color=SYS_COLOR[sy])
-    fl.add_image(img, f"A{r + 1}")
-    inv_ = lambda k: f"=Inventory!{col}{R[k]}"  # noqa: E731
-    nb_ = lambda el, k: f"='Nutrient balance'!{col}{NB[(el, k)]}"  # noqa: E731
-    items = [
-        ("Fish feed", inv_("feed"), "kg", "#,##0"),
-        ("N in feed", nb_("N", "feed"), "kg N", "#,##0.0"),
-        ("Fry + oyster spat stocked", f"=Inventory!{col}{R['fish_stocked']}+Inventory!{col}{R['oyster_stocked']}", "kg", "#,##0"),
-        ("Seawater", inv_("seawater_used"), "m3", "#,##0"),
-        ("Fish gained", inv_("fish_gain"), "kg", "#,##0"),
-        ("Oyster flesh gained", inv_("oyster_gain"), "kg", "#,##0"),
-        ("Macroalgae harvest", inv_("macroalgae_gain"), "kg", "#,##0"),
-        ("N in fish + oysters", nb_("N", "produced_biomass"), "kg N", "#,##0.0"),
-        ("N in macroalgae", nb_("N", "downstream_macroalgae"), "kg N", "#,##0.0"),
-        ("N in products", f"={nb_('N', 'produced_biomass')[1:]}+{nb_('N', 'downstream_macroalgae')[1:]}", "kg N", "#,##0.0"),
-        ("N released (Table 5; minus = net uptake)", nb_("N", "reported"), "kg N", "#,##0.0"),
-        ("N use efficiency", nb_("N", "eff"), "%", "0%"),
-    ]
-    fl.cell(row=r + 1, column=DC, value=f"Data: {NAMES[sy]}, one pond and cycle").font = BOLD
-    for j, h in enumerate(["Flow", "Value", "Unit"]):
-        c = fl.cell(row=r + 2, column=DC + j, value=h)
-        c.font, c.fill, c.border = HFONT, HFILL, BOX
-    for i, (lab, f, unit, fmt) in enumerate(items):
-        rr = r + 3 + i
-        fl.cell(row=rr, column=DC, value=lab).font = NORM
-        put(fl, f"Q{rr}", f, fmt, bold=lab in ("N in products", "N use efficiency"))
-        fl.cell(row=rr, column=DC + 2, value=unit).font = NORM
-    r += max(int(img.height / 20) + 4, len(items) + 6)
-widths(fl, {"P": 44, "Q": 14, "R": 8})
+    fl.add_image(img, f"A{pr + 1}")
+    r = pr + 1 + int(img.height / 20) + 4
 wb.move_sheet(fl, offset=wb.sheetnames.index("Goal & scope") + 1 - wb.sheetnames.index("Flow diagrams"))
 
 # ------------------------------------------------------------------ Data checks
