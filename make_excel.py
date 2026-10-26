@@ -10,6 +10,7 @@ from pathlib import Path
 
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, RadarChart, Reference, Series
+from openpyxl.chart.label import DataLabelList
 from openpyxl.chart.series import SeriesLabel
 from openpyxl.drawing.image import Image
 from openpyxl.formatting.rule import CellIsRule, ColorScaleRule, FormulaRule
@@ -87,6 +88,25 @@ def bars_down(ch, lo=None, hi=None):
     """Horizontal bars listed top to bottom, labels clear of negative bars."""
     ch.x_axis.scaling.orientation, ch.x_axis.tickLblPos = "maxMin", "low"
     ch.y_axis.scaling.min, ch.y_axis.scaling.max = lo, hi
+    return ch
+
+
+def band(ws, r, text, ncols, fill="0F6E56", size=12, first=1, tall=False):
+    """A coloured title band across ncols columns (tall=False keeps the row height, so pictures and charts stay anchored)."""
+    for j in range(first, first + ncols):
+        ws.cell(row=r, column=j).fill = PatternFill("solid", fgColor=fill)
+    c = ws.cell(row=r, column=first, value=text)
+    c.font, c.alignment = Font(name=F, bold=True, size=size, color="FFFFFF"), Alignment(vertical="center")
+    if tall:
+        ws.row_dimensions[r].height = 24
+    return c
+
+
+def labels(ch):
+    ch.dataLabels = DataLabelList()
+    ch.dataLabels.showVal = True
+    for k in ("showSerName", "showCatName", "showLegendKey", "showPercent", "showBubbleSize", "showLeaderLines"):
+        setattr(ch.dataLabels, k, False)
     return ch
 
 
@@ -276,9 +296,9 @@ LCI = {}
 rr = 5
 for io, title, groups in tables:
     dark, light = IO[io]
-    band = PatternFill("solid", fgColor=dark)
+    band_fill = PatternFill("solid", fgColor=dark)
     for j in range(1, 8):
-        lci.cell(row=rr, column=j).fill = band
+        lci.cell(row=rr, column=j).fill = band_fill
     lci.cell(row=rr, column=1, value=title).font = Font(name=F, bold=True, size=13, color="FFFFFF")
     lci.row_dimensions[rr].height = 22
     rr += 1
@@ -524,58 +544,186 @@ widths(kp, {"A": 6, "B": 12, "C": 36, "D": 13, "E": 9, "F": 12, "G": 14, "H": 14
 kp.freeze_panes = "G8"
 
 # ------------------------------------------------------------------ Dashboard
-db = sheet("Dashboard", "Dashboard - pond IMTA vs fish polyculture")
-header(db, 4, ["", "", *SYSHEAD])
-dash = [("KPI targets met", "='KPI framework'!{m}%d" % KP["score"], "@"),
-        ("Global warming, kg CO2-eq/t", "=Comparison!{c}%d" % CP["GW"], "#,##0"),
-        ("Eutrophication, kg PO4-eq/t", "=Comparison!{c}%d" % CP["EP"], "#,##0"),
-        ("Water dependence, m3/t", "=Comparison!{c}%d" % CP["WD"], "#,##0"),
-        ("Land competition, m2a/t", "=Comparison!{c}%d" % CP["LC"], "#,##0"),
-        ("Nitrogen use efficiency", "='Nutrient balance'!{c}%d" % NB[("N", "eff")], "0%"),
-        ("Net N released, kg N/t", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "0.0")]
-for i, (lab, f, fmt) in enumerate(dash):
-    rr = 5 + i
-    db.cell(row=rr, column=1, value=lab).font = BOLD
-    for col, m in zip(COLS, ("J", "K", "L")):
-        put(db, f"{col}{rr}", f.format(c=col, m=m), fmt, bold=(i == 0))
-widths(db, {"A": 32, "B": 2, "C": 26, "D": 26, "E": 26})
-# stacked GW chart from a helper table
-hr = 15
-section(db, hr, "Global warming by process (kg CO2-eq per t) - chart data", 5)
-header(db, hr + 1, ["Process", "", *SYSHEAD])
-gw_procs = [p for p in PROCS if p not in ("Water consumption", "Rejects fish", "Direct activity")]
-for i, p in enumerate(gw_procs):
-    rr = hr + 2 + i
-    db.cell(row=rr, column=1, value=p).font = NORM
-    for col in COLS:
-        put(db, f"{col}{rr}", f"='LCIA (Annex 1)'!{col}{LA[('GW', p)]}", "#,##0")
-end = hr + 1 + len(gw_procs)
-bc = BarChart()
-bc.type, bc.grouping, bc.overlap = "col", "stacked", 100
-bc.title, bc.y_axis.title = "Global warming by process", "kg CO2-eq per t fish + oyster"
-for i, p in enumerate(gw_procs):
-    bc.series.append(Series(Reference(db, min_col=3, max_col=5, min_row=hr + 2 + i), title=p))
-bc.set_categories(Reference(db, min_col=3, max_col=5, min_row=hr + 1))
-bc.height, bc.width = 10, 20
-db.add_chart(bc, "G4")
-ec = BarChart()
-ec.type = "col"
-ec.title, ec.y_axis.title = "Eutrophication per tonne", "kg PO4-eq/t"
-ec.add_data(Reference(db, min_col=3, max_col=5, min_row=7), from_rows=True, titles_from_data=False)
-ec.series[0].tx = SeriesLabel(v="Eutrophication")
-ec.set_categories(Reference(db, min_col=3, max_col=5, min_row=4))
-ec.legend, ec.height, ec.width = None, 8, 20
-db.add_chart(ec, "G26")
+db = wb.create_sheet("Dashboard")
+widths(db, {"A": 2, **{chr(ord("B") + i): 13 for i in range(12)}, "N": 2})
+for rr_ in (1, 2):
+    for j in range(1, 15):
+        db.cell(row=rr_, column=j).fill = PatternFill("solid", fgColor="0F6E56")
+db["B1"].value, db["B1"].font = "Dashboard: pond IMTA vs fish polyculture", Font(name=F, bold=True, size=18, color="FFFFFF")
+db["B2"].value, db["B2"].font = "Per tonne of fish + oyster flesh · " + SRC + " · all values live", Font(name=F, italic=True, color="E1F5EE")
+db.row_dimensions[1].height = 34
+
+# scorecards, one per system
+env_rows = [KP[k[0]] for k in KPI_DEF if k[6]]
+circ_rows = [KP[k[0]] for k in KPI_DEF if not k[6]]
+SITE = {"SI-IMTA": "Olhao, Portugal · fish + oysters + Ulva", "SE-IMTA": "Cadiz, Spain · tidal, fish + oysters + algae pond",
+        "SI-POLY": "Olhao, Portugal · fish only (baseline)"}
+for (c1, c2), sy, mc in zip((("B", "E"), ("F", "I"), ("J", "M")), SYSTEMS, ("J", "K", "L")):
+    hx = SYS_COLOR[sy]
+    light = PatternFill("solid", fgColor="F7F7F5")
+    edge = Side(style="medium", color=hx)
+    rows_ = [(4, NAMES[sy], Font(name=F, bold=True, size=12, color="FFFFFF"), PatternFill("solid", fgColor=hx), 22),
+             (5, "KPI targets met", Font(name=F, color="5F5E5A"), light, 16),
+             (6, f"='KPI framework'!{mc}{KP['score']}", Font(name=F, bold=True, size=26, color=hx), light, 38),
+             (7, f'="Environment "&COUNTIF(\'KPI framework\'!{mc}{min(env_rows)}:{mc}{max(env_rows)},"✓")&" / 7   ·   Circularity "'
+                 f'&COUNTIF(\'KPI framework\'!{mc}{min(circ_rows)}:{mc}{max(circ_rows)},"✓")&" / 6"', Font(name=F, bold=True, color="2C2C2A"), light, 18),
+             (8, SITE[sy], Font(name=F, italic=True, size=9, color="5F5E5A"), light, 16)]
+    for rr_, v, fnt, fill_, h in rows_:
+        db.merge_cells(f"{c1}{rr_}:{c2}{rr_}")
+        c = db[f"{c1}{rr_}"]
+        c.value, c.font, c.alignment = v, fnt, Alignment(horizontal="center", vertical="center")
+        db.row_dimensions[rr_].height = h
+        for j in range(ord(c1), ord(c2) + 1):
+            cc = db[f"{chr(j)}{rr_}"]
+            cc.fill = fill_
+            cc.border = Border(left=edge if chr(j) == c1 else None, right=edge if chr(j) == c2 else None,
+                               top=edge if rr_ == 4 else None, bottom=edge if rr_ == 8 else None)
+if sum(1 for _ in env_rows) != 7 or len(circ_rows) != 6:
+    raise ValueError("scorecard assumes 7 environmental and 6 circularity KPIs")
+
+# key indicators with the best system highlighted
+band(db, 10, "Key indicators per tonne   (green = best of the three)", 12, first=2, tall=True)
+hdr_ = 11
+for c1, c2, lab in (("B", "E", "Indicator"), ("F", "F", "Unit"), ("G", "H", NAMES["SI-IMTA"]), ("I", "J", NAMES["SE-IMTA"]),
+                    ("K", "L", NAMES["SI-POLY"]), ("M", "M", "vs baseline*")):
+    if c1 != c2:
+        db.merge_cells(f"{c1}{hdr_}:{c2}{hdr_}")
+    c = db[f"{c1}{hdr_}"]
+    c.value, c.font, c.fill = lab, HFONT, HFILL
+    c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    for j in range(ord(c1), ord(c2) + 1):
+        db[f"{chr(j)}{hdr_}"].fill, db[f"{chr(j)}{hdr_}"].border = HFILL, BOX
+db.row_dimensions[hdr_].height = 30
+indicators = [("Global warming", "kg CO2-eq", "=Comparison!{c}%d" % CP["GW"], "#,##0", "lower"),
+              ("Cumulative energy demand", "MJ-eq", "=Comparison!{c}%d" % CP["TCED"], "#,##0", "lower"),
+              ("Acidification", "kg SO2-eq", "=Comparison!{c}%d" % CP["AP"], "#,##0.0", "lower"),
+              ("Eutrophication", "kg PO4-eq", "=Comparison!{c}%d" % CP["EP"], "#,##0.0", "lower"),
+              ("Land competition", "m2a", "=Comparison!{c}%d" % CP["LC"], "#,##0", "lower"),
+              ("Water dependence", "m3", "=Comparison!{c}%d" % CP["WD"], "#,##0", "lower"),
+              ("Nitrogen use efficiency", "%", "='Nutrient balance'!{c}%d" % NB[("N", "eff")], "0%", "higher"),
+              ("Net N released to water", "kg N", "='Nutrient balance'!{c}%d" % NB[("N", "per_t")], "0.0", "lower")]
+for i, (lab, unit, f, fmt, better) in enumerate(indicators):
+    rr_ = hdr_ + 1 + i
+    db.merge_cells(f"B{rr_}:E{rr_}")
+    db[f"B{rr_}"].value, db[f"B{rr_}"].font = lab, BOLD
+    db[f"F{rr_}"].value, db[f"F{rr_}"].font = unit, ITAL
+    for c1, c2, col in (("G", "H", "C"), ("I", "J", "D"), ("K", "L", "E")):
+        db.merge_cells(f"{c1}{rr_}:{c2}{rr_}")
+        put(db, f"{c1}{rr_}", f.format(c=col), fmt)
+        db[f"{c1}{rr_}"].alignment = Alignment(horizontal="center")
+    best = "MIN" if better == "lower" else "MAX"
+    put(db, f"M{rr_}", f"=IF(K{rr_}=0,\"\",MIN(G{rr_},I{rr_})/K{rr_}-1)" if better == "lower" else f"=(MAX(G{rr_},I{rr_})-K{rr_})*100",
+        "+0%;-0%;0%" if better == "lower" else '+0" pp";-0" pp"')
+    db[f"M{rr_}"].alignment = Alignment(horizontal="center")
+    for c1 in ("G", "I", "K"):
+        db.conditional_formatting.add(f"{c1}{rr_}", FormulaRule(formula=[f"{c1}{rr_}={best}($G{rr_},$I{rr_},$K{rr_})"],
+                                                                fill=GOOD, font=Font(name=F, bold=True, color="0F6E56")))
+    for j in range(ord("B"), ord("N")):
+        db[f"{chr(j)}{rr_}"].border = BOX
+        if i % 2:
+            db[f"{chr(j)}{rr_}"].fill = PatternFill("solid", fgColor="F7F7F5")
+last_ind = hdr_ + len(indicators)
+db[f"B{last_ind + 1}"].value = "* best IMTA system against the fish-only pond (for N use efficiency: difference in percentage points)."
+db[f"B{last_ind + 1}"].font = Font(name=F, italic=True, size=9, color="5F5E5A")
+
+# chart data (bottom of the sheet)
+cd = last_ind + 40
+band(db, cd, "Chart data (feeds the charts above; all formulas)", 12, fill="5F5E5A", size=11, first=2)
+DASH_GW = [("Feeds", ["Feeds"], "BA7517"), ("Transport", ["Transports"], "D85A30"), ("Energy", ["Energy consumption"], "534AB7"),
+           ("Equipment", ["Equipment"], "AFA9EC"), ("Other", ["Building impact", "Vehicle", "Chemical products", "Fry"], "B4B2A9")]
+t1 = cd + 2
+db[f"B{t1 - 1}"].value, db[f"B{t1 - 1}"].font = "Global warming by process, kg CO2-eq/t", BOLD
+for j, lab in enumerate(["Process", "SI-IMTA", "SE-IMTA", "SI-POLY"]):
+    c = db.cell(row=t1, column=2 + j, value=lab)
+    c.font, c.fill, c.border = HFONT, HFILL, BOX
+for i, (lab, procs, _) in enumerate(DASH_GW):
+    db.cell(row=t1 + 1 + i, column=2, value=lab).border = BOX
+    for j, col in enumerate(COLS):
+        put(db, db.cell(row=t1 + 1 + i, column=3 + j).coordinate, "=" + "+".join(f"'LCIA (Annex 1)'!{col}{LA[('GW', p_)]}" for p_ in procs), "#,##0")
+t2 = t1 + len(DASH_GW) + 3
+db[f"B{t2 - 1}"].value, db[f"B{t2 - 1}"].font = "KPI targets met", BOLD
+for j, lab in enumerate(["System", "Environment", "Circularity"]):
+    c = db.cell(row=t2, column=2 + j, value=lab)
+    c.font, c.fill, c.border = HFONT, HFILL, BOX
+for i, (sy, mc) in enumerate(zip(SYSTEMS, ("J", "K", "L"))):
+    db.cell(row=t2 + 1 + i, column=2, value=sy).border = BOX
+    put(db, f"C{t2 + 1 + i}", f"=COUNTIF('KPI framework'!{mc}{min(env_rows)}:{mc}{max(env_rows)},\"✓\")", "0")
+    put(db, f"D{t2 + 1 + i}", f"=COUNTIF('KPI framework'!{mc}{min(circ_rows)}:{mc}{max(circ_rows)},\"✓\")", "0")
+t3 = t2 + 6
+db[f"B{t3 - 1}"].value, db[f"B{t3 - 1}"].font = "Change against the fish-only pond", BOLD
+for j, lab in enumerate(["Impact", "SI-IMTA", "SE-IMTA"]):
+    c = db.cell(row=t3, column=2 + j, value=lab)
+    c.font, c.fill, c.border = HFONT, HFILL, BOX
+for i, cat in enumerate(CATEGORIES):
+    db.cell(row=t3 + 1 + i, column=2, value=CAT_NAMES[cat]).border = BOX
+    put(db, f"C{t3 + 1 + i}", f"=Comparison!F{CP[cat]}", "+0%;-0%;0%")
+    put(db, f"D{t3 + 1 + i}", f"=Comparison!G{CP[cat]}", "+0%;-0%;0%")
+t4 = t3 + len(CATEGORIES) + 3
+db[f"B{t4 - 1}"].value, db[f"B{t4 - 1}"].font = "Fate of feed nitrogen, kg N/t", BOLD
+for j, lab in enumerate(["System", "in fish + oysters", "in macroalgae", "released (net)"]):
+    c = db.cell(row=t4, column=2 + j, value=lab)
+    c.font, c.fill, c.border = HFONT, HFILL, BOX
+    c.alignment = Alignment(wrap_text=True)
+for i, (col, sy) in enumerate(zip(COLS, SYSTEMS)):
+    db.cell(row=t4 + 1 + i, column=2, value=sy).border = BOX
+    for j, key in enumerate(("produced_biomass", "downstream_macroalgae", "released")):
+        put(db, db.cell(row=t4 + 1 + i, column=3 + j).coordinate,
+            f"='Nutrient balance'!{col}{NB[('N', key)]}*Inventory!{col}{R['scale']}", "#,##0.0")
+
+# 2 x 2 chart grid
+ch_top = last_ind + 3
+band(db, ch_top, "Charts", 12, first=2, tall=True)
+g1 = BarChart()
+g1.type, g1.grouping, g1.overlap, g1.gapWidth = "col", "stacked", 100, 60
+g1.title, g1.y_axis.title = "Global warming by process", "kg CO2-eq per t"
+for i, (lab, _, hx) in enumerate(DASH_GW):
+    se = Series(Reference(db, min_col=3, max_col=5, min_row=t1 + 1 + i), title=lab)
+    color(se, hx)
+    g1.series.append(se)
+g1.set_categories(Reference(db, min_col=3, max_col=5, min_row=t1))
+db.add_chart(chart_size(g1, 15.5, 8), f"B{ch_top + 2}")
+g2 = BarChart()
+g2.type, g2.grouping, g2.overlap, g2.gapWidth = "col", "stacked", 100, 60
+g2.title, g2.y_axis.title = "KPI targets met (of 13)", "targets met"
+g2.add_data(Reference(db, min_col=3, max_col=4, min_row=t2, max_row=t2 + 3), titles_from_data=True)
+g2.set_categories(Reference(db, min_col=2, min_row=t2 + 1, max_row=t2 + 3))
+for se, hx in zip(g2.series, ("378ADD", "1D9E75")):
+    color(se, hx)
+g2.y_axis.scaling.min, g2.y_axis.scaling.max, g2.y_axis.majorUnit = 0, 13, 1
+db.add_chart(labels(chart_size(g2, 15.5, 8)), f"H{ch_top + 2}")
+g3 = BarChart()
+g3.type, g3.grouping, g3.gapWidth = "bar", "clustered", 60
+g3.title = "Change against the fish-only pond (left = better)"
+g3.add_data(Reference(db, min_col=3, max_col=4, min_row=t3, max_row=t3 + len(CATEGORIES)), titles_from_data=True)
+g3.set_categories(Reference(db, min_col=2, min_row=t3 + 1, max_row=t3 + len(CATEGORIES)))
+for se, sy in zip(g3.series, ("SI-IMTA", "SE-IMTA")):
+    color(se, SYS_COLOR[sy])
+g3.y_axis.number_format = "0%"
+bars_down(g3, -1, 1.25)
+db.add_chart(chart_size(g3, 15.5, 9), f"B{ch_top + 19}")
+g4 = BarChart()
+g4.type, g4.grouping, g4.overlap, g4.gapWidth = "bar", "stacked", 100, 60
+g4.title, g4.y_axis.title = "Where the feed nitrogen goes", "kg N per t"
+g4.add_data(Reference(db, min_col=3, max_col=5, min_row=t4, max_row=t4 + 3), titles_from_data=True)
+g4.set_categories(Reference(db, min_col=2, min_row=t4 + 1, max_row=t4 + 3))
+for se, hx in zip(g4.series, ("534AB7", "1D9E75", "E24B4A")):
+    color(se, hx)
+bars_down(g4)
+db.add_chart(labels(chart_size(g4, 15.5, 9)), f"H{ch_top + 19}")
+db.freeze_panes = "A3"
 
 # ------------------------------------------------------------------ Charts
 cs = sheet("Charts", "Charts - all live: they update when an input or target changes")
-r = 4
+cs["A4"].value, cs["A4"].font = "Contents (click to jump)", BOLD
+CHART_TOC = []
+r = 12
 
 
-def block(title, labels):
+def block(title, heads):
     global r
-    section(cs, r, title, 6)
-    header(cs, r + 1, labels)
+    band(cs, r, title, 16)
+    CHART_TOC.append((title, r))
+    header(cs, r + 1, heads)
     r += 2
     return r - 1
 
@@ -614,7 +762,7 @@ for se, sy in zip(bc2.series, ("SI-IMTA", "SE-IMTA")):
     color(se, SYS_COLOR[sy])
 bc2.y_axis.number_format = "0%"
 bars_down(bc2, -1, 1.5)
-cs.add_chart(chart_size(bc2, 16, 9), f"H{hdr - 1}")
+cs.add_chart(labels(chart_size(bc2, 16, 9)), f"H{hdr - 1}")
 r = hdr + 20
 
 # 3-4 Nutrient fate per tonne
@@ -635,7 +783,7 @@ for el, name in (("N", "nitrogen"), ("P", "phosphorus")):
     for se, hx in zip(nc.series, ("534AB7", "1D9E75", "E24B4A")):
         color(se, hx)
     bars_down(nc)
-    cs.add_chart(chart_size(nc, 16, 7.5), f"H{hdr - 1}")
+    cs.add_chart(labels(chart_size(nc, 16, 7.5)), f"H{hdr - 1}")
     r = hdr + 17
 
 # 5 KPI targets met
@@ -656,7 +804,7 @@ kc.set_categories(Reference(cs, min_col=1, min_row=hdr + 1, max_row=r - 1))
 for se, hx in zip(kc.series, ("378ADD", "1D9E75")):
     color(se, hx)
 kc.y_axis.scaling.min, kc.y_axis.scaling.max, kc.y_axis.majorUnit = 0, 13, 1
-cs.add_chart(chart_size(kc, 16, 8), f"H{hdr - 1}")
+cs.add_chart(labels(chart_size(kc, 16, 8)), f"H{hdr - 1}")
 r = hdr + 18
 
 # 6 Margin to target
@@ -680,6 +828,9 @@ mc_.y_axis.number_format = "0%"
 bars_down(mc_, -1, 1.5)
 cs.add_chart(chart_size(mc_, 18, 13), f"H{hdr - 1}")
 widths(cs, {"A": 40, "B": 2, "C": 18, "D": 18, "E": 20, "F": 2})
+for i, (title, row_) in enumerate(CHART_TOC):
+    c = cs.cell(row=5 + i, column=1, value=title)
+    c.hyperlink, c.font = f"#'Charts'!A{row_}", Font(name=F, color="0563C1", underline="single")
 
 # ------------------------------------------------------------------ Figures (static) + their data (live)
 fg = sheet("Figures", "Figures - the report charts drawn by make_charts.py, each with its data table on the right")
@@ -789,8 +940,14 @@ def data_for(name, top):
     return top
 
 
-r = 5
-for png in sorted((ROOT / "results" / "charts").glob("*.png")):
+FIG_TITLE = {"00": "Key numbers", "01": "Change against the fish-only pond", "02": "Global warming by process",
+             "03": "Fate of the feed nitrogen", "04": "Which process drives which impact", "05": "KPI scorecard",
+             "06": "Environmental profile", "07": "KPI framework", "08": "Margin to KPI target"}
+pngs = sorted((ROOT / "results" / "charts").glob("*.png"))
+fg["A4"].value, fg["A4"].font = "Contents (click to jump)", BOLD
+toc_row = 5
+r = toc_row + len(pngs) + 2
+for png in pngs:
     with PILImage.open(png) as im:                      # downscale the 200-dpi PNGs to keep the workbook small
         im = im.convert("RGB")
         im.thumbnail((1400, 1400))
@@ -799,10 +956,15 @@ for png in sorted((ROOT / "results" / "charts").glob("*.png")):
     img = Image(buf)
     scale = 900 / img.width
     img.width, img.height = 900, int(img.height * scale)
-    fg.cell(row=r, column=1, value=png.name).font = ITAL
-    fg.add_image(img, f"A{r + 1}")
-    end_data = data_for(png.name, r + 1)
-    r = max(r + int(img.height / 20) + 4, end_data + 3)
+    title = f"Figure {int(png.name[:2])}  ·  {FIG_TITLE.get(png.name[:2], png.stem)}"
+    band(fg, r, title, 23)
+    c = fg.cell(row=toc_row, column=1, value=title)
+    c.hyperlink, c.font = f"#'Figures'!A{r}", Font(name=F, color="0563C1", underline="single")
+    toc_row += 1
+    fg.cell(row=r + 1, column=1, value=f"results/charts/{png.name} (static picture)").font = Font(name=F, italic=True, size=9, color="5F5E5A")
+    fg.add_image(img, f"A{r + 2}")
+    end_data = data_for(png.name, r + 2)
+    r = max(r + 2 + int(img.height / 17) + 3, end_data + 3)   # LibreOffice rows are ~17 px
 widths(fg, {"P": 44, **{chr(ord("Q") + i): 14 for i in range(7)}})
 
 # ------------------------------------------------------------------ Flow diagrams (static) + their data (live)
