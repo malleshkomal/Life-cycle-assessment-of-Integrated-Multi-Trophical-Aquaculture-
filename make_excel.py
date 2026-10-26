@@ -802,6 +802,7 @@ for col, sy in zip(COLS, SYSTEMS):
         fl.cell(row=rr, column=DC + 2, value=unit).font = NORM
     r += max(int(img.height / 20) + 4, len(items) + 6)
 widths(fl, {"P": 44, "Q": 14, "R": 8})
+wb.move_sheet(fl, offset=wb.sheetnames.index("Goal & scope") + 1 - wb.sheetnames.index("Flow diagrams"))
 
 # ------------------------------------------------------------------ Data checks
 dc = sheet("Data checks", "Data checks - do the report's tables agree with each other?")
@@ -952,6 +953,7 @@ def build_readme():
     r = head(r, ["Tab", "What you find there", "", "", "Type"], merge=("C", "E"))
     tabs = [
         ("Goal & scope", "Functional unit, boundary, software, impact categories, allocation", "Reference"),
+        ("Flow diagrams", "How the fish waste is used in each system, with the flows", "Pictures + data"),
         ("Metadata", "Dataset description in the LCIS2024 structure", "Reference"),
         ("Inventory", "Table 4 of the report per pond and cycle (yellow), scaled to 1 t of product", "Input + calculation"),
         ("Nutrient balance", "N and P from feed to fish + oysters, macroalgae and water (Table 5)", "Input + calculation"),
@@ -963,7 +965,6 @@ def build_readme():
         ("Dashboard", "Score per system and two summary charts", "Results + charts"),
         ("Charts", "Radar profile, change vs baseline, N and P fate, targets met, margin to target", "Charts (live)"),
         ("Figures", "Report figures from make_charts.py, each with its data table", "Pictures + data"),
-        ("Flow diagrams", "How the fish waste is used in each system, with the flows", "Pictures + data"),
         ("Data checks", "Cross-checks between the report tables; two findings flagged on purpose", "Quality check"),
         ("Sources", "Report, method references and publications", "Reference"),
     ]
